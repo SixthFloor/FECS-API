@@ -61,6 +61,6 @@
 	</form:form>
 	<br />
 	<br /> Go back to
-	<a href="<c:url value='/user/list' />">List of All Users</a>
+	<a href="<c:url value='/users/list' />">List of All Users</a>
 </body>
 </html>

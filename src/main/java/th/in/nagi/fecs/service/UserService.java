@@ -1,24 +1,73 @@
 package th.in.nagi.fecs.service;
 
-
 import java.util.List;
 
 import th.in.nagi.fecs.model.User;
 
+/**
+ * 
+ * @author Chonnipa Kittisiriprasert
+ *
+ */
 public interface UserService {
 
-	User findById(int id);
-	
-	void save(User user);
-	
-	void update(User user);
-	
-	void deleteByUsername(String username);
+    /**
+     * Finds user by ID.
+     * 
+     * @param id
+     *            id
+     */
+    User findByKey(Integer id);
 
-	List<User> findAll(); 
-	
-	User findByUsername(String username);
+    /**
+     * Saves user to repository
+     * 
+     * @param user
+     *            user
+     */
+    void store(User user);
 
-	boolean isUsernameUnique(Integer id, String username);
-	
+    /**
+     * Updates user
+     * 
+     * @param user
+     *            user
+     */
+    void update(User user);
+
+    /**
+     * Deletes user by username
+     * 
+     * @param username
+     *            username
+     */
+    void removeByUsername(String username);
+
+    /**
+     * Finds all existing users
+     * 
+     * @return list of users
+     */
+    List<User> findAll();
+
+    /**
+     * Find user by username
+     * 
+     * @param username
+     *            username
+     * @return user
+     */
+    User findByUsername(String username);
+
+    /**
+     * Returns <tt>true</tt> if username is unique
+     * 
+     * @param i
+     *            id
+     * @param username
+     *            username
+     * @return <tt>true</tt> if username is unique
+     */
+    boolean isUsernameUnique(Integer i, String username);
+
 }

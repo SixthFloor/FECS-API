@@ -11,6 +11,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
+import th.in.nagi.fecs.model.User;
+import th.in.nagi.fecs.model.User;
+
 @Configuration
 @EnableWebMvc
 @ComponentScan(basePackages = "th.in.nagi.fecs")

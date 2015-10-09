@@ -31,12 +31,12 @@ tr:first-child {
 				<td>${user.firstName}</td>
 				<td>${user.lastName}</td>
 				<td>${user.joiningDate}</td>
-				<td><a href="<c:url value='/user/edit-${user.username}-user' />">${user.username}</a></td>
-				<td><a href="<c:url value='/user/delete-${user.username}-user' />">delete</a></td>
+				<td><a href="<c:url value='/users/edit-${user.username}-user' />">${user.username}</a></td>
+				<td><a href="<c:url value='/users/delete-${user.username}-user' />">delete</a></td>
 			</tr>
 		</c:forEach>
 	</table>
 	<br />
-	<a href="<c:url value='/user/new' />">Add New User</a>
+	<a href="<c:url value='/users/new' />">Add New User</a>
 </body>
 </html>

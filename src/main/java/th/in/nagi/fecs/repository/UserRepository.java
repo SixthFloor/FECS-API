@@ -1,20 +1,30 @@
 package th.in.nagi.fecs.repository;
 
-
-import java.util.List;
-
 import th.in.nagi.fecs.model.User;
 
-public interface UserRepository {
+/**
+ * Repository for users
+ * 
+ * @author Chonnipa Kittisiriprasert
+ *
+ */
+public interface UserRepository extends Repository<User, Integer> {
 
-	User findById(int id);
+    /**
+     * Finds a user that matches the given username.
+     * 
+     * @param username
+     *            username
+     * @return user that matches the given username
+     */
+    User findByUsername(String username);
 
-	void save(User user);
-	
-	void deleteByUsername(String username);
-	
-	List<User> findAll();
-
-	User findByUsername(String username);
+    /**
+     * Removes an existing user from this repository.
+     * 
+     * @param username
+     *            username
+     */
+    void removeByUsername(String username);
 
 }
