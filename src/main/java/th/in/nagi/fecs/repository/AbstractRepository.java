@@ -16,7 +16,7 @@ public abstract class AbstractRepository<E, K extends Serializable>
     @SuppressWarnings("unchecked")
     public AbstractRepository() {
         this.persistentClass = (Class<E>) ((ParameterizedType) this.getClass()
-                .getGenericSuperclass()).getActualTypeArguments()[1];
+                .getGenericSuperclass()).getActualTypeArguments()[0];
     }
 
     @Autowired
