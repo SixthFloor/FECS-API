@@ -1,5 +1,8 @@
 package th.in.nagi.fecs.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,7 +25,7 @@ public class ProductController extends BaseController {
     private ProductService productService;
 	
 	@ResponseBody
-	@RequestMapping(value="/{serialNumber}", method=RequestMethod.POST)
+	@RequestMapping(value="/{serialNumber}", method=RequestMethod.GET)
     public Message getDetail(@PathVariable String serialNumber) {
 		Product product = productService.findBySerialNumber(serialNumber);
 		if (product != null){
@@ -30,5 +33,32 @@ public class ProductController extends BaseController {
 		}
 		return new ErrorMessage(Message.FAIL, "Not found product.");
         
+    }
+	
+	@ResponseBody
+	@RequestMapping(value="/all", method=RequestMethod.GET)
+    public Message showAllProduct() {
+		List<Product> product = productService.findAll();
+		if (product != null){
+			return new SuccessMessage(Message.SUCCESS, product);
+		}
+		return new ErrorMessage(Message.FAIL, "Not found product.");
+    }
+	
+	@ResponseBody
+	@RequestMapping(value="/category/{categoryName}", method=RequestMethod.GET)
+    public Message showProductsByCategory(@PathVariable String categoryName) {
+		List<Product> product = productService.findAll();
+		List<Product> tempProduct = new ArrayList();
+ 
+		for(int i = 0; i < product.size(); i++) {
+			if(product.get(i).getCategory().getName().equals(categoryName)){
+				tempProduct.add(product.get(i));
+			}
+		}
+		if (tempProduct != null){
+			return new SuccessMessage(Message.SUCCESS, tempProduct);
+		}
+		return new ErrorMessage(Message.FAIL, "Not found product.");
     }
 }
