@@ -6,7 +6,7 @@
 - MySQL
 
 ## How to install
-- Setup database (Create database and table)
+- Setup database (Create [database](mysql/database.sql) and [tables](mysql/tables.sql))
 - Clone project to Eclipse
 - Set run configurations
   - For buliding Maven (A) ![alt text](/images/run_configuration_mvn.png)
