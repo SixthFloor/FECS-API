@@ -1,6 +1,7 @@
 # FECS-API
 
 ##  Requirement
+- Eclipse
 - Java = 1.8
 - Jetty
 - MySQL
