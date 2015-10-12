@@ -18,29 +18,25 @@ import th.in.nagi.fecs.service.ProductService;
 
 
 @RestController
-@RequestMapping("/api/product")
-public class ProductController extends BaseController {
+@RequestMapping("/api/category")
+public class CategoryController extends BaseController {
 	
 	@Autowired
     private ProductService productService;
 	
 	@ResponseBody
-	@RequestMapping(value="/{serialNumber}", method=RequestMethod.GET)
-    public Message getDetail(@PathVariable String serialNumber) {
-		Product product = productService.findBySerialNumber(serialNumber);
-		if (product != null){
-			return new SuccessMessage(Message.SUCCESS, product);
-		}
-		return new ErrorMessage(Message.FAIL, "Not found product.");
-        
-    }
-	
-	@ResponseBody
-	@RequestMapping(value="/all", method=RequestMethod.GET)
-    public Message showAllProduct() {
+	@RequestMapping(value="/{categoryName}", method=RequestMethod.GET)
+    public Message showProductsByCategory(@PathVariable String categoryName) {
 		List<Product> product = productService.findAll();
-		if (product != null){
-			return new SuccessMessage(Message.SUCCESS, product);
+		List<Product> tempProduct = new ArrayList();
+ 
+		for(int i = 0; i < product.size(); i++) {
+			if(product.get(i).getCategory().getName().equals(categoryName)){
+				tempProduct.add(product.get(i));
+			}
+		}
+		if (tempProduct != null){
+			return new SuccessMessage(Message.SUCCESS, tempProduct);
 		}
 		return new ErrorMessage(Message.FAIL, "Not found product.");
     }
