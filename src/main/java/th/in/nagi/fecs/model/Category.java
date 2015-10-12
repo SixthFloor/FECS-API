@@ -11,34 +11,66 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+/**
+ * Category model
+ * @author Thanachote Visetsuthimont
+ *
+ */
 @Entity
 @Table(name = "category")
 public class Category {
 	
+	/**
+	 * id of category
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	/**
+	 * Name of category
+	 */
 	@Size(min = 1, max = 50)
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	/**
+	 * Set new id of category
+	 * @param id new id
+	 */
 	public void setId(Integer id) {
 		this.id = id;
 	}
 
+	/**
+	 * Set new name of category
+	 * @param name new name
+	 */
 	public void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Return id of category
+	 * @return id of category
+	 */
 	public Integer getId() {
 		return id;
 	}
 
+	/**
+	 * Return name of category
+	 * @return name of category
+	 */
 	public String getName() {
 		return name;
 	}
 	
+    /**
+     * Indicates whether some other object is "equal to" this one.
+     * @parem obj the reference object with which to compare.
+     * @return true if this object is the same as the obj argument; false otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (this == obj)
@@ -55,6 +87,10 @@ public class Category {
         return true;
     }
     
+	/** 
+	 * Return a string representation of the object.
+	 * @return a string representation of the object.
+	 */
 	@Override
 	public String toString() {
 		Class<?> clazz = this.getClass();
