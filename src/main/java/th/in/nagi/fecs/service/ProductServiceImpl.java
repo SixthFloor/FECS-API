@@ -37,10 +37,7 @@ public class ProductServiceImpl implements ProductService {
             entity.setName(product.getName());
             entity.setPrice(product.getPrice());
             entity.setDescription(product.getDescription());
-       }
-            
-        
-		
+       }	
 	}
 
 	@Override
@@ -57,6 +54,26 @@ public class ProductServiceImpl implements ProductService {
 	public void removeBySerialNumber(String serialNumber) {
 		productRepository.removeBySerialNumber(serialNumber);
 		
+	}
+
+	@Override
+	public List<Product> findAndAscByName(int start, int size) {
+		return productRepository.findAndAscByName(start, size);
+	}
+
+	@Override
+	public List<Product> findAndDescByName(int start, int size) {
+		return productRepository.findAndDescByName(start, size);
+	}
+
+	@Override
+	public List<Product> findAndAscByPrice(int start, int size) {
+		return productRepository.findAndAscByPrice(start, size);
+	}
+
+	@Override
+	public List<Product> findAndDescByPrice(int start, int size) {
+		return productRepository.findAndDescByPrice(start, size);
 	}
 	
 

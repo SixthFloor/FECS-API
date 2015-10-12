@@ -20,6 +20,12 @@ public interface ProductService {
     
     void removeBySerialNumber(String serialNumber);
 
-//    boolean isUsernameUnique(Integer i, String username);
+	public List<Product> findAndAscByName(int start, int size);
+	
+	public List<Product> findAndDescByName(int start, int size);
+	
+	public List<Product> findAndAscByPrice(int start, int size);
+	
+	public List<Product> findAndDescByPrice(int start, int size);
 
 }
