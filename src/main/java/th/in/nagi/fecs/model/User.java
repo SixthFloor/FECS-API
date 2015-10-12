@@ -164,6 +164,7 @@ public class User {
     private LocalDate joiningDate;
 
     @NotEmpty
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "username", unique = true, nullable = false)
     private String username;
 

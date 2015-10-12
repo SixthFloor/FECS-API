@@ -41,12 +41,16 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     public void update(User user) {
-        User entity = userRepository.findByKey(user.getId());
+        User entity = userRepository.findByUsername(user.getUsername());
         if (entity != null) {
-            entity.setFirstName(user.getFirstName());
-            entity.setLastName(user.getLastName());
-            entity.setJoiningDate(user.getJoiningDate());
-            entity.setUsername(user.getUsername());
+        	if(user.getFirstName()!= null){
+        		entity.setFirstName(user.getFirstName());
+        	}
+        	if(user.getLastName() != null){
+        		entity.setLastName(user.getLastName());
+        	}
+//            entity.setJoiningDate(user.getJoiningDate());
+//            entity.setUsername(user.getUsername());
         }
     }
 

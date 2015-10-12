@@ -5,15 +5,21 @@ import java.util.Locale;
 
 import javax.validation.Valid;
 
+import org.codehaus.jackson.JsonParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import th.in.nagi.fecs.message.FailureMessage;
+import th.in.nagi.fecs.message.Message;
+import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.service.UserService;
@@ -21,11 +27,11 @@ import th.in.nagi.fecs.service.UserService;
 /**
  * Controller for users.
  * 
- * @author Chonnipa Kittisiriprasert
+ * @author Nara Surawit
  *
  */
 @Controller
-@RequestMapping("/users")
+@RequestMapping("/api2/users")
 public class UsersController extends BaseController {
 
     /**
@@ -49,12 +55,15 @@ public class UsersController extends BaseController {
      * @param model
      * @return list of users
      */
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
-    public String list(ModelMap model) {
+    @ResponseBody
+    @RequestMapping(value = "/all", method = RequestMethod.GET)
+    public Message getAllUsers() {
 
         List<User> users = getUserService().findAll();
-        model.addAttribute("users", users);
-        return "usersList";
+        if(users != null) {
+			return new SuccessMessage(Message.SUCCESS, users);
+		}
+		return new FailureMessage(Message.FAIL, "Not found user.");
     }
 
     /**
@@ -63,100 +72,49 @@ public class UsersController extends BaseController {
      * @param model
      * @return
      */
-    @RequestMapping(value = { "/new" }, method = RequestMethod.GET)
-    public String create(ModelMap model) {
-        User user = new User();
-        model.addAttribute("user", user);
-        model.addAttribute("edit", false);
-        return "registration";
-    }
-
-    /*
-     * This method will be called on form submission, handling POST request for
-     * saving user in database. It also validates the user input
-     */
+    @ResponseBody
     @RequestMapping(value = { "/new" }, method = RequestMethod.POST)
-    public String saveUser(@Valid User user, BindingResult result,
-            ModelMap model) {
-
-        if (result.hasErrors()) {
-            return "registration";
-        }
-
-        /*
-         * Preferred way to achieve uniqueness of field [username] should be implementing custom @Unique annotation 
-         * and applying it on field [username] of Model class [User].
-         * 
-         * Below mentioned peace of code [if block] is to demonstrate that you can fill custom errors outside the validation
-         * framework as well while still using internationalized messages.
-         * 
-         */
-        if (!getUserService().isUsernameUnique(user.getId(),
-                user.getUsername())) {
-            FieldError usernameError = new FieldError("user", "username",
-                    getMessageSource().getMessage("non.unique.username",
-                            new String[] { user.getUsername() },
-                            Locale.getDefault()));
-            result.addError(usernameError);
-            return "registration";
-        }
-
-        getUserService().store(user);
-
-        model.addAttribute("success", "User " + user.getFirstName() + " "
-                + user.getLastName() + " registered successfully");
-        return "success";
+    public Message create(@RequestBody User user) {
+    	System.out.print(user);
+    	try {
+			getUserService().store(user);
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new FailureMessage(Message.FAIL, "Create user failed");
+		}
+		return new SuccessMessage(Message.SUCCESS, user);
     }
+    
 
     /*
      * This method will provide the medium to update an existing user.
      */
-    @RequestMapping(value = {
-            "/edit-{username}-user" }, method = RequestMethod.GET)
-    public String editUser(@PathVariable String username, ModelMap model) {
-        User user = getUserService().findByUsername(username);
-        model.addAttribute("user", user);
-        model.addAttribute("edit", true);
-        return "registration";
-    }
-
-    /*
-     * This method will be called on form submission, handling POST request for
-     * updating user in database. It also validates the user input
-     */
-    @RequestMapping(value = {
-            "/edit-{username}-user" }, method = RequestMethod.POST)
-    public String updateUser(@Valid User user, BindingResult result,
-            ModelMap model, @PathVariable String username) {
-
-        if (result.hasErrors()) {
-            return "registration";
-        }
-
-        if (!getUserService().isUsernameUnique(user.getId(),
-                user.getUsername())) {
-            FieldError usernameError = new FieldError("user", "username",
-                    getMessageSource().getMessage("non.unique.username",
-                            new String[] { user.getUsername() },
-                            Locale.getDefault()));
-            result.addError(usernameError);
-            return "registration";
-        }
-
-        getUserService().update(user);
-
-        model.addAttribute("success", "User " + user.getFirstName() + " "
-                + user.getLastName() + " updated successfully");
-        return "success";
+    @ResponseBody
+    @RequestMapping(value = {"/edit" }, method = RequestMethod.POST)
+    public Message editUser(@RequestBody User newUser) {
+//        User user = getUserService().findByUsername(newUser.getUsername());
+    	try {
+    		getUserService().update(newUser);
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new FailureMessage(Message.FAIL, "User not found");
+		}
+		return new SuccessMessage(Message.SUCCESS, getUserService().findByUsername(newUser.getUsername()));
     }
 
     /*
      * This method will delete an user by it's Username value.
      */
-    @RequestMapping(value = {
-            "/delete-{username}-user" }, method = RequestMethod.GET)
-    public String deleteUser(@PathVariable String username) {
+    @ResponseBody
+    @RequestMapping(value = {"/delete" }, method = RequestMethod.POST)
+    public Message deleteUser(@RequestBody String username) {
         getUserService().removeByUsername(username);
-        return "redirect:/users/list";
+        try {
+        	getUserService().removeByUsername(username);
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new FailureMessage(Message.FAIL, "User not found");
+		}
+		return new SuccessMessage(Message.SUCCESS, username +" has removed");
     }
-}
+ }
