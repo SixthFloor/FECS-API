@@ -17,13 +17,25 @@ import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.service.ProductService;
 
 
+/**
+ * Controller for category
+ * @author Nara Surawit
+ *
+ */
 @RestController
 @RequestMapping("/api/category")
 public class CategoryController extends BaseController {
 	
+	/**
+	 * Service of product
+	 */
 	@Autowired
     private ProductService productService;
 	
+	/**
+	 * @param categoryName
+	 * @return list of products in the category
+	 */
 	@ResponseBody
 	@RequestMapping(value="/{categoryName}", method=RequestMethod.GET)
     public Message showProductsByCategory(@PathVariable String categoryName) {
