@@ -2,6 +2,8 @@ package th.in.nagi.fecs.repository;
 
 import java.util.List;
 
+import javax.persistence.criteria.Order;
+
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
@@ -49,6 +51,30 @@ public class ProductRepositoryImpl extends AbstractRepository<Product, Integer> 
         query.setString("serialNumber", serialNumber);
         query.executeUpdate();
 		
+	}
+
+	@Override
+	public List<Product> findAndAscByName(int start, int size) {
+		List<Product> products = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name")).setFirstResult(start).setFetchSize(size).list();
+		return products;
+	}
+
+	@Override
+	public List<Product> findAndDescByName(int start, int size) {
+		List<Product> products = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name")).setFirstResult(start).setFetchSize(size).list();
+		return products;
+	}
+
+	@Override
+	public List<Product> findAndAscByPrice(int start, int size) {
+		List<Product> products = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("price")).setFirstResult(start).setFetchSize(size).list();
+		return products;
+	}
+
+	@Override
+	public List<Product> findAndDescByPrice(int start, int size) {
+		List<Product> products = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("price")).setFirstResult(start).setFetchSize(size).list();
+		return products;
 	}
 
 
