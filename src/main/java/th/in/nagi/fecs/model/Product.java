@@ -63,22 +63,22 @@ public class Product {
 	 */
 	@Size(min = 1, max = 255)
 	@Column(name = "dimension_description", nullable = true)
-	private String dimension_description;
+	private String dimensionDescription;
 	
 	/**
 	 * Return dimension description
 	 * @return Dimension description
 	 */
-	public String getDimension_description() {
-		return dimension_description;
+	public String getDimensionDescription() {
+		return dimensionDescription;
 	}
 
 	/**
 	 * Set new dimension description 
-	 * @param dimension_description new dimension description
+	 * @param dimensionDescription new dimension description
 	 */
-	public void setDimension_description(String dimension_description) {
-		this.dimension_description = dimension_description;
+	public void setDimensionDescription(String dimensionDescription) {
+		this.dimensionDescription = dimensionDescription;
 	}
 
 	/**
