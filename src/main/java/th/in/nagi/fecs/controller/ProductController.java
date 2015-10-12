@@ -17,13 +17,26 @@ import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.service.ProductService;
 
 
+/**
+ * Controller for product
+ * @author Thanachote Visetsuthimont
+ *
+ */
 @RestController
 @RequestMapping("/api/product")
 public class ProductController extends BaseController {
 	
+	/**
+	 * Service of product
+	 */
 	@Autowired
     private ProductService productService;
 	
+	/**
+	 * Return a product that have the serialNumber
+	 * @param serialNumber
+	 * @return a product that have the serialNumber
+	 */
 	@ResponseBody
 	@RequestMapping(value="/{serialNumber}", method=RequestMethod.GET)
     public Message getDetail(@PathVariable String serialNumber) {
@@ -35,6 +48,10 @@ public class ProductController extends BaseController {
         
     }
 	
+	/**
+	 * Return all products
+	 * @return list of all products
+	 */
 	@ResponseBody
 	@RequestMapping(value="/all", method=RequestMethod.GET)
     public Message showAllProduct() {

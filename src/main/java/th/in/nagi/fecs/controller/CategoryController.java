@@ -33,6 +33,7 @@ public class CategoryController extends BaseController {
     private ProductService productService;
 	
 	/**
+	 * Return list of products in the category
 	 * @param categoryName
 	 * @return list of products in the category
 	 */
