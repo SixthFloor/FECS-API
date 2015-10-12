@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import th.in.nagi.fecs.message.ErrorMessage;
+import th.in.nagi.fecs.message.FailureMessage;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Product;
@@ -44,7 +45,7 @@ public class ProductController extends BaseController {
 		if (product != null){
 			return new SuccessMessage(Message.SUCCESS, product);
 		}
-		return new ErrorMessage(Message.FAIL, "Not found product.");
+		return new FailureMessage(Message.FAIL, "Not found product.");
         
     }
 	
@@ -59,6 +60,6 @@ public class ProductController extends BaseController {
 		if (product != null){
 			return new SuccessMessage(Message.SUCCESS, product);
 		}
-		return new ErrorMessage(Message.FAIL, "Not found product.");
+		return new FailureMessage(Message.FAIL, "Not found product.");
     }
 }
