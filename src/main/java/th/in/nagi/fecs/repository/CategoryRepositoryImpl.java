@@ -30,4 +30,15 @@ public class CategoryRepositoryImpl extends AbstractRepository<Category, Integer
 		remove(getByKey(key));	
 	}
 
+	@Override
+	public List<Category> findAndAscByName(int start, int size) {
+		List<Category> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name")).setFirstResult(start).setFetchSize(size).list();
+		return list;
+	}
+
+	@Override
+	public List<Category> findAndDescByName(int start, int size) {
+		List<Category> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name")).setFirstResult(start).setFetchSize(size).list();
+		return list;
+	}
 }

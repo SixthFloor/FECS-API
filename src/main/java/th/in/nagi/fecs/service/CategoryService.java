@@ -15,6 +15,8 @@ public interface CategoryService {
 
     List<Category> findAll();
 
-//    boolean isUsernameUnique(Integer i, String username);
+	public List<Category> findAndAscByName(int start, int size);
+	
+	public List<Category> findAndDescByName(int start, int size);
 
 }
