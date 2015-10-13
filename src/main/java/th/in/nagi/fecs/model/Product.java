@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -84,9 +86,8 @@ public class Product {
 	/**
 	 * category of product
 	 */
-	@Size(min = 1, max = 50)
-	@OneToOne
-	@MapsId
+//	@Size(min = 1, max = 50)
+	@ManyToOne
 	private Category category;
 
 	/**
