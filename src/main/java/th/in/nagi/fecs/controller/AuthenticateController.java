@@ -71,6 +71,7 @@ public class AuthenticateController extends BaseController {
 //        User user = new User();
 //        model.addAttribute("user", user);
 //        model.addAttribute("edit", false);
+    
 //        return "registration";
 //    }
 //
