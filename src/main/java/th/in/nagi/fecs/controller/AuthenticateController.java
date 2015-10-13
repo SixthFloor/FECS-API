@@ -1,5 +1,8 @@
 package th.in.nagi.fecs.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Locale;
 
@@ -15,6 +18,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import th.in.nagi.fecs.message.FailureMessage;
+import th.in.nagi.fecs.message.Message;
+import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Authenticate;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.User;
@@ -28,7 +34,7 @@ import th.in.nagi.fecs.service.UserService;
  *
  */
 @Controller
-@RequestMapping("/Authenticate")
+@RequestMapping("/authenticate")
 public class AuthenticateController extends BaseController {
 
     /**
@@ -54,10 +60,38 @@ public class AuthenticateController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
-    public Authenticate list(@PathVariable String username) {
-
+    public Message getAuthenticateByUsername(@PathVariable String username) {
+    	
         Authenticate authenticate = getAuthenticateService().findByUsername(username);
-        return authenticate;
+        if (authenticate != null){
+			return new SuccessMessage(Message.SUCCESS, authenticate);
+		}
+		return new FailureMessage(Message.FAIL, "Not found authenticate.");
+    }
+    
+    
+    @ResponseBody
+    @RequestMapping(value = "/login/{username}", method = RequestMethod.GET)
+    public Message login(@PathVariable String username) {
+    	String text ="asdffsdfs";
+    	try {
+    		MessageDigest digest = MessageDigest.getInstance("SHA-256");
+    		try {
+				byte[] hash = digest.digest(text.getBytes("UTF-8"));
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
+        Authenticate authenticate = getAuthenticateService().findByUsername(username);
+        if (authenticate != null){
+			return new SuccessMessage(Message.SUCCESS, authenticate);
+		}
+		return new FailureMessage(Message.FAIL, "Not found authenticate.");
     }
 
 //    /**
