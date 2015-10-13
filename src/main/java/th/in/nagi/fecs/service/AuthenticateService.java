@@ -15,7 +15,7 @@ public interface AuthenticateService {
 
     Authenticate findByToken(String token);
     
-//    Authenticate findByUsername(String username);
+    Authenticate findByUsername(String username);
     
     void removeByToken(String token);
 }

@@ -47,12 +47,12 @@ public class AuthenticateRopositoryImpl extends AbstractRepository<Authenticate,
         return (Authenticate) criteria.uniqueResult();
 	}
 
-//	@Override
-//	public Authenticate findByUsername(String username) {
-//		Criteria criteria = createEntityCriteria();
-//        criteria.add(Restrictions.eq("user", value));
-//        return (Authenticate) criteria.uniqueResult();
-//	}
+	@Override
+	public Authenticate findByUser(User user) {
+		Criteria criteria = createEntityCriteria();
+        criteria.add(Restrictions.eq("user", user));
+        return (Authenticate) criteria.uniqueResult();
+	}
 
 	@Override
 	public void removeByToken(String token) {

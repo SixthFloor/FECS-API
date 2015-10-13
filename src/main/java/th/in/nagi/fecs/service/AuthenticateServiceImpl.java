@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import th.in.nagi.fecs.model.Authenticate;
 import th.in.nagi.fecs.model.Product;
+import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.AuthenticateRepository;
 import th.in.nagi.fecs.repository.ProductRepository;
 
@@ -18,6 +19,9 @@ public class AuthenticateServiceImpl implements AuthenticateService{
 	
 	@Autowired
     private AuthenticateRepository authenticateRepository;
+	
+	@Autowired
+    private UserService userService;
 
 	@Override
 	public Authenticate findByKey(Integer id) {
@@ -54,16 +58,17 @@ public class AuthenticateServiceImpl implements AuthenticateService{
 		return authenticateRepository.findByToken(token);
 	}
 
-//	@Override
-//	public Authenticate findByUsername(String username) {
-//		// TODO Auto-generated method stub
-//		return authenticateRepository.findByUsername(username);
-//	}
-
 	@Override
 	public void removeByToken(String token) {
 		// TODO Auto-generated method stub
 		authenticateRepository.removeByToken(token);
+	}
+
+	@Override
+	public Authenticate findByUsername(String username) {
+		User user = userService.findByUsername(username);
+		return authenticateRepository.findByUser(user);
+		
 	}
 
 }
