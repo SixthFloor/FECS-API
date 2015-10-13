@@ -12,7 +12,7 @@ import th.in.nagi.fecs.repository.AuthenticateRepository;
 import th.in.nagi.fecs.repository.ProductRepository;
 
 
-@Service("AuthenticateService")
+@Service("authenticateService")
 @Transactional
 public class AuthenticateServiceImpl implements AuthenticateService{
 	
@@ -34,11 +34,11 @@ public class AuthenticateServiceImpl implements AuthenticateService{
 	@Override
 	public void update(Authenticate authenticate) {
 		// TODO Auto-generated method stub
-		Authenticate entity = authenticateRepository.findByKey(authenticate.getId());
-        if (entity != null) {
-            entity.setUsername(authenticate.getUsername());
-            entity.setToken(authenticate.getToken());         
-       }	
+//		Authenticate entity = authenticateRepository.findByKey(authenticate.getId());
+//        if (entity != null) {
+//            entity.setUsername(authenticate.getUsername());
+//            entity.setToken(authenticate.getToken());         
+//       }	
 		
 	}
 
@@ -54,11 +54,11 @@ public class AuthenticateServiceImpl implements AuthenticateService{
 		return authenticateRepository.findByToken(token);
 	}
 
-	@Override
-	public Authenticate findByUsername(String username) {
-		// TODO Auto-generated method stub
-		return authenticateRepository.findByUsername(username);
-	}
+//	@Override
+//	public Authenticate findByUsername(String username) {
+//		// TODO Auto-generated method stub
+//		return authenticateRepository.findByUsername(username);
+//	}
 
 	@Override
 	public void removeByToken(String token) {

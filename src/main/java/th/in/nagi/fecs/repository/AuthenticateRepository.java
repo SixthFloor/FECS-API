@@ -11,7 +11,7 @@ public interface AuthenticateRepository extends Repository<Authenticate, Integer
 	
 	public Authenticate findByToken(String token);
 	
-	public Authenticate findByUsername(String username);
+//	public Authenticate findByUsername(String username);
 	
 	public void removeByToken(String token);
 	

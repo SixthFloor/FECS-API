@@ -127,11 +127,19 @@
 //}
 package th.in.nagi.fecs.model;
 
+import java.sql.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -158,17 +166,26 @@ public class User {
     private String lastName;
 
     @NotNull
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "JOINING_DATE", nullable = false)
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
-    private LocalDate joiningDate;
+    private Date joiningDate;
 
     @NotEmpty
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "username", unique = true, nullable = false)
     private String username;
+    
+    @OneToMany(fetch=FetchType.EAGER,mappedBy = "user")
+    private Set<Authenticate> authenticate;
 
-    public Integer getId() {
+    public Set<Authenticate> getAuthenticate() {
+		return authenticate;
+	}
+
+	public void setAuthenticate(Set<Authenticate> authenticate) {
+		this.authenticate = authenticate;
+	}
+
+	public Integer getId() {
         return id;
     }
 
@@ -192,11 +209,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public LocalDate getJoiningDate() {
+    public Date getJoiningDate() {
         return joiningDate;
     }
 
-    public void setJoiningDate(LocalDate joiningDate) {
+    public void setJoiningDate(Date joiningDate) {
         this.joiningDate = joiningDate;
     }
 
