@@ -3,6 +3,7 @@ package th.in.nagi.fecs.controller;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -14,6 +15,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -42,6 +44,9 @@ public class AuthenticateController extends BaseController {
      */
     @Autowired
     private AuthenticateService authenticateService;
+    
+    @Autowired
+    private UserService userService;
 
     /**
      * Gets user service.
@@ -50,6 +55,10 @@ public class AuthenticateController extends BaseController {
      */
     protected AuthenticateService getAuthenticateService() {
         return authenticateService;
+    }
+    
+    protected UserService getUserService() {
+        return userService;
     }
 
     /**
@@ -71,13 +80,32 @@ public class AuthenticateController extends BaseController {
     
     
     @ResponseBody
-    @RequestMapping(value = "/login/{username}", method = RequestMethod.GET)
-    public Message login(@PathVariable String username) {
-    	String text ="asdffsdfs";
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    public Message login(@RequestBody User tempUser) {
+    	System.out.println(tempUser.getUsername());
+    	System.out.println(tempUser.getPassword());
+    	User user = getUserService().findByUsername(tempUser.getUsername());
+    	String passwordHash = user.changeToHash(tempUser.getPassword());
+    	
+    	if(!user.getPassword().equals(passwordHash)){
+    		return new FailureMessage(Message.FAIL, "Incorrect password");
+    	}
+    	
+    	Date date = new Date();
+    	String text = tempUser.getUsername()+date.toString();
+    	String textHash = "";
     	try {
-    		MessageDigest digest = MessageDigest.getInstance("SHA-256");
+    		MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+    		MessageDigest md5 = MessageDigest.getInstance("MD5");
     		try {
-				byte[] hash = digest.digest(text.getBytes("UTF-8"));
+				byte[] hash1 = sha256.digest(date.toString().getBytes("UTF-8"));
+				byte[] hash2 = md5.digest(text.getBytes("UTF-8"));
+				byte[] hash3 = sha256.digest((String.format("%064x", new java.math.BigInteger(1, hash2))).getBytes("UTF-8"));
+				textHash =  "=="+String.format("%64x", new java.math.BigInteger(1, hash3))
+							+"."
+							+String.format("%064x", new java.math.BigInteger(1, hash1));
+//				System.out.println(String.format("%064x", new java.math.BigInteger(1, hash3)));
+				
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -86,114 +114,28 @@ public class AuthenticateController extends BaseController {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-    	
-        Authenticate authenticate = getAuthenticateService().findByUsername(username);
+    	date.setDate((date.getDate()+1));
+        Authenticate authenticate = new Authenticate(textHash, user.getUsername(),date);    
+        
         if (authenticate != null){
+        	System.out.println(authenticate.getExpDate());
+        	getAuthenticateService().store(authenticate);
 			return new SuccessMessage(Message.SUCCESS, authenticate);
 		}
 		return new FailureMessage(Message.FAIL, "Not found authenticate.");
     }
-
-//    /**
-//     * Creates new user.
-//     * 
-//     * @param model
-//     * @return
-//     */
-//    @RequestMapping(value = { "/new" }, method = RequestMethod.GET)
-//    public String create(ModelMap model) {
-//        User user = new User();
-//        model.addAttribute("user", user);
-//        model.addAttribute("edit", false);
-//        return "registration";
-//    }
-//
-//    /*
-//     * This method will be called on form submission, handling POST request for
-//     * saving user in database. It also validates the user input
-//     */
-//    @RequestMapping(value = { "/new" }, method = RequestMethod.POST)
-//    public String saveUser(@Valid User user, BindingResult result,
-//            ModelMap model) {
-//
-//        if (result.hasErrors()) {
-//            return "registration";
-//        }
-//
-//        /*
-//         * Preferred way to achieve uniqueness of field [username] should be implementing custom @Unique annotation 
-//         * and applying it on field [username] of Model class [User].
-//         * 
-//         * Below mentioned peace of code [if block] is to demonstrate that you can fill custom errors outside the validation
-//         * framework as well while still using internationalized messages.
-//         * 
-//         */
-//        if (!getUserService().isUsernameUnique(user.getId(),
-//                user.getUsername())) {
-//            FieldError usernameError = new FieldError("user", "username",
-//                    getMessageSource().getMessage("non.unique.username",
-//                            new String[] { user.getUsername() },
-//                            Locale.getDefault()));
-//            result.addError(usernameError);
-//            return "registration";
-//        }
-//
-//        getUserService().store(user);
-//
-//        model.addAttribute("success", "User " + user.getFirstName() + " "
-//                + user.getLastName() + " registered successfully");
-//        return "success";
-//    }
-//
-//    /*
-//     * This method will provide the medium to update an existing user.
-//     */
-//    @RequestMapping(value = {
-//            "/edit-{username}-user" }, method = RequestMethod.GET)
-//    public String editUser(@PathVariable String username, ModelMap model) {
-//        User user = getUserService().findByUsername(username);
-//        model.addAttribute("user", user);
-//        model.addAttribute("edit", true);
-//        return "registration";
-//    }
-//
-//    /*
-//     * This method will be called on form submission, handling POST request for
-//     * updating user in database. It also validates the user input
-//     */
-//    @RequestMapping(value = {
-//            "/edit-{username}-user" }, method = RequestMethod.POST)
-//    public String updateUser(@Valid User user, BindingResult result,
-//            ModelMap model, @PathVariable String username) {
-//
-//        if (result.hasErrors()) {
-//            return "registration";
-//        }
-//
-//        if (!getUserService().isUsernameUnique(user.getId(),
-//                user.getUsername())) {
-//            FieldError usernameError = new FieldError("user", "username",
-//                    getMessageSource().getMessage("non.unique.username",
-//                            new String[] { user.getUsername() },
-//                            Locale.getDefault()));
-//            result.addError(usernameError);
-//            return "registration";
-//        }
-//
-//        getUserService().update(user);
-//
-//        model.addAttribute("success", "User " + user.getFirstName() + " "
-//                + user.getLastName() + " updated successfully");
-//        return "success";
-//    }
-//
-//    /*
-//     * This method will delete an user by it's Username value.
-//     */
-//    @RequestMapping(value = {
-//            "/delete-{username}-user" }, method = RequestMethod.GET)
-//    public String deleteUser(@PathVariable String username) {
-//        getUserService().removeByUsername(username);
-//        return "redirect:/users/list";
-//    }
+    
+    @ResponseBody
+    @RequestMapping(value = "/token", method = RequestMethod.POST)
+    public Message checkToken(@RequestBody Authenticate authenticate) {
+    	Date date = new Date();
+    	System.out.println(authenticate.getToken());
+    	System.out.println(authenticateService.findByToken(authenticate.getToken()).getUsername());
+    	if (date.before(authenticateService.findByToken(authenticate.getToken()).getExpDate())){
+    		System.out.println("111111111111111111111");
+			return new SuccessMessage(Message.SUCCESS, authenticateService.findByToken(authenticate.getToken()).getUsername());
+		}
+		return new FailureMessage(Message.FAIL, "token is expiration");
+    	
+    }
 }

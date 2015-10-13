@@ -12,8 +12,12 @@ import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * Product model
@@ -41,13 +45,27 @@ public class Authenticate {
 	/**
 	 * name of product
 	 */
-	@NotEmpty
+	@NotNull
 	@Column(name = "username")
 	private String username;
 	
-	@NotEmpty
-	@Column(name = "expiration_date", nullable = false)
+	@NotNull
+    @Column(name = "expiration_date", nullable = false)
 	private Date expDate;
+	
+	public Authenticate(){
+		
+	}
+	
+	public Authenticate(String token){
+		this.token = token;
+	}
+	
+	public Authenticate(String token, String username, Date date){
+		this.token = token;
+		this.username = username;
+		this.expDate =date;
+	}
 
 	public Integer getId() {
 		return id;

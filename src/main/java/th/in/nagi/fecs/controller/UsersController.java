@@ -1,5 +1,8 @@
 package th.in.nagi.fecs.controller;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import java.util.Locale;
 
@@ -75,7 +78,10 @@ public class UsersController extends BaseController {
     @ResponseBody
     @RequestMapping(value = { "/new" }, method = RequestMethod.POST)
     public Message create(@RequestBody User user) {
-    	System.out.print(user);
+    	System.out.println(user.toString());
+    	System.out.println(user.getPassword());
+    	String passwordHash = user.changeToHash(user.getPassword());
+    	user.setPassword(passwordHash);
     	try {
 			getUserService().store(user);
 		} catch (Exception e) {

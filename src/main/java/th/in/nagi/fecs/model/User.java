@@ -127,6 +127,10 @@
 //}
 package th.in.nagi.fecs.model;
 
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -167,6 +171,10 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "username", unique = true, nullable = false)
     private String username;
+    
+    @NotEmpty
+    @Column(name = "password", unique = true, nullable = false)
+    private String password;
 
     public Integer getId() {
         return id;
@@ -207,6 +215,27 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
+    
+    public String changeToHash(String password){
+    	String passwordHash = "";
+    	try {
+    		MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
+    		try {
+				byte[] hash = sha256.digest(password.getBytes("UTF-8"));
+				passwordHash = String.format("%64x", new java.math.BigInteger(1, hash));
+//				System.out.println(String.format("%064x", new java.math.BigInteger(1, hash3)));
+				
+			} catch (UnsupportedEncodingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		} catch (NoSuchAlgorithmException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return passwordHash;
+    	
+    }
 
     @Override
     public int hashCode() {
@@ -241,7 +270,15 @@ public class User {
     public String toString() {
         return "User [id=" + id + ", first name=" + firstName + ", last name="
                 + lastName + ", joiningDate=" + joiningDate + ", username="
-                + username + "]";
+                + username + ", password=" + password+"]";
     }
+
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
 
 }
