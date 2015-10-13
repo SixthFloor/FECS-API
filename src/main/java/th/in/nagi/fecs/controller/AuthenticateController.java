@@ -115,7 +115,7 @@ public class AuthenticateController extends BaseController {
 			e.printStackTrace();
 		}
     	date.setDate((date.getDate()+1));
-        Authenticate authenticate = new Authenticate(textHash, user.getUsername(),date);    
+        Authenticate authenticate = new Authenticate(textHash, user,date);    
         
         if (authenticate != null){
         	System.out.println(authenticate.getExpDate());

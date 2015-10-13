@@ -49,9 +49,6 @@ public class Authenticate {
 	/**
 	 * name of product
 	 */
-	@NotNull
-	@Column(name = "username")
-	private String username;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	@JsonBackReference
@@ -70,9 +67,9 @@ public class Authenticate {
 		this.token = token;
 	}
 	
-	public Authenticate(String token, String username, Date date){
+	public Authenticate(String token, User user, Date date){
 		this.token = token;
-		this.username = username;
+		this.user = user;
 		this.expDate =date;
 	}
 
