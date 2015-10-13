@@ -36,7 +36,7 @@ import th.in.nagi.fecs.service.UserService;
  *
  */
 @Controller
-@RequestMapping("/authenticate")
+@RequestMapping("/api/authentication")
 public class AuthenticateController extends BaseController {
 
     /**

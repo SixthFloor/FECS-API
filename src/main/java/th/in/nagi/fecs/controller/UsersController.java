@@ -3,8 +3,11 @@ package th.in.nagi.fecs.controller;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.validation.Valid;
 
@@ -34,7 +37,7 @@ import th.in.nagi.fecs.service.UserService;
  *
  */
 @Controller
-@RequestMapping("/api2/users")
+@RequestMapping("/api/user")
 public class UsersController extends BaseController {
 
     /**
@@ -61,10 +64,20 @@ public class UsersController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public Message getAllUsers() {
-
-        List<User> users = getUserService().findAll();
+        Set<User> users = new HashSet<User>(getUserService().findAll());
         if(users != null) {
 			return new SuccessMessage(Message.SUCCESS, users);
+		}
+		return new FailureMessage(Message.FAIL, "Not found user.");
+    }
+    
+    @ResponseBody
+    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
+    public Message getUserByUsername(@PathVariable String username) {
+
+        User user = getUserService().findByUsername(username);
+        if(user != null) {
+			return new SuccessMessage(Message.SUCCESS, user);
 		}
 		return new FailureMessage(Message.FAIL, "Not found user.");
     }
@@ -78,10 +91,10 @@ public class UsersController extends BaseController {
     @ResponseBody
     @RequestMapping(value = { "/new" }, method = RequestMethod.POST)
     public Message create(@RequestBody User user) {
-    	System.out.println(user.toString());
-    	System.out.println(user.getPassword());
+    	Date date = new Date();
     	String passwordHash = user.changeToHash(user.getPassword());
     	user.setPassword(passwordHash);
+    	user.setJoiningDate(date);
     	try {
 			getUserService().store(user);
 		} catch (Exception e) {
@@ -113,14 +126,20 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = {"/delete" }, method = RequestMethod.POST)
-    public Message deleteUser(@RequestBody String username) {
-        getUserService().removeByUsername(username);
+    public Message deleteUser(@RequestBody User tempUser) {
+    	User user = getUserService().findByUsername(tempUser.getUsername());
+    	String passwordHash = user.changeToHash(tempUser.getPassword());
+    	
+    	if(!user.getPassword().equals(passwordHash)){
+    		return new FailureMessage(Message.FAIL, "Incorrect password");
+    	}
+       
         try {
-        	getUserService().removeByUsername(username);
+        	getUserService().removeByUsername(user.getUsername());
 		} catch (Exception e) {
 			// TODO: handle exception
 			return new FailureMessage(Message.FAIL, "User not found");
 		}
-		return new SuccessMessage(Message.SUCCESS, username +" has removed");
+		return new SuccessMessage(Message.SUCCESS, user.getUsername() +" has removed");
     }
  }
