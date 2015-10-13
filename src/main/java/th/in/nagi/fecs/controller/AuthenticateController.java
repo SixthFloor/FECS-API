@@ -115,12 +115,14 @@ public class AuthenticateController extends BaseController {
 			e.printStackTrace();
 		}
     	date.setDate((date.getDate()+1));
-        Authenticate authenticate = new Authenticate(textHash, user,date);    
+        Authenticate authenticate = new Authenticate(textHash, user,date);
+        System.out.println(authenticate);
         
         if (authenticate != null){
         	System.out.println(authenticate.getExpDate());
         	getAuthenticateService().store(authenticate);
-			return new SuccessMessage(Message.SUCCESS, authenticate);
+        	Authenticate dataBaseAuthenticate = getAuthenticateService().findByToken(authenticate.getToken());
+			return new SuccessMessage(Message.SUCCESS, dataBaseAuthenticate);
 		}
 		return new FailureMessage(Message.FAIL, "Not found authenticate.");
     }
@@ -132,7 +134,6 @@ public class AuthenticateController extends BaseController {
     	System.out.println(authenticate.getToken());
     	System.out.println(authenticateService.findByToken(authenticate.getToken()).getUser().getUsername());
     	if (date.before(authenticateService.findByToken(authenticate.getToken()).getExpDate())){
-    		System.out.println("111111111111111111111");
 			return new SuccessMessage(Message.SUCCESS, authenticateService.findByToken(authenticate.getToken()).getUser().getUsername());
 		}
 		return new FailureMessage(Message.FAIL, "token is expiration");
