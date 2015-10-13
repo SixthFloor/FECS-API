@@ -149,6 +149,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "f_user")
 public class User {
@@ -174,14 +177,15 @@ public class User {
     @Column(name = "username", unique = true, nullable = false)
     private String username;
     
-    @OneToMany(fetch=FetchType.EAGER,mappedBy = "user")
-    private Set<Authenticate> authenticate;
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "user")
+    @JsonManagedReference
+    private List<Authenticate> authenticate;
 
-    public Set<Authenticate> getAuthenticate() {
+    public List<Authenticate> getAuthenticate() {
 		return authenticate;
 	}
 
-	public void setAuthenticate(Set<Authenticate> authenticate) {
+	public void setAuthenticate(List<Authenticate> authenticate) {
 		this.authenticate = authenticate;
 	}
 

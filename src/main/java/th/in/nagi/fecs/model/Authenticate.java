@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +16,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * Product model
@@ -42,7 +45,8 @@ public class Authenticate {
 	/**
 	 * name of product
 	 */
-	@ManyToOne
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JsonBackReference
 	@NotEmpty
 	private User user;
 	

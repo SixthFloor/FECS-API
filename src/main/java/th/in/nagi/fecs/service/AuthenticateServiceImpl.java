@@ -65,9 +65,9 @@ public class AuthenticateServiceImpl implements AuthenticateService{
 	}
 
 	@Override
-	public Authenticate findByUsername(String username) {
+	public List<Authenticate> findByUsername(String username) {
 		User user = userService.findByUsername(username);
-		return authenticateRepository.findByUser(user);
+		return user.getAuthenticate();
 		
 	}
 
