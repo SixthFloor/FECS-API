@@ -173,7 +173,7 @@ public class User {
     private String lastName;
 
     @NotNull
-    @Column(name = "JOINING_DATE", nullable = false)
+    @Column(name = "joining_date", nullable = false)
     private Date joiningDate;
 
     @NotEmpty
