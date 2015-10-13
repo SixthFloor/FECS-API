@@ -6,12 +6,13 @@ import javax.persistence.criteria.Order;
 
 import th.in.nagi.fecs.model.Authenticate;
 import th.in.nagi.fecs.model.Product;
+import th.in.nagi.fecs.model.User;
 
 public interface AuthenticateRepository extends Repository<Authenticate, Integer>{
 	
 	public Authenticate findByToken(String token);
 	
-	public Authenticate findByUsername(String username);
+//	public List<Authenticate> findByUser(User username);
 	
 	public void removeByToken(String token);
 	

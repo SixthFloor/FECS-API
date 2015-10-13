@@ -131,11 +131,19 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+import java.sql.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -144,6 +152,9 @@ import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.LocalDate;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
 @Table(name = "f_user")
@@ -162,21 +173,32 @@ public class User {
     private String lastName;
 
     @NotNull
-    @DateTimeFormat(pattern = "dd/MM/yyyy")
     @Column(name = "JOINING_DATE", nullable = false)
-    @Type(type = "org.jadira.usertype.dateandtime.joda.PersistentLocalDate")
-    private LocalDate joiningDate;
+    private Date joiningDate;
 
     @NotEmpty
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "username", unique = true, nullable = false)
     private String username;
     
+
     @NotEmpty
     @Column(name = "password", unique = true, nullable = false)
     private String password;
 
-    public Integer getId() {
+    @OneToMany(fetch=FetchType.EAGER, mappedBy = "user")
+    @JsonManagedReference
+    private List<Authenticate> authenticate;
+
+    public List<Authenticate> getAuthenticate() {
+		return authenticate;
+	}
+
+	public void setAuthenticate(List<Authenticate> authenticate) {
+		this.authenticate = authenticate;
+	}
+
+	public Integer getId() {
         return id;
     }
 
@@ -200,11 +222,11 @@ public class User {
         this.lastName = lastName;
     }
 
-    public LocalDate getJoiningDate() {
+    public Date getJoiningDate() {
         return joiningDate;
     }
 
-    public void setJoiningDate(LocalDate joiningDate) {
+    public void setJoiningDate(Date joiningDate) {
         this.joiningDate = joiningDate;
     }
 

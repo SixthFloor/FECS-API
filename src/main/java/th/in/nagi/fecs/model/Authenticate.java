@@ -5,9 +5,11 @@ import java.lang.reflect.Modifier;
 import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.MapsId;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -18,6 +20,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Type;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * Product model
@@ -48,6 +52,11 @@ public class Authenticate {
 	@NotNull
 	@Column(name = "username")
 	private String username;
+	
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JsonBackReference
+	@NotEmpty
+	private User user;
 	
 	@NotNull
     @Column(name = "expiration_date", nullable = false)
@@ -83,12 +92,12 @@ public class Authenticate {
 		this.token = token;
 	}
 
-	public String getUsername() {
-		return username;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
 	public Date getExpDate() {
@@ -122,29 +131,29 @@ public class Authenticate {
 //        return true;
 //    }
 //	
-//	/** 
-//	 * Return a string representation of the object.
-//	 * @return a string representation of the object.
-//	 */
-//	@Override
-//	public String toString() {
-//		Class<?> clazz = this.getClass();
-//		StringBuilder sb = new StringBuilder("Class: " + clazz.getSimpleName()).append(" {");
-//        while (clazz != null && !clazz.equals(Object.class)) {
-//            Field[] fields = clazz.getDeclaredFields();
-//            for (Field f : fields) {
-//                if (!Modifier.isStatic(f.getModifiers())) {
-//                    try {
-//                        f.setAccessible(true);
-//                        sb.append(f.getName()).append(" = ").append(f.get(this)).append(",");
-//                    } catch (IllegalAccessException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
-//            clazz = clazz.getSuperclass();
-//        }
-//        sb.deleteCharAt(sb.lastIndexOf(","));
-//        return sb.append("}").toString();
-//	}	
+	/** 
+	 * Return a string representation of the object.
+	 * @return a string representation of the object.
+	 */
+	@Override
+	public String toString() {
+		Class<?> clazz = this.getClass();
+		StringBuilder sb = new StringBuilder("Class: " + clazz.getSimpleName()).append(" {");
+        while (clazz != null && !clazz.equals(Object.class)) {
+            Field[] fields = clazz.getDeclaredFields();
+            for (Field f : fields) {
+                if (!Modifier.isStatic(f.getModifiers())) {
+                    try {
+                        f.setAccessible(true);
+                        sb.append(f.getName()).append(" = ").append(f.get(this)).append(",");
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+            clazz = clazz.getSuperclass();
+        }
+        sb.deleteCharAt(sb.lastIndexOf(","));
+        return sb.append("}").toString();
+	}	
 }

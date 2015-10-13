@@ -8,16 +8,20 @@ import org.springframework.transaction.annotation.Transactional;
 
 import th.in.nagi.fecs.model.Authenticate;
 import th.in.nagi.fecs.model.Product;
+import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.AuthenticateRepository;
 import th.in.nagi.fecs.repository.ProductRepository;
 
 
-@Service("AuthenticateService")
+@Service("authenticateService")
 @Transactional
 public class AuthenticateServiceImpl implements AuthenticateService{
 	
 	@Autowired
     private AuthenticateRepository authenticateRepository;
+	
+	@Autowired
+    private UserService userService;
 
 	@Override
 	public Authenticate findByKey(Integer id) {
@@ -34,11 +38,11 @@ public class AuthenticateServiceImpl implements AuthenticateService{
 	@Override
 	public void update(Authenticate authenticate) {
 		// TODO Auto-generated method stub
-		Authenticate entity = authenticateRepository.findByKey(authenticate.getId());
-        if (entity != null) {
-            entity.setUsername(authenticate.getUsername());
-            entity.setToken(authenticate.getToken());         
-       }	
+//		Authenticate entity = authenticateRepository.findByKey(authenticate.getId());
+//        if (entity != null) {
+//            entity.setUsername(authenticate.getUsername());
+//            entity.setToken(authenticate.getToken());         
+//       }	
 		
 	}
 
@@ -55,15 +59,16 @@ public class AuthenticateServiceImpl implements AuthenticateService{
 	}
 
 	@Override
-	public Authenticate findByUsername(String username) {
-		// TODO Auto-generated method stub
-		return authenticateRepository.findByUsername(username);
-	}
-
-	@Override
 	public void removeByToken(String token) {
 		// TODO Auto-generated method stub
 		authenticateRepository.removeByToken(token);
+	}
+
+	@Override
+	public List<Authenticate> findByUsername(String username) {
+		User user = userService.findByUsername(username);
+		return user.getAuthenticate();
+		
 	}
 
 }

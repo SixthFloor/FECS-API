@@ -71,7 +71,7 @@ public class AuthenticateController extends BaseController {
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     public Message getAuthenticateByUsername(@PathVariable String username) {
     	
-        Authenticate authenticate = getAuthenticateService().findByUsername(username);
+        List<Authenticate> authenticate = getAuthenticateService().findByUsername(username);
         if (authenticate != null){
 			return new SuccessMessage(Message.SUCCESS, authenticate);
 		}
@@ -130,10 +130,10 @@ public class AuthenticateController extends BaseController {
     public Message checkToken(@RequestBody Authenticate authenticate) {
     	Date date = new Date();
     	System.out.println(authenticate.getToken());
-    	System.out.println(authenticateService.findByToken(authenticate.getToken()).getUsername());
+    	System.out.println(authenticateService.findByToken(authenticate.getToken()).getUser().getUsername());
     	if (date.before(authenticateService.findByToken(authenticate.getToken()).getExpDate())){
     		System.out.println("111111111111111111111");
-			return new SuccessMessage(Message.SUCCESS, authenticateService.findByToken(authenticate.getToken()).getUsername());
+			return new SuccessMessage(Message.SUCCESS, authenticateService.findByToken(authenticate.getToken()).getUser().getUsername());
 		}
 		return new FailureMessage(Message.FAIL, "token is expiration");
     	
