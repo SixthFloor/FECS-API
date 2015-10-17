@@ -10,15 +10,13 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.MapsId;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 /**
  * Product model
@@ -71,6 +69,22 @@ public class Product {
 	@Column(name = "dimension_description", nullable = true)
 	private String dimensionDescription;
 	
+//	/**
+//	 * category of product
+//	 */
+//	@ManyToOne
+//	@NotNull
+//	private Category category;
+	
+	@OneToMany(fetch=FetchType.EAGER, mappedBy = "product")
+	private Set<ProductImage> images;
+	
+	
+	@ManyToOne(fetch=FetchType.EAGER)
+	@JsonBackReference
+	private SubCategory subCategory;
+
+	
 	/**
 	 * Return dimension description
 	 * @return Dimension description
@@ -85,24 +99,6 @@ public class Product {
 	 */
 	public void setDimensionDescription(String dimensionDescription) {
 		this.dimensionDescription = dimensionDescription;
-	}
-
-	/**
-	 * category of product
-	 */
-	@ManyToOne
-	@NotNull
-	private Category category;
-	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy = "product")
-	private Set<ProductImage> productImages;
-
-	public Set<ProductImage> getProductImages() {
-		return productImages;
-	}
-
-	public void setProductImages(Set<ProductImage> productImages) {
-		this.productImages = productImages;
 	}
 
 	/**
@@ -177,23 +173,43 @@ public class Product {
 		this.description = description;
 	}
 	
-    /**
-     * Set new category of product
-     * @param category new category
-     */
-    public void setCategory(Category category) {
-		this.category = category;
-	}
+	// /**
+	// * Set new category of product
+	// * @param category new category
+	// */
+	// public void setCategory(Category category) {
+	// this.category = category;
+	// }
+	//
+	// /**
+	// * Return category of product
+	// * @return category of product
+	// */
+	// public Category getCategory() {
+	// return this.category;
+	// }
     
-    /**
-     * Return category of product
-     * @return category of product
-     */
-    public Category getCategory() {
-		return this.category;
+    public Set<ProductImage> getImages() {
+		return images;
 	}
-    
-    /**
+
+	public void setImages(Set<ProductImage> images) {
+		this.images = images;
+	}
+
+	public SubCategory getSubCategory() {
+		return subCategory;
+	}
+
+	public void setSubCategory(SubCategory subCategory) {
+		this.subCategory = subCategory;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
+
+	/**
      * Indicates whether some other object is "equal to" this one.
      * @parem obj the reference object with which to compare.
      * @return true if this object is the same as the obj argument; false otherwise.
