@@ -42,14 +42,14 @@ public class Category {
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
 	@JsonManagedReference
-	private List<Category> categories;
+	private List<SubCategory> subCategories;
 
-	public List<Category> getCategories() {
-		return categories;
+	public List<SubCategory> getSubCategories() {
+		return subCategories;
 	}
 
-	public void setCategories(List<Category> categories) {
-		this.categories = categories;
+	public void setSubCategories(List<SubCategory> subCategories) {
+		this.subCategories = subCategories;
 	}
 
 	/**

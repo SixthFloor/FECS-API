@@ -15,8 +15,10 @@ public interface CategoryService {
 
     List<Category> findAll();
 
-	public List<Category> findAndAscByName(int start, int size);
+	List<Category> findAndAscByName(int start, int size);
 	
-	public List<Category> findAndDescByName(int start, int size);
+	List<Category> findAndDescByName(int start, int size);
+	
+	Category findByName(String name);
 
 }

@@ -3,9 +3,11 @@ package th.in.nagi.fecs.repository;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 
 import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.Product;
+import th.in.nagi.fecs.model.User;
 
 public class CategoryRepositoryImpl extends AbstractRepository<Category, Integer> implements CategoryRepository{
 
@@ -40,5 +42,12 @@ public class CategoryRepositoryImpl extends AbstractRepository<Category, Integer
 	public List<Category> findAndDescByName(int start, int size) {
 		List<Category> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name")).setFirstResult(start).setFetchSize(size).list();
 		return list;
+	}
+
+	@Override
+	public Category findByName(String name) {
+		Criteria criteria = createEntityCriteria();
+        criteria.add(Restrictions.eq("name", name));
+        return (Category) criteria.uniqueResult();
 	}
 }
