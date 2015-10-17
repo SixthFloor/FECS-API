@@ -1,5 +1,7 @@
 package th.in.nagi.fecs.model;
 
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,6 +27,18 @@ public class SubCategory {
 	@ManyToOne(fetch = FetchType.EAGER)
 	@JsonBackReference
 	private Category category;
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JsonBackReference
+	private List<Product> products;
+
+	public List<Product> getProducts() {
+		return products;
+	}
+
+	public void setProducts(List<Product> products) {
+		this.products = products;
+	}
 
 	public Integer getId() {
 		return id;

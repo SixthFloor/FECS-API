@@ -2,6 +2,7 @@ package th.in.nagi.fecs.model;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -50,6 +51,14 @@ public class Category {
 
 	public void setSubCategories(List<SubCategory> subCategories) {
 		this.subCategories = subCategories;
+	}
+	
+	public List<Product> getProducts() {
+		List<Product> products = new ArrayList<>();
+		for (SubCategory subCategory : getSubCategories()) {
+			products.addAll(subCategory.getProducts());
+		}
+		return products;
 	}
 
 	/**
