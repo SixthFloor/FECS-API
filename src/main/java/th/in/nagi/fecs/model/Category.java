@@ -2,8 +2,8 @@ package th.in.nagi.fecs.model;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -15,7 +15,14 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.springframework.web.servlet.View;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * Category model
@@ -24,6 +31,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
  *
  */
 @Entity
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "category")
 public class Category {
 
@@ -41,20 +49,21 @@ public class Category {
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
-	@JsonManagedReference
-	private List<SubCategory> subCategories;
+	private Set<SubCategory> subCategories;
 
-	public List<SubCategory> getSubCategories() {
+	public Set<SubCategory> getSubCategories() {
 		return subCategories;
 	}
 
-	public void setSubCategories(List<SubCategory> subCategories) {
+	public void setSubCategories(Set<SubCategory> subCategories) {
 		this.subCategories = subCategories;
 	}
 	
-	public List<Product> getProducts() {
-		List<Product> products = new ArrayList<>();
+	@JsonIgnore
+	public Set<Product> getProducts() {
+		Set<Product> products = new HashSet<>();
 		for (SubCategory subCategory : getSubCategories()) {
 			products.addAll(subCategory.getProducts());
 		}

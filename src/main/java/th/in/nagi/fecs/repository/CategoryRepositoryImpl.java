@@ -4,11 +4,13 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
 
 import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.model.User;
 
+@Repository("categoryRopository")
 public class CategoryRepositoryImpl extends AbstractRepository<Category, Integer> implements CategoryRepository{
 
 	@Override

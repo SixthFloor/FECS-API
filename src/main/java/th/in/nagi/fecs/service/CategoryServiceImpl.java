@@ -9,15 +9,16 @@ import org.springframework.transaction.annotation.Transactional;
 import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.model.User;
+import th.in.nagi.fecs.repository.CategoryRepository;
 import th.in.nagi.fecs.repository.ProductRepository;
 import th.in.nagi.fecs.repository.UserRepository;
 
-//@Service("categoryService")
+@Service("categoryService")
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
 
 	@Autowired
-    private CategoryService categoryRepository;
+    private CategoryRepository categoryRepository;
 
 	@Override
 	public Category findByKey(Integer id) {

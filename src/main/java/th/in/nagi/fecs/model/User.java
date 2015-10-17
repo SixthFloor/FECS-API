@@ -49,7 +49,6 @@ public class User {
 	private Date joiningDate;
 
 	@NotEmpty
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "username", unique = true, nullable = false)
 	private String username;
 

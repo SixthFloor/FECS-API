@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -17,6 +18,10 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 /**
  * Product model
@@ -24,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  *
  */
 @Entity
+@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "product")
 public class Product {
 
@@ -68,22 +74,22 @@ public class Product {
 	@Size(min = 1, max = 255)
 	@Column(name = "dimension_description", nullable = true)
 	private String dimensionDescription;
-	
-//	/**
-//	 * category of product
-//	 */
-//	@ManyToOne
-//	@NotNull
-//	private Category category;
-	
-	@OneToMany(fetch=FetchType.EAGER, mappedBy = "product")
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "product")
 	private Set<ProductImage> images;
 	
-	
-	@ManyToOne(fetch=FetchType.EAGER)
-	@JsonBackReference
+	@JsonIgnore
+	@ManyToOne
+	@JoinColumn(name="sub_category_id")
 	private SubCategory subCategory;
-
+	
+	public Integer getSubCategoryId(){
+		return subCategory.getId();
+	}
+	
+	public Integer getCategoryId(){
+		return subCategory.getCategory().getId();
+	}
 	
 	/**
 	 * Return dimension description
