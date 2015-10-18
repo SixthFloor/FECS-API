@@ -75,7 +75,7 @@ public class CategoryController extends BaseController {
     }
 	
 	@ResponseBody
-	@RequestMapping(value="/add", method=RequestMethod.POST)
+	@RequestMapping(value="/new", method=RequestMethod.POST)
     public Message createNewCategory(@RequestBody Category category) {
 		if(categoryService.findByName(category.getName()) != null){
 			return new FailureMessage(Message.FAIL, "This category name is existed");
@@ -83,14 +83,13 @@ public class CategoryController extends BaseController {
     	try {
 			categoryService.store(category);
 		} catch (Exception e) {
-			// TODO: handle exception
 			return new FailureMessage(Message.FAIL, "Create category failed");
 		}
 		return new SuccessMessage(Message.SUCCESS, category);
     }
 	
 	@ResponseBody
-	@RequestMapping(value="{categoryName}/subCategory/add", method=RequestMethod.POST)
+	@RequestMapping(value="{categoryName}/subCategory/new", method=RequestMethod.POST)
     public Message addSubCategory(@RequestBody SubCategory subCategory, @PathVariable String categoryName) {
 		if(subCategoryService.findByName(subCategory.getName()) != null){
 			return new FailureMessage(Message.FAIL, "This subCategory name is existed");
@@ -100,10 +99,8 @@ public class CategoryController extends BaseController {
     	try {
 			subCategoryService.store(subCategory);
 		} catch (Exception e) {
-			// TODO: handle exception
 			return new FailureMessage(Message.FAIL, "Create subCategory failed");
 		}
-    	System.out.println(subCategory);
 		return new SuccessMessage(Message.SUCCESS, subCategory);
     }
 	
@@ -111,15 +108,9 @@ public class CategoryController extends BaseController {
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
     public Message editCategory(@RequestBody Category category) {
 		
-		System.out.println(category);
-		if(categoryService.findByKey(category.getId()) == null){
-			return new FailureMessage(Message.FAIL, "This category name is not existed");
-		}
-				
 		Category oldCategory = categoryService.findByKey(category.getId());
-
 		if(oldCategory == null){
-			return new FailureMessage(Message.FAIL, "No products in this category");
+			return new FailureMessage(Message.FAIL, "This category name is not existed");
 		}
 		
 		oldCategory.setName(category.getName());
@@ -127,8 +118,6 @@ public class CategoryController extends BaseController {
 		try {
 			categoryService.update(oldCategory);
 		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e);
 			return new FailureMessage(Message.FAIL, "Edit category failed");
 		}
 		
@@ -140,7 +129,6 @@ public class CategoryController extends BaseController {
     public Message editSubCategory(@RequestBody SubCategory subCategory,
     		@RequestParam(value = "newCategoryName", required = false) String categoryName) {
 		
-		System.out.println(categoryName);
 		Category category = categoryService.findByName(categoryName);
 		SubCategory oldSubCategory = subCategoryService.findByKey(subCategory.getId());
 		if(oldSubCategory == null){
@@ -155,7 +143,6 @@ public class CategoryController extends BaseController {
     	try {
 			subCategoryService.update(oldSubCategory);
 		} catch (Exception e) {
-			// TODO: handle exception
 			return new FailureMessage(Message.FAIL, "Create subCategory failed");
 		}
 		return new SuccessMessage(Message.SUCCESS, subCategory);
@@ -168,7 +155,6 @@ public class CategoryController extends BaseController {
     	try {
 			categoryService.removeById(category.getId());
 		} catch (Exception e) {
-			// TODO: handle exception
 			return new FailureMessage(Message.FAIL, "Remove category failed");
 		}
 		return new SuccessMessage(Message.SUCCESS, "category" + " has removed");
@@ -178,12 +164,9 @@ public class CategoryController extends BaseController {
 	@RequestMapping(value="/subCategory/delete", method=RequestMethod.POST)
     public Message deleteSubCategory(@RequestBody SubCategory subCategory) {
 		
-		System.out.println(subCategory.getId());
     	try {
 			subCategoryService.removeById(subCategory.getId());
 		} catch (Exception e) {
-			// TODO: handle exception
-			System.out.println(e);
 			return new FailureMessage(Message.FAIL, "Remove subCategory failed");
 		}
 		return new SuccessMessage(Message.SUCCESS, "subCategory" + " has removed");
