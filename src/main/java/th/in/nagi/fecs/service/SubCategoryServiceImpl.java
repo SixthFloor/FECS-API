@@ -38,6 +38,7 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 		SubCategory entity = subCategoryRepository.findByKey(subCategory.getId());
         if (entity != null) {
             entity.setName(subCategory.getName());
+            entity.setCategory(subCategory.getCategory());
        }	
 	}
 
