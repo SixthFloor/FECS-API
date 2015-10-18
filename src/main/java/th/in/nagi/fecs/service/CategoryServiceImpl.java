@@ -13,24 +13,46 @@ import th.in.nagi.fecs.repository.CategoryRepository;
 import th.in.nagi.fecs.repository.ProductRepository;
 import th.in.nagi.fecs.repository.UserRepository;
 
+/**
+ * Provide Category service for managing category easier.
+ * Ex. add, edit, delete, find.
+ * @author Thanachote Visetsuthimont
+ *
+ */
 @Service("categoryService")
 @Transactional
 public class CategoryServiceImpl implements CategoryService {
 
+	/**
+	 * Tool for managing category
+	 */
 	@Autowired
     private CategoryRepository categoryRepository;
 
+	/**
+	 * Find category by using index.
+	 * @param id
+	 * @return Category
+	 */
 	@Override
 	public Category findByKey(Integer id) {
 		return categoryRepository.findByKey(id);
 	}
 
+	/**
+	 * Save category in database.
+	 * @param category
+	 */
 	@Override
 	public void store(Category category) {
 		categoryRepository.store(category);
 		
 	}
 
+	/**
+	 * Update detail of category.
+	 * @param category
+	 */
 	@Override
 	public void update(Category category) {
 		Category entity = categoryRepository.findByKey(category.getId());
@@ -39,26 +61,44 @@ public class CategoryServiceImpl implements CategoryService {
        }	
 	}
 
+	/**
+	 * Find all category in database.
+	 * @return List<Category>
+	 */
 	@Override
 	public List<Category> findAll() {
 		return categoryRepository.findAll();
 	}
 	
+	/**
+	 * Find category by using name.
+	 * @param name
+	 * @return Category
+	 */
 	@Override
 	public Category findByName(String name) {
 		return categoryRepository.findByName(name);
 	}
 
+	/**
+	 * Find category with limit size and ascending by name.
+	 * @param start
+	 * @param size
+	 * @return List<Category> 
+	 */
 	@Override
 	public List<Category> findAndAscByName(int start, int size) {
 		return categoryRepository.findAndAscByName(start, size);
 	}
 
+	/**
+	 * Find category with limit size and descending by name. 
+	 * @param start
+	 * @param size
+	 * @return List<Category> 
+	 */
 	@Override
 	public List<Category> findAndDescByName(int start, int size) {
 		return categoryRepository.findAndDescByName(start, size);
 	}
-	
-
-
 }
