@@ -11,8 +11,7 @@ import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.AuthenticateRepository;
 
 /**
- * Authentication service 
- * It help to manage the data about authentication.
+ * Authentication service It help to manage the data about authentication. 
  * Ex. add, edit, find.
  * 
  * @author Nara Surawit
@@ -47,15 +46,17 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
 	/**
 	 * Save datum to database.
+	 * 
 	 * @param authenticate
 	 */
 	@Override
 	public void store(Authenticate authenticate) {
 		authenticateRepository.store(authenticate);
 	}
-	
+
 	/**
 	 * Update user's authentication in database.
+	 * 
 	 * @param authenticate
 	 */
 	@Override
@@ -71,6 +72,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
 	/**
 	 * Find all authentication in database.
+	 * 
 	 * @return list<Authenticate>
 	 */
 	@Override
@@ -81,6 +83,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
 	/**
 	 * Find authentication by using token.
+	 * 
 	 * @param token
 	 * @return Authenticate
 	 */
@@ -92,13 +95,14 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 
 	/**
 	 * Remove authentication by using token.
+	 * 
 	 * @param token
 	 */
 	@Override
 	public void removeByToken(String token) {
 		authenticateRepository.removeByToken(token);
 	}
-	
+
 	/**
 	 * Find tokens by using user's email.
 	 */

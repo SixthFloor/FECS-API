@@ -7,15 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import th.in.nagi.fecs.model.Category;
-import th.in.nagi.fecs.model.Product;
-import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.CategoryRepository;
-import th.in.nagi.fecs.repository.ProductRepository;
-import th.in.nagi.fecs.repository.UserRepository;
 
 /**
- * Provide Category service for managing category easier.
+ * Provide Category service for managing category easier. 
  * Ex. add, edit, delete, find.
+ * 
  * @author Thanachote Visetsuthimont
  *
  */
@@ -27,10 +24,11 @@ public class CategoryServiceImpl implements CategoryService {
 	 * Tool for managing category
 	 */
 	@Autowired
-    private CategoryRepository categoryRepository;
+	private CategoryRepository categoryRepository;
 
 	/**
 	 * Find category by using index.
+	 * 
 	 * @param id
 	 * @return Category
 	 */
@@ -41,37 +39,41 @@ public class CategoryServiceImpl implements CategoryService {
 
 	/**
 	 * Save category in database.
+	 * 
 	 * @param category
 	 */
 	@Override
 	public void store(Category category) {
 		categoryRepository.store(category);
-		
+
 	}
 
 	/**
 	 * Update detail of category.
+	 * 
 	 * @param category
 	 */
 	@Override
 	public void update(Category category) {
 		Category entity = categoryRepository.findByKey(category.getId());
-        if (entity != null) {
-            entity.setName(category.getName());
-       }	
+		if (entity != null) {
+			entity.setName(category.getName());
+		}
 	}
 
 	/**
 	 * Find all category in database.
+	 * 
 	 * @return List<Category>
 	 */
 	@Override
 	public List<Category> findAll() {
 		return categoryRepository.findAll();
 	}
-	
+
 	/**
 	 * Find category by using name.
+	 * 
 	 * @param name
 	 * @return Category
 	 */
@@ -82,9 +84,10 @@ public class CategoryServiceImpl implements CategoryService {
 
 	/**
 	 * Find category with limit size and ascending by name.
+	 * 
 	 * @param start
 	 * @param size
-	 * @return List<Category> 
+	 * @return List<Category>
 	 */
 	@Override
 	public List<Category> findAndAscByName(int start, int size) {
@@ -92,13 +95,34 @@ public class CategoryServiceImpl implements CategoryService {
 	}
 
 	/**
-	 * Find category with limit size and descending by name. 
+	 * Find category with limit size and descending by name.
+	 * 
 	 * @param start
 	 * @param size
-	 * @return List<Category> 
+	 * @return List<Category>
 	 */
 	@Override
 	public List<Category> findAndDescByName(int start, int size) {
 		return categoryRepository.findAndDescByName(start, size);
+	}
+
+	/**
+	 * Remove category by using id.
+	 * 
+	 * @param id
+	 */
+	@Override
+	public void removeById(Integer id) {
+		categoryRepository.remove(id);
+	}
+
+	/**
+	 * Remove category by using category's name.
+	 * 
+	 * @param name
+	 */
+	@Override
+	public void removeByName(String name) {
+		categoryRepository.remove(categoryRepository.findByName(name));
 	}
 }

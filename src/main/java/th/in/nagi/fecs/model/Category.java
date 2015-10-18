@@ -5,6 +5,7 @@ import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,6 +16,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Cascade;
 import org.springframework.web.servlet.View;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -51,8 +53,10 @@ public class Category {
 
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
+	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	private Set<SubCategory> subCategories;
 
+	
 	public Set<SubCategory> getSubCategories() {
 		return subCategories;
 	}

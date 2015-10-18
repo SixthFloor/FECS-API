@@ -1,7 +1,10 @@
 package th.in.nagi.fecs.model;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -36,6 +41,7 @@ public class SubCategory {
 
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="subCategory")
+	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	private Set<Product> products;
 
 	public Integer getId() {
@@ -54,16 +60,10 @@ public class SubCategory {
 		this.name = name;
 	}
 	
-	public String getOwner() {
-		return "frank";
-	}
-	
-	@JsonBackReference(value="c")
 	public Set<Product> getProducts() {
 		return products;
 	}
 	
-	@JsonBackReference(value="c")
 	public Category getCategory() {
 		return category;
 	}
@@ -75,5 +75,26 @@ public class SubCategory {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-
+	
+	@Override
+	public String toString() {
+		Class<?> clazz = this.getClass();
+		StringBuilder sb = new StringBuilder("Class: " + clazz.getSimpleName()).append(" {");
+		while (clazz != null && !clazz.equals(Object.class)) {
+			Field[] fields = clazz.getDeclaredFields();
+			for (Field f : fields) {
+				if (!Modifier.isStatic(f.getModifiers())) {
+					try {
+						f.setAccessible(true);
+						sb.append(f.getName()).append(" = ").append(f.get(this)).append(",");
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			clazz = clazz.getSuperclass();
+		}
+		sb.deleteCharAt(sb.lastIndexOf(","));
+		return sb.append("}").toString();
+	}
 }

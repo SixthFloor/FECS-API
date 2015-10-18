@@ -7,13 +7,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import th.in.nagi.fecs.model.Product;
-import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.ProductRepository;
-import th.in.nagi.fecs.repository.UserRepository;
 
 /**
- * Provide product service for managing easier.
+ * Provide product service for managing easier. 
  * Ex. add, remove, edit.
+ * 
  * @author Thanachote Visetsuthimont
  *
  */
@@ -25,10 +24,11 @@ public class ProductServiceImpl implements ProductService {
 	 * Tool for managing product in database.
 	 */
 	@Autowired
-    private ProductRepository productRepository;
+	private ProductRepository productRepository;
 
 	/**
 	 * Find product by using index.
+	 * 
 	 * @param id
 	 * @return Product
 	 */
@@ -39,11 +39,12 @@ public class ProductServiceImpl implements ProductService {
 
 	/**
 	 * Save product in database.
+	 * 
 	 * @param product
 	 */
 	@Override
 	public void store(Product product) {
-		productRepository.store(product);		
+		productRepository.store(product);
 	}
 
 	/**
@@ -52,16 +53,17 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	public void update(Product product) {
 		Product entity = productRepository.findByKey(product.getId());
-        if (entity != null) {
-            entity.setSerialNumber(product.getSerialNumber());
-            entity.setName(product.getName());
-            entity.setPrice(product.getPrice());
-            entity.setDescription(product.getDescription());
-       }	
+		if (entity != null) {
+			entity.setSerialNumber(product.getSerialNumber());
+			entity.setName(product.getName());
+			entity.setPrice(product.getPrice());
+			entity.setDescription(product.getDescription());
+		}
 	}
 
 	/**
 	 * Find all products in database.
+	 * 
 	 * @return List<Product>
 	 */
 	@Override
@@ -71,6 +73,7 @@ public class ProductServiceImpl implements ProductService {
 
 	/**
 	 * Find products by using serial number.
+	 * 
 	 * @return Product
 	 */
 	@Override
@@ -80,16 +83,18 @@ public class ProductServiceImpl implements ProductService {
 
 	/**
 	 * Remove products by using serial number.
+	 * 
 	 * @param serialNumber
 	 */
 	@Override
 	public void removeBySerialNumber(String serialNumber) {
 		productRepository.removeBySerialNumber(serialNumber);
-		
+
 	}
 
 	/**
 	 * Find products with limit size and ascending by name.
+	 * 
 	 * @param start
 	 * @param size
 	 * @return List<Product>
@@ -101,6 +106,7 @@ public class ProductServiceImpl implements ProductService {
 
 	/**
 	 * Find products with limit size and descending by name.
+	 * 
 	 * @param start
 	 * @param size
 	 * @return List<Product>
@@ -112,6 +118,7 @@ public class ProductServiceImpl implements ProductService {
 
 	/**
 	 * Find products with limit size and ascending by price.
+	 * 
 	 * @param start
 	 * @param size
 	 * @return List<Product>
@@ -123,6 +130,7 @@ public class ProductServiceImpl implements ProductService {
 
 	/**
 	 * Find products with limit size and descending by price.
+	 * 
 	 * @param start
 	 * @param size
 	 * @return List<Product>

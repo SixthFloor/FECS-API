@@ -52,4 +52,5 @@ public class CategoryRepositoryImpl extends AbstractRepository<Category, Integer
         criteria.add(Restrictions.eq("name", name));
         return (Category) criteria.uniqueResult();
 	}
+	
 }
