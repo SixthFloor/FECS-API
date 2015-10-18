@@ -4,6 +4,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,6 +14,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Cascade;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
@@ -38,6 +41,7 @@ public class SubCategory {
 
 	@JsonIgnore
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="subCategory")
+	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	private Set<Product> products;
 
 	public Integer getId() {

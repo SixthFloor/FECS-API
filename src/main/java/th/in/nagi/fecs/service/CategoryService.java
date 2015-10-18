@@ -12,6 +12,10 @@ public interface CategoryService {
     void store(Category category);
 
     void update(Category category);
+    
+    void removeById(Integer id);
+    
+    void removeByName(String name);
 
     List<Category> findAll();
 

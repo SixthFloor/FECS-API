@@ -159,5 +159,33 @@ public class CategoryController extends BaseController {
 			return new FailureMessage(Message.FAIL, "Create subCategory failed");
 		}
 		return new SuccessMessage(Message.SUCCESS, subCategory);
-	}  
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/delete", method=RequestMethod.POST)
+    public Message deleteCategory(@RequestBody Category category) {
+		
+    	try {
+			categoryService.removeById(category.getId());
+		} catch (Exception e) {
+			// TODO: handle exception
+			return new FailureMessage(Message.FAIL, "Remove category failed");
+		}
+		return new SuccessMessage(Message.SUCCESS, "category" + " has removed");
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/subCategory/delete", method=RequestMethod.POST)
+    public Message deleteSubCategory(@RequestBody SubCategory subCategory) {
+		
+		System.out.println(subCategory.getId());
+    	try {
+			subCategoryService.removeById(subCategory.getId());
+		} catch (Exception e) {
+			// TODO: handle exception
+			System.out.println(e);
+			return new FailureMessage(Message.FAIL, "Remove subCategory failed");
+		}
+		return new SuccessMessage(Message.SUCCESS, "subCategory" + " has removed");
+	}
 }

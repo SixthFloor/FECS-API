@@ -58,6 +58,18 @@ public class CategoryServiceImpl implements CategoryService {
 	public List<Category> findAndDescByName(int start, int size) {
 		return categoryRepository.findAndDescByName(start, size);
 	}
+
+	@Override
+	public void removeById(Integer id) {
+		// TODO Auto-generated method stub
+		categoryRepository.remove(id);
+	}
+
+	@Override
+	public void removeByName(String name) {
+		// TODO Auto-generated method stub
+		categoryRepository.remove(categoryRepository.findByName(name));
+	}
 	
 
 

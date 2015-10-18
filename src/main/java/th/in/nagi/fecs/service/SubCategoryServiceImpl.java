@@ -62,6 +62,18 @@ public class SubCategoryServiceImpl implements SubCategoryService {
 		return subCategoryRepository.findAndDescByName(start, size);
 	}
 	
+	@Override
+	public void removeById(Integer id) {
+		// TODO Auto-generated method stub
+		subCategoryRepository.remove(id);
+	}
+
+	@Override
+	public void removeByName(String name) {
+		// TODO Auto-generated method stub
+		subCategoryRepository.remove(subCategoryRepository.findByName(name));
+	}
+	
 
 
 }

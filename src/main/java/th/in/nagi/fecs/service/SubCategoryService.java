@@ -12,6 +12,10 @@ public interface SubCategoryService {
 	void store(SubCategory subCategory);
 
 	void update(SubCategory subCategory);
+	
+	void removeById(Integer id);
+    
+    void removeByName(String name);
 
 	List<SubCategory> findAll();
 
