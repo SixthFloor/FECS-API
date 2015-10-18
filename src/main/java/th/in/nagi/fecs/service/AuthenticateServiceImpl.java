@@ -108,7 +108,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 */
 	@Override
 	public List<Authenticate> findByEmail(String email) {
-		User user = userService.findEmail(email);
+		User user = userService.findByEmail(email);
 		return user.getAuthenticate();
 
 	}

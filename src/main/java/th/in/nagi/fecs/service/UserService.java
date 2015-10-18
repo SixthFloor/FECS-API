@@ -36,12 +36,12 @@ public interface UserService {
     void update(User user);
 
     /**
-     * Deletes user by username
+     * Deletes user by email
      * 
-     * @param username
-     *            username
+     * @param email
+     *            email
      */
-    void removeByUsername(String username);
+    void removeByEmail(String email);
 
     /**
      * Finds all existing users
@@ -51,23 +51,23 @@ public interface UserService {
     List<User> findAll();
 
     /**
-     * Find user by username
+     * Find user by email
      * 
-     * @param username
-     *            username
+     * @param email
+     *            email
      * @return user
      */
-    User findByUsername(String username);
+    User findByEmail(String email);
 
     /**
-     * Returns <tt>true</tt> if username is unique
+     * Returns <tt>true</tt> if email is unique
      * 
      * @param i
      *            id
-     * @param username
-     *            username
-     * @return <tt>true</tt> if username is unique
+     * @param email
+     *            email
+     * @return <tt>true</tt> if email is unique
      */
-    boolean isUsernameUnique(Integer i, String username);
+    boolean isEmailUnique(Integer i, String username);
 
 }

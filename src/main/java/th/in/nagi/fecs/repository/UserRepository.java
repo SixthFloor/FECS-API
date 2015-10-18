@@ -11,20 +11,20 @@ import th.in.nagi.fecs.model.User;
 public interface UserRepository extends Repository<User, Integer> {
 
     /**
-     * Finds a user that matches the given username.
+     * Finds a user that matches the given email.
      * 
-     * @param username
-     *            username
-     * @return user that matches the given username
+     * @param email
+     *            email
+     * @return user that matches the given email
      */
-    User findByUsername(String username);
+    User findByEmail(String email);
 
     /**
      * Removes an existing user from this repository.
      * 
-     * @param username
-     *            username
+     * @param email
+     *            email
      */
-    void removeByUsername(String username);
+    void removeByEmail(String email);
 
 }

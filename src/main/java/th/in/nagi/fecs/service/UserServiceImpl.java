@@ -41,7 +41,7 @@ public class UserServiceImpl implements UserService {
      * {@inheritDoc}
      */
     public void update(User user) {
-        User entity = userRepository.findByUsername(user.getUsername());
+        User entity = userRepository.findByEmail(user.getEmail());
         if (entity != null) {
         	if(user.getFirstName()!= null){
         		entity.setFirstName(user.getFirstName());
@@ -49,16 +49,25 @@ public class UserServiceImpl implements UserService {
         	if(user.getLastName() != null){
         		entity.setLastName(user.getLastName());
         	}
-//            entity.setJoiningDate(user.getJoiningDate());
-//            entity.setUsername(user.getUsername());
+            entity.setJoiningDate(user.getJoiningDate());
+            entity.setAddress1(user.getAddress1());
+            entity.setAddress2(user.getAddress2());
+            entity.setCard_name(user.getCard_name());
+            entity.setCardCVV(user.getCardCVV());
+            entity.setEmail(user.getEmail());
+            entity.setExpirationDate(user.getExpirationDate());
+            entity.setPassword(user.getPassword());
+            entity.setProvince(user.getProvince());
+            entity.setZipcode(user.getZipcode());
+            entity.setTelephone_number(user.getTelephone_number());
         }
     }
 
     /**
      * {@inheritDoc}
      */
-    public void removeByUsername(String username) {
-        userRepository.removeByUsername(username);
+    public void removeByEmail(String email) {
+        userRepository.removeByEmail(email);
     }
 
     /**
@@ -71,15 +80,15 @@ public class UserServiceImpl implements UserService {
     /**
      * {@inheritDoc}
      */
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 
     /**
      * {@inheritDoc}
      */
-    public boolean isUsernameUnique(Integer id, String username) {
-        User user = findByUsername(username);
+    public boolean isEmailUnique(Integer id, String email) {
+        User user = findByEmail(email);
         return (user == null || ((id != null) && (user.getId() == id)));
     }
 }

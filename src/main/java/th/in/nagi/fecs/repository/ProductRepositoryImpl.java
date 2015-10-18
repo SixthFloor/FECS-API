@@ -75,10 +75,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product, Integer>i
 	 */
 	@Override
 	public void removeBySerialNumber(String serialNumber) {
-		Query query = getSession().createSQLQuery("delete from product where username = :serialNumber");
-		query.setString("serialNumber", serialNumber);
-		query.executeUpdate();
-
+		remove(findBySerialNumber(serialNumber));
 	}
 
 	/**

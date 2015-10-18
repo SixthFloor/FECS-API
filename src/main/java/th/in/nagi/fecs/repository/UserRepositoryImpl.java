@@ -50,17 +50,16 @@ public class UserRepositoryImpl extends AbstractRepository<User, Integer>
      */
     @Override
     public void remove(Integer key) {
-        // TODO Auto-generated method stub
-
+    	remove(key);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public User findByUsername(String username) {
+    public User findByEmail(String email) {
         Criteria criteria = createEntityCriteria();
-        criteria.add(Restrictions.eq("username", username));
+        criteria.add(Restrictions.eq("email", email));
         return (User) criteria.uniqueResult();
     }
 
@@ -68,11 +67,8 @@ public class UserRepositoryImpl extends AbstractRepository<User, Integer>
      * {@inheritDoc}
      */
     @Override
-    public void removeByUsername(String username) {
-        Query query = getSession().createSQLQuery(
-                "delete from f_user where username = :username");
-        query.setString("username", username);
-        query.executeUpdate();
+    public void removeByEmail(String email) {
+    	remove(findByEmail(email));
     }
 
 }

@@ -43,8 +43,7 @@ public class Product {
 	/**
 	 * serialNumber of product
 	 */
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "serial_number")
+	@Column(name = "serial_number", unique=true)
 	private String serialNumber;
 
 	/**
