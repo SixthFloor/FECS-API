@@ -48,7 +48,7 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	/**
-	 * Update product's detail in datebase.
+	 * Update product's detail in database.
 	 */
 	@Override
 	public void update(Product product) {
@@ -58,6 +58,9 @@ public class ProductServiceImpl implements ProductService {
 			entity.setName(product.getName());
 			entity.setPrice(product.getPrice());
 			entity.setDescription(product.getDescription());
+			entity.setDimensionDescription(product.getDimensionDescription());
+			entity.setImages(product.getImages());
+			entity.setSubCategory(product.getSubCategory());
 		}
 	}
 

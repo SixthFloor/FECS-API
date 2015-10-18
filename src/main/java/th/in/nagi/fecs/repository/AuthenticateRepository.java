@@ -1,19 +1,30 @@
 package th.in.nagi.fecs.repository;
 
-import java.util.List;
-
-import javax.persistence.criteria.Order;
-
 import th.in.nagi.fecs.model.Authenticate;
-import th.in.nagi.fecs.model.Product;
-import th.in.nagi.fecs.model.User;
 
-public interface AuthenticateRepository extends Repository<Authenticate, Integer>{
-	
+/**
+ * Collection of tool for managing authentication in database.
+ * 
+ * @author Nara Surawit
+ *
+ */
+public interface AuthenticateRepository extends Repository<Authenticate, Integer> {
+
+	/**
+	 * Find authentication by token
+	 * 
+	 * @param token
+	 * @return Authenticate
+	 */
 	public Authenticate findByToken(String token);
-	
-//	public List<Authenticate> findByUser(User username);
-	
+
+	// public List<Authenticate> findByUser(User username);
+
+	/**
+	 * Remove authentication by token
+	 * 
+	 * @param token
+	 */
 	public void removeByToken(String token);
-	
+
 }
