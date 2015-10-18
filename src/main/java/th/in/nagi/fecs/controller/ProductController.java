@@ -1,12 +1,16 @@
 package th.in.nagi.fecs.controller;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,8 +18,11 @@ import th.in.nagi.fecs.message.ErrorMessage;
 import th.in.nagi.fecs.message.FailureMessage;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.message.SuccessMessage;
+import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.Product;
+import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.service.ProductService;
+import th.in.nagi.fecs.service.SubCategoryService;
 
 
 /**
@@ -32,6 +39,9 @@ public class ProductController extends BaseController {
 	 */
 	@Autowired
     private ProductService productService;
+	
+	@Autowired
+    private SubCategoryService subCategoryService;
 	
 	/**
 	 * Return a product that have the serialNumber
@@ -62,4 +72,74 @@ public class ProductController extends BaseController {
 		}
 		return new FailureMessage(Message.FAIL, "Not found product.");
     }
+	
+   @ResponseBody
+   @RequestMapping(value = "/list", method = RequestMethod.GET)
+   public Message getListUsers(@RequestParam(value = "start", required = false)int start,
+   		@RequestParam(value = "size", required = false)int size) {
+	   int productListSize = productService.findAll().size();
+	   if(size > productListSize - start){
+		   size = productListSize - start;
+	   }
+       Set<Product> products = new HashSet<Product>(productService.findAndAscByName(start, size));
+       if(products == null) {
+    	   return new FailureMessage(Message.FAIL, "Not found product.");
+		}
+		return new SuccessMessage(Message.SUCCESS, products);
+   }
+   
+   	@ResponseBody
+	@RequestMapping(value="/new", method=RequestMethod.POST)
+   public Message createNewProduct(@RequestBody Product product,
+		   @RequestParam(value = "subCategoryId", required = false)int id) {
+   		
+   		product.setSubCategory(subCategoryService.findByKey(id));
+   		
+   		System.out.println(product.getSubCategory().getName());
+   		try {
+			productService.store(product);
+		} catch (Exception e) {
+			return new FailureMessage(Message.FAIL, "Create Product failed");
+		}
+		return new SuccessMessage(Message.SUCCESS, "Product has added");
+   }
+   	
+	@ResponseBody
+	@RequestMapping(value="/edit", method=RequestMethod.POST)
+   public Message editProduct(@RequestBody Product product,
+		   @RequestParam(value = "subCategoryId", required = false)int id) {
+		
+		SubCategory subCategory = subCategoryService.findByKey(id);
+		if(subCategory != null){
+			product.setSubCategory(subCategory);
+		}
+//		if(oldProduct == null){
+//			return new FailureMessage(Message.FAIL, "This product is not existed");
+//		}
+//		
+//		oldProduct.setName(product.getName());
+		product.setSubCategory(subCategoryService.findByKey(id));
+		try {
+			productService.update(product);
+		} catch (Exception e) {
+			return new FailureMessage(Message.FAIL, "Edit product failed");
+		}
+		
+		return new SuccessMessage(Message.SUCCESS, "Product" +" has edited");
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/delete", method=RequestMethod.POST)
+	public Message deleteProduct(@RequestBody Product product) {
+		
+		System.out.println(product.getSerialNumber());
+		try {
+			productService.removeBySerialNumber(product.getSerialNumber());;
+		} catch (Exception e) {
+			System.out.println(e);
+			return new FailureMessage(Message.FAIL, "Remove product failed");
+		}
+		return new SuccessMessage(Message.SUCCESS, "Product" + " has removed");
+	}
+   
 }

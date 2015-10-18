@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.in.nagi.fecs.message.FailureMessage;
@@ -70,6 +71,17 @@ public class UsersController extends BaseController {
 		}
 		return new FailureMessage(Message.FAIL, "Not found user.");
     }
+    
+//    @ResponseBody
+//    @RequestMapping(value = "/all", method = RequestMethod.GET)
+//    public Message getListUsers(@RequestParam(value = "start", required = false)int start,
+//    		@RequestParam(value = "size", required = false)int size) {
+//        Set<User> users = new HashSet<User>(getUserService());
+//        if(users != null) {
+//			return new SuccessMessage(Message.SUCCESS, users);
+//		}
+//		return new FailureMessage(Message.FAIL, "Not found user.");
+//    }
     
     @ResponseBody
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
