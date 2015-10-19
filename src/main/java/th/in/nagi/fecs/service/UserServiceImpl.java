@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.UserRepository;
@@ -91,6 +92,30 @@ public class UserServiceImpl implements UserService {
 	public boolean isEmailUnique(Integer id, String email) {
 		User user = findByEmail(email);
 		return (user == null || ((id != null) && (user.getId() == id)));
+	}
+
+	/**
+	 * Find users with limit size and ascending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * @return List<User>
+	 */
+	@Override
+	public List<User> findAndAscByName(int start, int size) {
+		return userRepository.findAndAscByName(start, size);
+	}
+
+	/**
+	 * Find users with limit size and descending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * @return List<User>
+	 */
+	@Override
+	public List<User> findAndDescByName(int start, int size) {
+		return userRepository.findAndDescByName(start, size);
 	}
 
 }

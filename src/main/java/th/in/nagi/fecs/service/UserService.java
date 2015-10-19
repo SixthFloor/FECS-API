@@ -3,6 +3,7 @@ package th.in.nagi.fecs.service;
 import java.util.List;
 
 import th.in.nagi.fecs.model.Role;
+import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.model.User;
 
 /**
@@ -70,5 +71,9 @@ public interface UserService {
 	 * @return <tt>true</tt> if email is unique
 	 */
 	boolean isEmailUnique(Integer i, String username);
+	
+	List<User> findAndAscByName(int start, int size);
+
+	List<User> findAndDescByName(int start, int size);
 
 }

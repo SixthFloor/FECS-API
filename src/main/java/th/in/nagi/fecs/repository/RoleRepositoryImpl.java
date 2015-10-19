@@ -12,8 +12,8 @@ import th.in.nagi.fecs.model.Role;
  * @author Thanachote Visetsuthimont
  *
  */
-@Repository("roleRopository")
-public class RoleRopositoryImpl extends AbstractRepository<Role, Integer>implements RoleRepository {
+@Repository("roleRepository")
+public class RoleRepositoryImpl extends AbstractRepository<Role, Integer>implements RoleRepository {
 
 	/**
 	 * {@inheritDoc}

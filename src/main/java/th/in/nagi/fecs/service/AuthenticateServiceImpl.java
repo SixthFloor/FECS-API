@@ -1,5 +1,6 @@
 package th.in.nagi.fecs.service;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -35,12 +36,12 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 * Tool for managing role table that link to database.
 	 */
 	@Autowired
-	private RoleRepository roleRopository;
+	private RoleRepository roleRepository;
 	
-	public final Role ADMIN = roleRopository.findByName("admin");
-	public final Role STAFF = roleRopository.findByName("staff");
-	public final Role MANAGER = roleRopository.findByName("manager");
-	public final Role OWNER = roleRopository.findByName("owner");
+	public final String MEMBER = "member";
+	public final String STAFF = "staff";
+	public final String MANAGER = "member";
+	public final String OWNER = "owner";
 
 	/**
 	 * Tool for managing user table that link to database.
@@ -144,9 +145,13 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean checkPermission(String token, Role... roles) {
+	public boolean checkPermission(String token, String... roles) {
+		List<Role> list = new ArrayList<Role>();
+		for (String role : roles) {
+			list.add(roleRepository.findByName(role));
+		}
 		Role userRole = findByToken(token).getUser().getRole();
-		if (Arrays.asList(roles).contains(userRole) & isExpiration(token)) {
+		if (list.contains(userRole) & isExpiration(token)) {
 			return true;
 		}
 		return false;

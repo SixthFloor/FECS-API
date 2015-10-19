@@ -31,5 +31,5 @@ public interface AuthenticateService {
      * @param roles
      * @return true if this token can access and token isn't expiration.
      */
-    boolean checkPermission(String token, Role... roles);
+    boolean checkPermission(String token, String... roles);
 }
