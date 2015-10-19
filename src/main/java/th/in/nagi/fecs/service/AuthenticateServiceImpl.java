@@ -1,5 +1,7 @@
 package th.in.nagi.fecs.service;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,12 +9,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import th.in.nagi.fecs.model.Authenticate;
+import th.in.nagi.fecs.model.Role;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.AuthenticateRepository;
+import th.in.nagi.fecs.repository.RoleRepository;
 
 /**
- * Authentication service It help to manage the data about authentication. 
- * Ex. add, edit, find.
+ * Authentication service It help to manage the data about authentication. Ex.
+ * add, edit, find.
  * 
  * @author Nara Surawit
  *
@@ -26,6 +30,17 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 */
 	@Autowired
 	private AuthenticateRepository authenticateRepository;
+
+	/**
+	 * Tool for managing role table that link to database.
+	 */
+	@Autowired
+	private RoleRepository roleRopository;
+	
+	public final Role ADMIN = roleRopository.findByName("admin");
+	public final Role STAFF = roleRopository.findByName("staff");
+	public final Role MANAGER = roleRopository.findByName("manager");
+	public final Role OWNER = roleRopository.findByName("owner");
 
 	/**
 	 * Tool for managing user table that link to database.
@@ -77,7 +92,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 */
 	@Override
 	public List<Authenticate> findAll() {
-		// TODO Auto-generated method stub
 		return authenticateRepository.findAll();
 	}
 
@@ -89,7 +103,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 */
 	@Override
 	public Authenticate findByToken(String token) {
-		// TODO Auto-generated method stub
 		return authenticateRepository.findByToken(token);
 	}
 
@@ -110,6 +123,33 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	public List<Authenticate> findByEmail(String email) {
 		User user = userService.findByEmail(email);
 		return user.getAuthenticate();
+
+	}
+
+	@Override
+	public Role getRole(String token) {
+		return findByToken(token).getUser().getRole();
+	}
+
+	@Override
+	public boolean isExpiration(String token) {
+		Date date = new Date();
+		if (date.before(findByToken(token).getExpDate())) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public boolean checkPermission(String token, Role... roles) {
+		Role userRole = findByToken(token).getUser().getRole();
+		if (Arrays.asList(roles).contains(userRole) & isExpiration(token)) {
+			return true;
+		}
+		return false;
 
 	}
 

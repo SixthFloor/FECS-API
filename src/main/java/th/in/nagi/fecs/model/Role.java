@@ -30,4 +30,20 @@ public class Role {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "role")
 	@JsonManagedReference
 	private List<User> users;
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof User))
+			return false;
+		Role other = (Role) obj;
+		if (id != other.id)
+			return false;
+		if (name != other.name)
+			return false;
+		return true;
+	}
 }
