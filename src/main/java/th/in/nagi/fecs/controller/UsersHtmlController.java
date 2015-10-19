@@ -91,11 +91,11 @@ public class UsersHtmlController extends BaseController {
          * framework as well while still using internationalized messages.
          * 
          */
-        if (!getUserService().isUsernameUnique(user.getId(),
-                user.getUsername())) {
+        if (!getUserService().isEmailUnique(user.getId(),
+                user.getEmail())) {
             FieldError usernameError = new FieldError("user", "username",
                     getMessageSource().getMessage("non.unique.username",
-                            new String[] { user.getUsername() },
+                            new String[] { user.getEmail() },
                             Locale.getDefault()));
             result.addError(usernameError);
             return "registration";
@@ -114,7 +114,7 @@ public class UsersHtmlController extends BaseController {
     @RequestMapping(value = {
             "/edit-{username}-user" }, method = RequestMethod.GET)
     public String editUser(@PathVariable String username, ModelMap model) {
-        User user = getUserService().findByUsername(username);
+        User user = getUserService().findByEmail(username);
         model.addAttribute("user", user);
         model.addAttribute("edit", true);
         return "registration";
@@ -125,19 +125,19 @@ public class UsersHtmlController extends BaseController {
      * updating user in database. It also validates the user input
      */
     @RequestMapping(value = {
-            "/edit-{username}-user" }, method = RequestMethod.POST)
+            "/edit-{email}-user" }, method = RequestMethod.POST)
     public String updateUser(@Valid User user, BindingResult result,
-            ModelMap model, @PathVariable String username) {
+            ModelMap model, @PathVariable String email) {
 
         if (result.hasErrors()) {
             return "registration";
         }
 
-        if (!getUserService().isUsernameUnique(user.getId(),
-                user.getUsername())) {
+        if (!getUserService().isEmailUnique(user.getId(),
+                user.getEmail())) {
             FieldError usernameError = new FieldError("user", "username",
                     getMessageSource().getMessage("non.unique.username",
-                            new String[] { user.getUsername() },
+                            new String[] { user.getEmail() },
                             Locale.getDefault()));
             result.addError(usernameError);
             return "registration";
@@ -156,7 +156,7 @@ public class UsersHtmlController extends BaseController {
     @RequestMapping(value = {
             "/delete-{username}-user" }, method = RequestMethod.GET)
     public String deleteUser(@PathVariable String username) {
-        getUserService().removeByUsername(username);
+        getUserService().removeByEmail(username);
         return "redirect:/users/list";
     }
 }

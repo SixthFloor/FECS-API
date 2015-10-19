@@ -42,9 +42,15 @@ public class CategoryController extends BaseController {
 	@Autowired
     private ProductService productService;
 	
+	/**
+	 * Service of category
+	 */
 	@Autowired
 	private CategoryService categoryService;
 	
+	/**
+	 * Service of subcategory
+	 */
 	@Autowired
 	private SubCategoryService subCategoryService;
 	

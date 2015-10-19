@@ -30,7 +30,7 @@ import th.in.nagi.fecs.service.AuthenticateService;
 import th.in.nagi.fecs.service.UserService;
 
 /**
- * Controller for users.
+ * Controller for authenticate.
  * 
  * @author Nara Surawit
  *
@@ -40,35 +40,42 @@ import th.in.nagi.fecs.service.UserService;
 public class AuthenticateController extends BaseController {
 
     /**
-     * User service.
+     * Authenticate service
      */
     @Autowired
     private AuthenticateService authenticateService;
     
+    /**
+     * User service
+     */
     @Autowired
     private UserService userService;
 
     /**
-     * Gets user service.
+     * Gets authenticate service.
      * 
-     * @return user service
+     * @return authenticate service
      */
     protected AuthenticateService getAuthenticateService() {
         return authenticateService;
     }
     
+    /**
+     * Gets user service
+     * @return user service
+     */
     protected UserService getUserService() {
         return userService;
     }
 
     /**
-     * Lists all existing users.
+     * Returns list of authenticate by email
      * 
-     * @param model
-     * @return list of users
+     * @param email email of user
+     * @return message message and authenticate if not success return message and string "not found" 
      */
     @ResponseBody
-    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
+    @RequestMapping(value = "/{email}", method = RequestMethod.GET)
     public Message getAuthenticateByUsername(@PathVariable String email) {
     	
         List<Authenticate> authenticate = getAuthenticateService().findByEmail(email);
@@ -79,6 +86,11 @@ public class AuthenticateController extends BaseController {
     }
     
     
+    /**
+     * Login and return token of user
+     * @param tempUser user that want to login it can only input with email and password
+     * @return message message and token if not success return message and string "not found"
+     */
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Message login(@RequestBody User tempUser) {
@@ -114,25 +126,27 @@ public class AuthenticateController extends BaseController {
 		}
     	date.setDate((date.getDate()+1));
         Authenticate authenticate = new Authenticate(textHash, user,date);
-        System.out.println(authenticate);
         
         if (authenticate != null){
-        	System.out.println(authenticate.getExpDate());
         	getAuthenticateService().store(authenticate);
         	Authenticate dataBaseAuthenticate = getAuthenticateService().findByToken(authenticate.getToken());
-			return new SuccessMessage(Message.SUCCESS, dataBaseAuthenticate);
+			return new SuccessMessage(Message.SUCCESS, dataBaseAuthenticate.getToken());
 		}
 		return new FailureMessage(Message.FAIL, "Not found authenticate.");
     }
     
+    /**
+     * check token in database and token of input user
+     * @param authenticate
+     * @return message message and email of user ,or not return message fail. 
+     */
     @ResponseBody
     @RequestMapping(value = "/token", method = RequestMethod.POST)
     public Message checkToken(@RequestBody Authenticate authenticate) {
     	Date date = new Date();
-    	System.out.println(authenticate.getToken());
-    	System.out.println(authenticateService.findByToken(authenticate.getToken()).getUser().getEmail());
-    	if (date.before(authenticateService.findByToken(authenticate.getToken()).getExpDate())){
-			return new SuccessMessage(Message.SUCCESS, authenticateService.findByToken(authenticate.getToken()).getUser().getEmail());
+    	Authenticate authenticateTemp = authenticateService.findByToken(authenticate.getToken());
+    	if (date.before(authenticateTemp.getExpDate())){
+			return new SuccessMessage(Message.SUCCESS, authenticateTemp.getUser().getEmail());
 		}
 		return new FailureMessage(Message.FAIL, "token is expiration");
     	

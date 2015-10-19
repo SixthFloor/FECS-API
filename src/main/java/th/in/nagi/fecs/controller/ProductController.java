@@ -73,24 +73,36 @@ public class ProductController extends BaseController {
 		return new FailureMessage(Message.FAIL, "Not found product.");
     }
 	
-   @ResponseBody
-   @RequestMapping(value = "/list", method = RequestMethod.GET)
-   public Message getListUsers(@RequestParam(value = "start", required = false)int start,
+   /**
+    * list of products with limit size
+    * @param start position of the list 
+    * @param size size of the list
+    * @return limit list of product 
+    */
+	@ResponseBody
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public Message getListUsers(@RequestParam(value = "start", required = false)int start,
    		@RequestParam(value = "size", required = false)int size) {
-	   int productListSize = productService.findAll().size();
-	   if(size > productListSize - start){
+		int productListSize = productService.findAll().size();
+		if(size > productListSize - start){
 		   size = productListSize - start;
-	   }
-       Set<Product> products = new HashSet<Product>(productService.findAndAscByName(start, size));
-       if(products == null) {
+		}
+		Set<Product> products = new HashSet<Product>(productService.findAndAscByName(start, size));
+		if(products == null) {
     	   return new FailureMessage(Message.FAIL, "Not found product.");
 		}
 		return new SuccessMessage(Message.SUCCESS, products);
-   }
+	}
    
+   	/**
+   	 * create and add new product to database
+   	 * @param product new product
+   	 * @param id id of subcategory of product
+   	 * @return message success if not return message fail
+   	 */
    	@ResponseBody
 	@RequestMapping(value="/new", method=RequestMethod.POST)
-   public Message createNewProduct(@RequestBody Product product,
+   	public Message createNewProduct(@RequestBody Product product,
 		   @RequestParam(value = "subCategoryId", required = false)int id) {
    		
    		product.setSubCategory(subCategoryService.findByKey(id));
@@ -102,11 +114,17 @@ public class ProductController extends BaseController {
 			return new FailureMessage(Message.FAIL, "Create Product failed");
 		}
 		return new SuccessMessage(Message.SUCCESS, "Product has added");
-   }
+   	}
    	
+	/**
+	 * edit information of product
+	 * @param product new information that want to edit
+	 * @param id id of new subcategory of product
+	 * @return message success if not return message fail
+	 */
 	@ResponseBody
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
-   public Message editProduct(@RequestBody Product product,
+	public Message editProduct(@RequestBody Product product,
 		   @RequestParam(value = "subCategoryId", required = false)int id) {
 		
 		SubCategory subCategory = subCategoryService.findByKey(id);
@@ -128,6 +146,11 @@ public class ProductController extends BaseController {
 		return new SuccessMessage(Message.SUCCESS, "Product" +" has edited");
 	}
 	
+	/**
+	 * delete a product
+	 * @param product put id of product that want to delete 
+	 * @return message success if not return message fail
+	 */
 	@ResponseBody
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
 	public Message deleteProduct(@RequestBody Product product) {

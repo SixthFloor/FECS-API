@@ -49,7 +49,6 @@ public class UsersController extends BaseController {
 
     /**
      * Gets user service.
-     * 
      * @return user service
      */
     protected UserService getUserService() {
@@ -57,9 +56,7 @@ public class UsersController extends BaseController {
     }
 
     /**
-     * Lists all existing users.
-     * 
-     * @param model
+     * Lists all existing users. 
      * @return list of users
      */
     @ResponseBody
@@ -83,9 +80,14 @@ public class UsersController extends BaseController {
 //		return new FailureMessage(Message.FAIL, "Not found user.");
 //    }
     
+    /**
+     * get user by email
+     * @param email email of user that want to show
+     * @return user if not return message fail
+     */
     @ResponseBody
-    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
-    public Message getUserByUsername(@PathVariable String email) {
+    @RequestMapping(value = "/{email}", method = RequestMethod.GET)
+    public Message getUserByEmail(@PathVariable String email) {
 
         User user = getUserService().findByEmail(email);
         if(user != null) {
@@ -116,8 +118,10 @@ public class UsersController extends BaseController {
     }
     
 
-    /*
-     * This method will provide the medium to update an existing user.
+    /**
+     * edit user
+     * @param newUser put user information that want to change, it is not required all parameter of user. 
+     * @return message message and email of user or not return message fail and string "not found"
      */
     @ResponseBody
     @RequestMapping(value = {"/edit" }, method = RequestMethod.POST)
@@ -128,11 +132,16 @@ public class UsersController extends BaseController {
 		} catch (Exception e) {
 			return new FailureMessage(Message.FAIL, "User not found");
 		}
-		return new SuccessMessage(Message.SUCCESS, getUserService().findByEmail(newUser.getEmail()));
+		return new SuccessMessage(Message.SUCCESS, getUserService().findByEmail(newUser.getEmail()).getEmail());
     }
 
     /*
      * This method will delete an user by it's Username value.
+     */
+    /**
+     * delete a user by id
+     * @param tempUser username and password
+     * @return message message success if not return message fail
      */
     @ResponseBody
     @RequestMapping(value = {"/delete" }, method = RequestMethod.POST)
