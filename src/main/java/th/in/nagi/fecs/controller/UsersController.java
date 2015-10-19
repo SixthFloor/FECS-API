@@ -85,9 +85,9 @@ public class UsersController extends BaseController {
     
     @ResponseBody
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
-    public Message getUserByUsername(@PathVariable String username) {
+    public Message getUserByUsername(@PathVariable String email) {
 
-        User user = getUserService().findByUsername(username);
+        User user = getUserService().findByEmail(email);
         if(user != null) {
 			return new SuccessMessage(Message.SUCCESS, user);
 		}
@@ -110,7 +110,6 @@ public class UsersController extends BaseController {
     	try {
 			getUserService().store(user);
 		} catch (Exception e) {
-			// TODO: handle exception
 			return new FailureMessage(Message.FAIL, "Create user failed");
 		}
 		return new SuccessMessage(Message.SUCCESS, user);
@@ -127,10 +126,9 @@ public class UsersController extends BaseController {
     	try {
     		getUserService().update(newUser);
 		} catch (Exception e) {
-			// TODO: handle exception
 			return new FailureMessage(Message.FAIL, "User not found");
 		}
-		return new SuccessMessage(Message.SUCCESS, getUserService().findByUsername(newUser.getUsername()));
+		return new SuccessMessage(Message.SUCCESS, getUserService().findByEmail(newUser.getEmail()));
     }
 
     /*
@@ -139,7 +137,7 @@ public class UsersController extends BaseController {
     @ResponseBody
     @RequestMapping(value = {"/delete" }, method = RequestMethod.POST)
     public Message deleteUser(@RequestBody User tempUser) {
-    	User user = getUserService().findByUsername(tempUser.getUsername());
+    	User user = getUserService().findByEmail(tempUser.getEmail());
     	String passwordHash = user.changeToHash(tempUser.getPassword());
     	
     	if(!user.getPassword().equals(passwordHash)){
@@ -147,11 +145,10 @@ public class UsersController extends BaseController {
     	}
        
         try {
-        	getUserService().removeByUsername(user.getUsername());
+        	getUserService().removeByEmail(user.getEmail());
 		} catch (Exception e) {
-			// TODO: handle exception
 			return new FailureMessage(Message.FAIL, "User not found");
 		}
-		return new SuccessMessage(Message.SUCCESS, user.getUsername() +" has removed");
+		return new SuccessMessage(Message.SUCCESS, user.getEmail() +" has removed");
     }
  }
