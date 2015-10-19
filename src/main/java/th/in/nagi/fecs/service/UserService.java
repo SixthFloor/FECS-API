@@ -72,8 +72,8 @@ public interface UserService {
 	 */
 	boolean isEmailUnique(Integer i, String username);
 	
-	List<User> findAndAscByName(int start, int size);
+	List<User> findAndAscByFirstName(int start, int size);
 
-	List<User> findAndDescByName(int start, int size);
+	List<User> findAndDescByFirstName(int start, int size);
 
 }

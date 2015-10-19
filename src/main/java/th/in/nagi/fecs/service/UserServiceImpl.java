@@ -43,13 +43,16 @@ public class UserServiceImpl implements UserService {
 	 * {@inheritDoc}
 	 */
 	public void update(User user) {
-		User entity = userRepository.findByEmail(user.getEmail());
+		User entity = userRepository.findByKey(user.getId());
 		if (entity != null) {
 			if (user.getFirstName() != null) {
 				entity.setFirstName(user.getFirstName());
 			}
 			if (user.getLastName() != null) {
 				entity.setLastName(user.getLastName());
+			}
+			if (user.getLastName() != null) {
+				entity.setRole(user.getRole());
 			}
 			entity.setJoiningDate(user.getJoiningDate());
 			entity.setAddress1(user.getAddress1());
@@ -102,8 +105,8 @@ public class UserServiceImpl implements UserService {
 	 * @return List<User>
 	 */
 	@Override
-	public List<User> findAndAscByName(int start, int size) {
-		return userRepository.findAndAscByName(start, size);
+	public List<User> findAndAscByFirstName(int start, int size) {
+		return userRepository.findAndAscByFirstName(start, size);
 	}
 
 	/**
@@ -114,8 +117,8 @@ public class UserServiceImpl implements UserService {
 	 * @return List<User>
 	 */
 	@Override
-	public List<User> findAndDescByName(int start, int size) {
-		return userRepository.findAndDescByName(start, size);
+	public List<User> findAndDescByFirstName(int start, int size) {
+		return userRepository.findAndDescByFirstName(start, size);
 	}
 
 }

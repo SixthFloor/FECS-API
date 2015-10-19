@@ -6,6 +6,11 @@ import th.in.nagi.fecs.model.Authenticate;
 import th.in.nagi.fecs.model.Role;
 
 public interface AuthenticateService {
+	
+	public final String MEMBER = "member";
+	public final String STAFF = "staff";
+	public final String MANAGER = "member";
+	public final String OWNER = "owner";
 
 	Authenticate findByKey(Integer id);
 

@@ -6,6 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.model.User;
 
 /**
@@ -73,8 +74,8 @@ public class UserRepositoryImpl extends AbstractRepository<User, Integer>impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<User> findAndAscByName(int start, int size) {
-		List<User> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name"))
+	public List<User> findAndAscByFirstName(int start, int size) {
+		List<User> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("firstName"))
 				.setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
@@ -83,8 +84,8 @@ public class UserRepositoryImpl extends AbstractRepository<User, Integer>impleme
 	 * {@inheritDoc}
 	 */
 	@Override
-	public List<User> findAndDescByName(int start, int size) {
-		List<User> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name"))
+	public List<User> findAndDescByFirstName(int start, int size) {
+		List<User> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("firstName"))
 				.setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}

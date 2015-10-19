@@ -11,6 +11,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,6 +25,7 @@ import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.model.SubCategory;
+import th.in.nagi.fecs.service.AuthenticateService;
 import th.in.nagi.fecs.service.CategoryService;
 import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.service.SubCategoryService;
@@ -55,6 +57,12 @@ public class CategoryController extends BaseController {
 	 */
 	@Autowired
 	private SubCategoryService subCategoryService;
+	
+	/**
+     * authenticate service.
+     */
+    @Autowired
+    private AuthenticateService authenticateService;
 
 	/**
 	 * Return list of products in the category
@@ -85,7 +93,7 @@ public class CategoryController extends BaseController {
 		if (size > categoryListSize - start) {
 			size = categoryListSize - start;
 		}
-		Set<Category> category = new HashSet<Category>(categoryService.findAndAscByName(start, size));
+		List<Category> category = (categoryService.findAndAscByName(start, size));
 		if (category == null) {
 			return new FailureMessage(Message.FAIL, "Not found category.");
 		}
@@ -109,7 +117,7 @@ public class CategoryController extends BaseController {
 		if (size > subCategoryListSize - start) {
 			size = subCategoryListSize - start;
 		}
-		Set<SubCategory> subCategory = new HashSet<SubCategory>(subCategoryService.findAndAscByName(start, size));
+		List<SubCategory> subCategory = (subCategoryService.findAndAscByName(start, size));
 		if (subCategory == null) {
 			return new FailureMessage(Message.FAIL, "Not found subCategory.");
 		}
@@ -147,7 +155,11 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
-	public Message createNewCategory(@RequestBody Category category) {
+	public Message createNewCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
+				authenticateService.OWNER)) {
+			return new FailureMessage(Message.FAIL, "This user does not allow");
+		}
 		if (categoryService.findByName(category.getName()) != null) {
 			return new FailureMessage(Message.FAIL, "This category name is existed");
 		}
@@ -170,7 +182,11 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "{categoryName}/subCategory/new", method = RequestMethod.POST)
-	public Message addSubCategory(@RequestBody SubCategory subCategory, @PathVariable String categoryName) {
+	public Message addSubCategory(@RequestBody SubCategory subCategory, @PathVariable String categoryName, @RequestHeader(value = "token") String token) {
+		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
+				authenticateService.OWNER)) {
+			return new FailureMessage(Message.FAIL, "This user does not allow");
+		}
 		if (subCategoryService.findByName(subCategory.getName()) != null) {
 			return new FailureMessage(Message.FAIL, "This subCategory name is existed");
 		}
@@ -193,7 +209,11 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/edit", method = RequestMethod.POST)
-	public Message editCategory(@RequestBody Category category) {
+	public Message editCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
+				authenticateService.OWNER)) {
+			return new FailureMessage(Message.FAIL, "This user does not allow");
+		}
 
 		Category oldCategory = categoryService.findByKey(category.getId());
 		if (oldCategory == null) {
@@ -223,7 +243,11 @@ public class CategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/subCategory/edit", method = RequestMethod.POST)
 	public Message editSubCategory(@RequestBody SubCategory subCategory,
-			@RequestParam(value = "newCategoryName", required = false) String categoryName) {
+			@RequestParam(value = "newCategoryName", required = false) String categoryName, @RequestHeader(value = "token") String token) {
+		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
+				authenticateService.OWNER)) {
+			return new FailureMessage(Message.FAIL, "This user does not allow");
+		}
 
 		Category category = categoryService.findByName(categoryName);
 		SubCategory oldSubCategory = subCategoryService.findByKey(subCategory.getId());
@@ -253,7 +277,11 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public Message deleteCategory(@RequestBody Category category) {
+	public Message deleteCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
+				authenticateService.OWNER)) {
+			return new FailureMessage(Message.FAIL, "This user does not allow");
+		}
 
 		try {
 			categoryService.removeById(category.getId());
@@ -272,7 +300,11 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/subCategory/delete", method = RequestMethod.POST)
-	public Message deleteSubCategory(@RequestBody SubCategory subCategory) {
+	public Message deleteSubCategory(@RequestBody SubCategory subCategory, @RequestHeader(value = "token") String token) {
+		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
+				authenticateService.OWNER)) {
+			return new FailureMessage(Message.FAIL, "This user does not allow");
+		}
 
 		try {
 			subCategoryService.removeById(subCategory.getId());
