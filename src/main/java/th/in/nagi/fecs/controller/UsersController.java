@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import th.in.nagi.fecs.message.FailureMessage;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.message.SuccessMessage;
+import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.service.UserService;
@@ -69,16 +70,29 @@ public class UsersController extends BaseController {
 		return new FailureMessage(Message.FAIL, "Not found user.");
     }
     
-//    @ResponseBody
-//    @RequestMapping(value = "/all", method = RequestMethod.GET)
-//    public Message getListUsers(@RequestParam(value = "start", required = false)int start,
-//    		@RequestParam(value = "size", required = false)int size) {
-//        Set<User> users = new HashSet<User>(getUserService());
-//        if(users != null) {
-//			return new SuccessMessage(Message.SUCCESS, users);
-//		}
-//		return new FailureMessage(Message.FAIL, "Not found user.");
-//    }
+    /**
+	 * list of user with limit size
+	 * 
+	 * @param start
+	 *            position of the list
+	 * @param size
+	 *            size of the list
+	 * @return limit list of user
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public Message getListUsers(@RequestParam(value = "start", required = false) int start,
+			@RequestParam(value = "size", required = false) int size) {
+		int userListSize = userService.findAll().size();
+		if (size > userListSize - start) {
+			size = userListSize - start;
+		}
+		Set<User> user = new HashSet<User>(userService.findAndAscByName(start, size));
+		if (user == null) {
+			return new FailureMessage(Message.FAIL, "Not found user.");
+		}
+		return new SuccessMessage(Message.SUCCESS, user);
+	}
     
     /**
      * get user by email

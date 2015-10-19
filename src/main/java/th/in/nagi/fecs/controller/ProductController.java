@@ -40,6 +40,9 @@ public class ProductController extends BaseController {
 	@Autowired
     private ProductService productService;
 	
+	/**
+	 * Service of subcategory
+	 */
 	@Autowired
     private SubCategoryService subCategoryService;
 	
