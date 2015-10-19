@@ -65,7 +65,7 @@ public class SubCategoryRepositoryImpl extends AbstractRepository<SubCategory, I
 	@Override
 	public List<SubCategory> findAndAscByName(int start, int size) {
 		List<SubCategory> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name"))
-				.setFirstResult(start).setFetchSize(size).list();
+				.setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
 
@@ -75,7 +75,7 @@ public class SubCategoryRepositoryImpl extends AbstractRepository<SubCategory, I
 	@Override
 	public List<SubCategory> findAndDescByName(int start, int size) {
 		List<SubCategory> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name"))
-				.setFirstResult(start).setFetchSize(size).list();
+				.setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
 

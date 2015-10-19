@@ -84,14 +84,14 @@ public class ProductRepositoryImpl extends AbstractRepository<Product, Integer>i
 	@Override
 	public List<Product> findAndAscByName(int start, int size) {
 		List<Product> products = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name"))
-				.setFirstResult(start).setFetchSize(size).list();
+				.setFirstResult(start).setMaxResults(size).list();
 		return products;
 	}
 
 	@Override
 	public List<Product> findAndDescByName(int start, int size) {
 		List<Product> products = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name"))
-				.setFirstResult(start).setFetchSize(size).list();
+				.setFirstResult(start).setMaxResults(size).list();
 		return products;
 	}
 
@@ -101,7 +101,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product, Integer>i
 	@Override
 	public List<Product> findAndAscByPrice(int start, int size) {
 		List<Product> products = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("price"))
-				.setFirstResult(start).setFetchSize(size).list();
+				.setFirstResult(start).setMaxResults(size).list();
 		return products;
 	}
 
@@ -111,7 +111,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product, Integer>i
 	@Override
 	public List<Product> findAndDescByPrice(int start, int size) {
 		List<Product> products = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("price"))
-				.setFirstResult(start).setFetchSize(size).list();
+				.setFirstResult(start).setMaxResults(size).list();
 		return products;
 	}
 
