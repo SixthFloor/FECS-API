@@ -65,6 +65,11 @@ public class CategoryController extends BaseController {
 		return new SuccessMessage(Message.SUCCESS, categoryService.findAll());
 	}
 	
+	/**
+	 * Return list of product in the category
+	 * @param categoryName category name that want to show products inside
+	 * @return list of product
+	 */
 	@ResponseBody
 	@RequestMapping(value="/{categoryName}", method=RequestMethod.GET)
     public Message showProductsByCategory(@PathVariable String categoryName) {
@@ -80,6 +85,11 @@ public class CategoryController extends BaseController {
 		return new SuccessMessage(Message.SUCCESS, category.getProducts());
     }
 	
+	/**
+	 * Create and add new category to database
+	 * @param category new category
+	 * @return category if not return message fail
+	 */
 	@ResponseBody
 	@RequestMapping(value="/new", method=RequestMethod.POST)
     public Message createNewCategory(@RequestBody Category category) {
@@ -94,6 +104,12 @@ public class CategoryController extends BaseController {
 		return new SuccessMessage(Message.SUCCESS, category);
     }
 	
+	/**
+	 * Create and add new category to database
+	 * @param subCategory new subcategory
+	 * @param categoryName category of subcategory. 
+	 * @return subCategoyr if not return message fail
+	 */
 	@ResponseBody
 	@RequestMapping(value="{categoryName}/subCategory/new", method=RequestMethod.POST)
     public Message addSubCategory(@RequestBody SubCategory subCategory, @PathVariable String categoryName) {
@@ -110,6 +126,11 @@ public class CategoryController extends BaseController {
 		return new SuccessMessage(Message.SUCCESS, subCategory);
     }
 	
+	/**
+	 * Edit category
+	 * @param category new information of category
+	 * @return category if not return message fail
+	 */
 	@ResponseBody
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
     public Message editCategory(@RequestBody Category category) {
@@ -130,6 +151,12 @@ public class CategoryController extends BaseController {
 		return new SuccessMessage(Message.SUCCESS, category);
 	}
 	
+	/**
+	 * Edit subcategory
+	 * @param subCategory new information of subcategory
+	 * @param categoryName new category of subcategory
+	 * @return category if not return message fail
+	 */
 	@ResponseBody
 	@RequestMapping(value="/subCategory/edit", method=RequestMethod.POST)
     public Message editSubCategory(@RequestBody SubCategory subCategory,
@@ -154,6 +181,11 @@ public class CategoryController extends BaseController {
 		return new SuccessMessage(Message.SUCCESS, subCategory);
 	}
 	
+	/**
+	 * Delete category
+	 * @param category category that want to delete
+	 * @return message success if not return message fail
+	 */
 	@ResponseBody
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
     public Message deleteCategory(@RequestBody Category category) {
@@ -166,6 +198,11 @@ public class CategoryController extends BaseController {
 		return new SuccessMessage(Message.SUCCESS, "category" + " has removed");
 	}
 	
+	/**
+	 * Delete subcategory
+	 * @param subCategory subcategory that want to delete
+	 * @return message success if not return message fail
+	 */
 	@ResponseBody
 	@RequestMapping(value="/subCategory/delete", method=RequestMethod.POST)
     public Message deleteSubCategory(@RequestBody SubCategory subCategory) {
