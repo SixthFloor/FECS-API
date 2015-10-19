@@ -82,9 +82,9 @@ public class AuthenticateController extends BaseController {
     @ResponseBody
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public Message login(@RequestBody User tempUser) {
-    	System.out.println(tempUser.getUsername());
+    	System.out.println(tempUser.getEmail());
     	System.out.println(tempUser.getPassword());
-    	User user = getUserService().findByUsername(tempUser.getUsername());
+    	User user = getUserService().findByEmail(tempUser.getEmail());
     	String passwordHash = user.changeToHash(tempUser.getPassword());
     	
     	if(!user.getPassword().equals(passwordHash)){
@@ -92,7 +92,7 @@ public class AuthenticateController extends BaseController {
     	}
     	
     	Date date = new Date();
-    	String text = tempUser.getUsername()+date.toString();
+    	String text = tempUser.getEmail()+date.toString();
     	String textHash = "";
     	try {
     		MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
@@ -107,11 +107,9 @@ public class AuthenticateController extends BaseController {
 //				System.out.println(String.format("%064x", new java.math.BigInteger(1, hash3)));
 				
 			} catch (UnsupportedEncodingException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
     	date.setDate((date.getDate()+1));
@@ -132,9 +130,9 @@ public class AuthenticateController extends BaseController {
     public Message checkToken(@RequestBody Authenticate authenticate) {
     	Date date = new Date();
     	System.out.println(authenticate.getToken());
-    	System.out.println(authenticateService.findByToken(authenticate.getToken()).getUser().getUsername());
+    	System.out.println(authenticateService.findByToken(authenticate.getToken()).getUser().getEmail());
     	if (date.before(authenticateService.findByToken(authenticate.getToken()).getExpDate())){
-			return new SuccessMessage(Message.SUCCESS, authenticateService.findByToken(authenticate.getToken()).getUser().getUsername());
+			return new SuccessMessage(Message.SUCCESS, authenticateService.findByToken(authenticate.getToken()).getUser().getEmail());
 		}
 		return new FailureMessage(Message.FAIL, "token is expiration");
     	
