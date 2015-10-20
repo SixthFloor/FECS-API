@@ -59,11 +59,10 @@ public class Authenticate {
 	 * name of product
 	 */
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne
 	@JsonBackReference
 	private User user;
 	
-	@NotNull
     @Column(name = "expiration_date", nullable = false)
 	private Date expDate;
 	

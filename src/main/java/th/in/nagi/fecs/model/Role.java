@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -28,7 +29,7 @@ public class Role {
 	private String name;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "role")
-	@JsonManagedReference
+	@JsonIgnore
 	private Set<User> users;
 
 	public int getId() {

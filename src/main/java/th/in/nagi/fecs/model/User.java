@@ -20,6 +20,7 @@ import javax.validation.constraints.Size;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 @Entity
@@ -30,26 +31,21 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
-	@NotEmpty
 	@Column(name = "email", nullable = false)
 	private String email;
 
-	@NotEmpty
 	@Size(min = 3, max = 50)
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
-	@NotEmpty
 	@Size(min = 3, max = 50)
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
 
-	@NotEmpty
 	@Column(name = "joining_date", nullable = false)
 	private Date joiningDate;
 
-	@NotEmpty
-	@Size(min = 131, max = 131)
+	@Size(min = 64, max = 64)
 	@Column(name = "password", nullable = false)
 	private String password;
 
@@ -85,7 +81,6 @@ public class User {
 	private List<Authenticate> authenticate;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
-	@JsonBackReference
 	private Role role;
 
 	public String getEmail() {

@@ -72,9 +72,8 @@ public class AuthenticateController extends BaseController {
 	 *         and string "not found"
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/{email}", method = RequestMethod.GET)
+	@RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
 	public Message getAuthenticateByUsername(@PathVariable String email) {
-
 		List<Authenticate> authenticate = getAuthenticateService().findByEmail(email);
 		if (authenticate != null) {
 			return new SuccessMessage(Message.SUCCESS, authenticate);
