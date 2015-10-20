@@ -8,6 +8,7 @@ import java.util.Set;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.model.SubCategory;
+import th.in.nagi.fecs.service.AuthenticateService;
 import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.service.SubCategoryService;
 
@@ -45,6 +47,12 @@ public class ProductController extends BaseController {
 	 */
 	@Autowired
     private SubCategoryService subCategoryService;
+	
+	/**
+	 * Service of authenticate
+	 */
+	@Autowired
+    private AuthenticateService authenticateService;
 	
 	/**
 	 * Return a product that have the serialNumber
@@ -84,13 +92,13 @@ public class ProductController extends BaseController {
     */
 	@ResponseBody
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Message getListUsers(@RequestParam(value = "start", required = false)int start,
+	public Message getListProduct(@RequestParam(value = "start", required = false)int start,
    		@RequestParam(value = "size", required = false)int size) {
 		int productListSize = productService.findAll().size();
 		if(size > productListSize - start){
 		   size = productListSize - start;
 		}
-		Set<Product> products = new HashSet<Product>(productService.findAndAscByName(start, size));
+		List<Product> products = (productService.findAndAscByName(start, size));
 		if(products == null) {
     	   return new FailureMessage(Message.FAIL, "Not found product.");
 		}
@@ -106,7 +114,11 @@ public class ProductController extends BaseController {
    	@ResponseBody
 	@RequestMapping(value="/new", method=RequestMethod.POST)
    	public Message createNewProduct(@RequestBody Product product,
-		   @RequestParam(value = "subCategoryId", required = false)int id) {
+		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
+		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
+				authenticateService.OWNER)) {
+			return new FailureMessage(Message.FAIL, "This user does not allow");
+		}
    		
    		product.setSubCategory(subCategoryService.findByKey(id));
    		
@@ -128,7 +140,11 @@ public class ProductController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
 	public Message editProduct(@RequestBody Product product,
-		   @RequestParam(value = "subCategoryId", required = false)int id) {
+		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
+		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
+				authenticateService.OWNER)) {
+			return new FailureMessage(Message.FAIL, "This user does not allow");
+		}
 		
 		SubCategory subCategory = subCategoryService.findByKey(id);
 		if(subCategory != null){
@@ -156,7 +172,11 @@ public class ProductController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
-	public Message deleteProduct(@RequestBody Product product) {
+	public Message deleteProduct(@RequestBody Product product, @RequestHeader(value = "token") String token) {
+		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
+				authenticateService.OWNER)) {
+			return new FailureMessage(Message.FAIL, "This user does not allow");
+		}
 		
 		System.out.println(product.getSerialNumber());
 		try {

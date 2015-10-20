@@ -36,7 +36,7 @@ public interface UserRepository extends Repository<User, Integer> {
 	 * @param size
 	 * @return List<User>
 	 */
-	List<User> findAndAscByName(int start, int size);
+	List<User> findAndAscByFirstName(int start, int size);
 
 	/**
 	 * Query users with limit size and descending by name.
@@ -45,6 +45,6 @@ public interface UserRepository extends Repository<User, Integer> {
 	 * @param size
 	 * @return List<User>
 	 */
-	List<User> findAndDescByName(int start, int size);
+	List<User> findAndDescByFirstName(int start, int size);
 
 }

@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 @Entity
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+// @JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.clas÷s)
 @Table(name = "sub_category")
 public class SubCategory {
 
@@ -42,7 +42,7 @@ public class SubCategory {
 	private Category category;
 
 	@JsonIgnore
-	@OneToMany(fetch = FetchType.EAGER, mappedBy="subCategory")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "subCategory")
 	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	private Set<Product> products;
 
@@ -61,11 +61,11 @@ public class SubCategory {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
 	public Set<Product> getProducts() {
 		return products;
 	}
-	
+
 	public Category getCategory() {
 		return category;
 	}
@@ -77,7 +77,22 @@ public class SubCategory {
 	public void setCategory(Category category) {
 		this.category = category;
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Product))
+			return false;
+		SubCategory other = (SubCategory) obj;
+		if (id != other.id) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public String toString() {
 		Class<?> clazz = this.getClass();

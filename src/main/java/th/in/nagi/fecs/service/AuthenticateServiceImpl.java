@@ -37,11 +37,6 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 */
 	@Autowired
 	private RoleRepository roleRepository;
-	
-	public final String MEMBER = "member";
-	public final String STAFF = "staff";
-	public final String MANAGER = "member";
-	public final String OWNER = "owner";
 
 	/**
 	 * Tool for managing user table that link to database.
