@@ -2,9 +2,14 @@ package th.in.nagi.fecs.repository;
 
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import th.in.nagi.fecs.model.SubCategory;
 
@@ -64,8 +69,8 @@ public class SubCategoryRepositoryImpl extends AbstractRepository<SubCategory, I
 	 */
 	@Override
 	public List<SubCategory> findAndAscByName(int start, int size) {
-		List<SubCategory> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name"))
-				.setFirstResult(start).setMaxResults(size).list();
+		List<SubCategory> list = createEntityCriteria().setFetchMode("products", FetchMode.LAZY)
+				.addOrder(org.hibernate.criterion.Order.asc("name")).setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
 
@@ -74,8 +79,8 @@ public class SubCategoryRepositoryImpl extends AbstractRepository<SubCategory, I
 	 */
 	@Override
 	public List<SubCategory> findAndDescByName(int start, int size) {
-		List<SubCategory> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name"))
-				.setFirstResult(start).setMaxResults(size).list();
+		List<SubCategory> list = createEntityCriteria().setFetchMode("products", FetchMode.LAZY)
+				.addOrder(org.hibernate.criterion.Order.desc("name")).setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
 

@@ -3,6 +3,7 @@ package th.in.nagi.fecs.repository;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -74,7 +75,7 @@ public class UserRepositoryImpl extends AbstractRepository<User, Integer>impleme
 	 */
 	@Override
 	public List<User> findAndAscByName(int start, int size) {
-		List<User> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name"))
+		List<User> list = createEntityCriteria().setFetchMode("authenticate", FetchMode.LAZY).addOrder(org.hibernate.criterion.Order.asc("name"))
 				.setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
@@ -84,7 +85,7 @@ public class UserRepositoryImpl extends AbstractRepository<User, Integer>impleme
 	 */
 	@Override
 	public List<User> findAndDescByName(int start, int size) {
-		List<User> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name"))
+		List<User> list = createEntityCriteria().setFetchMode("authenticate", FetchMode.LAZY).addOrder(org.hibernate.criterion.Order.desc("name"))
 				.setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
