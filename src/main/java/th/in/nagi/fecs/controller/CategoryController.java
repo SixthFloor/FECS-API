@@ -65,7 +65,7 @@ public class CategoryController extends BaseController {
     private AuthenticateService authenticateService;
 
 	/**
-	 * Return list of products in the category
+	 * Return list of category
 	 * 
 	 * @param categoryName
 	 * @return list of products in the category
@@ -75,6 +75,19 @@ public class CategoryController extends BaseController {
 	public Message showAllCategory() {
 		return new SuccessMessage(Message.SUCCESS, categoryService.findAll());
 	}
+	
+	/**
+	 * Return list of subcategory
+	 * 
+	 * @param categoryName
+	 * @return list of subcategory
+	 */
+	@ResponseBody
+	@RequestMapping(value = "/subCategory/all", method = RequestMethod.GET)
+	public Message showAllSubCategory() {
+		return new SuccessMessage(Message.SUCCESS, subCategoryService.findAll());
+	}
+
 
 	/**
 	 * list of category with limit size
