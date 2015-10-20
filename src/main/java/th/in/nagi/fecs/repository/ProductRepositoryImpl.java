@@ -3,6 +3,7 @@ package th.in.nagi.fecs.repository;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
@@ -83,14 +84,14 @@ public class ProductRepositoryImpl extends AbstractRepository<Product, Integer>i
 	 */
 	@Override
 	public List<Product> findAndAscByName(int start, int size) {
-		List<Product> products = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name"))
+		List<Product> products = createEntityCriteria().setFetchMode("images", FetchMode.LAZY).addOrder(org.hibernate.criterion.Order.asc("name"))
 				.setFirstResult(start).setMaxResults(size).list();
 		return products;
 	}
 
 	@Override
 	public List<Product> findAndDescByName(int start, int size) {
-		List<Product> products = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name"))
+		List<Product> products = createEntityCriteria().setFetchMode("images", FetchMode.LAZY).addOrder(org.hibernate.criterion.Order.desc("name"))
 				.setFirstResult(start).setMaxResults(size).list();
 		return products;
 	}

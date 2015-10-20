@@ -3,6 +3,7 @@ package th.in.nagi.fecs.repository;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -63,8 +64,8 @@ public class CategoryRepositoryImpl extends AbstractRepository<Category, Integer
 	 */
 	@Override
 	public List<Category> findAndAscByName(int start, int size) {
-		List<Category> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name"))
-				.setFirstResult(start).setMaxResults(size).list();
+		List<Category> list = createEntityCriteria().setFetchMode("subCategories", FetchMode.LAZY)
+				.addOrder(org.hibernate.criterion.Order.asc("name")).setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
 
@@ -73,8 +74,8 @@ public class CategoryRepositoryImpl extends AbstractRepository<Category, Integer
 	 */
 	@Override
 	public List<Category> findAndDescByName(int start, int size) {
-		List<Category> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name"))
-				.setFirstResult(start).setMaxResults(size).list();
+		List<Category> list = createEntityCriteria().setFetchMode("subCategories", FetchMode.LAZY)
+				.addOrder(org.hibernate.criterion.Order.desc("name")).setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
 
