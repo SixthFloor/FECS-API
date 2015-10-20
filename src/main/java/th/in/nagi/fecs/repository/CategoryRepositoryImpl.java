@@ -26,7 +26,7 @@ public class CategoryRepositoryImpl extends AbstractRepository<Category, Integer
 	@Override
 	public List<Category> findAll() {
 		Criteria criteria = createEntityCriteria();
-		return (List<Category>) criteria.list();
+		return (List<Category>) criteria.setFetchMode("subCategories", FetchMode.LAZY).list();
 	}
 
 	/**

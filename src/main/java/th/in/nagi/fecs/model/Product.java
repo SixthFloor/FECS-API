@@ -21,7 +21,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+import th.in.nagi.fecs.view.ProductView;
 
 /**
  * Product model
@@ -29,13 +32,14 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  *
  */
 @Entity
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "product")
 public class Product {
 
 	/**
 	 * id of product
 	 */
+	@JsonView(ProductView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -43,12 +47,14 @@ public class Product {
 	/**
 	 * serialNumber of product
 	 */
+	@JsonView(ProductView.Personal.class)
 	@Column(name = "serial_number", unique=true)
 	private String serialNumber;
 
 	/**
 	 * name of product
 	 */
+	@JsonView(ProductView.Personal.class)
 	@Size(min = 1, max = 50)
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -56,6 +62,7 @@ public class Product {
 	/**
 	 * price of product
 	 */
+	@JsonView(ProductView.Personal.class)
 	@Min(0)
 	@Column(name = "price", nullable = false)
 	private double price;
@@ -63,6 +70,7 @@ public class Product {
 	/**
 	 * description of product
 	 */
+	@JsonView(ProductView.Personal.class)
 	@Size(min = 1, max = 255)
 	@Column(name = "description", nullable = true)
 	private String description;
@@ -70,25 +78,19 @@ public class Product {
 	/**
 	 * dimension description of product
 	 */
+	@JsonView(ProductView.Personal.class)
 	@Size(min = 1, max = 255)
 	@Column(name = "dimension_description", nullable = true)
 	private String dimensionDescription;
 
+	@JsonView(ProductView.ElementalImage.class)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "product")
 	private Set<ProductImage> images;
 	
-	@JsonIgnore
+	@JsonView(ProductView.ElementalSubCategory.class)
 	@ManyToOne
 	@JoinColumn(name="sub_category_id")
 	private SubCategory subCategory;
-	
-	public Integer getSubCategoryId(){
-		return subCategory.getId();
-	}
-	
-	public Integer getCategoryId(){
-		return subCategory.getCategory().getId();
-	}
 	
 	/**
 	 * Return dimension description

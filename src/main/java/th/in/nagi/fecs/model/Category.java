@@ -26,6 +26,9 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import th.in.nagi.fecs.view.CategoryView;
+import th.in.nagi.fecs.view.ProductView;
+
 /**
  * Category model
  * 
@@ -33,13 +36,14 @@ import com.fasterxml.jackson.annotation.ObjectIdGenerators;
  *
  */
 @Entity
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "category")
 public class Category {
 
 	/**
 	 * id of category
 	 */
+	@JsonView(CategoryView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -47,11 +51,12 @@ public class Category {
 	/**
 	 * Name of category
 	 */
+	@JsonView(CategoryView.Personal.class)
 	@Size(min = 1, max = 50)
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@JsonIgnore
+	@JsonView(CategoryView.ElementalSubCategory.class)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
 	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	private Set<SubCategory> subCategories;

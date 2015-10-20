@@ -25,7 +25,7 @@ public class UserRepositoryImpl extends AbstractRepository<User, Integer>impleme
 	@Override
 	public List<User> findAll() {
 		Criteria criteria = createEntityCriteria();
-		return (List<User>) criteria.list();
+		return (List<User>) criteria.setFetchMode("authenticate", FetchMode.LAZY).list();
 	}
 
 	/**

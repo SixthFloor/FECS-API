@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import th.in.nagi.fecs.message.ErrorMessage;
 import th.in.nagi.fecs.message.FailureMessage;
 import th.in.nagi.fecs.message.Message;
@@ -25,6 +27,7 @@ import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.service.AuthenticateService;
 import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.service.SubCategoryService;
+import th.in.nagi.fecs.view.ProductView;
 
 
 /**
@@ -59,7 +62,7 @@ public class ProductController extends BaseController {
 	 * @param serialNumber
 	 * @return a product that have the serialNumber
 	 */
-	@ResponseBody
+	@JsonView(ProductView.Summary.class)
 	@RequestMapping(value="/{serialNumber}", method=RequestMethod.GET)
     public Message getDetail(@PathVariable String serialNumber) {
 		Product product = productService.findBySerialNumber(serialNumber);
@@ -74,7 +77,7 @@ public class ProductController extends BaseController {
 	 * Return all products
 	 * @return list of all products
 	 */
-	@ResponseBody
+	@JsonView(ProductView.Summary.class)
 	@RequestMapping(value="/all", method=RequestMethod.GET)
     public Message showAllProduct() {
 		List<Product> product = productService.findAll();
@@ -90,7 +93,7 @@ public class ProductController extends BaseController {
     * @param size size of the list
     * @return limit list of product 
     */
-	@ResponseBody
+	@JsonView(ProductView.Summary.class)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Message getListProduct(@RequestParam(value = "start", required = false)int start,
    		@RequestParam(value = "size", required = false)int size) {

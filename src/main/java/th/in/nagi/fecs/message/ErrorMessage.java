@@ -1,5 +1,10 @@
 package th.in.nagi.fecs.message;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import th.in.nagi.fecs.view.BaseView;
+import th.in.nagi.fecs.view.ProductView;
+
 /**
  * Use for error message only.
  * 
@@ -11,6 +16,7 @@ public class ErrorMessage extends Message {
 	/**
 	 * Information to send to client.
 	 */
+	@JsonView(BaseView.Standardized.class)
 	private String message;
 
 	public ErrorMessage(String status, String message) {

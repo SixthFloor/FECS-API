@@ -9,26 +9,27 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import th.in.nagi.fecs.view.ProductImageView;
+import th.in.nagi.fecs.view.ProductView;
 
 @Entity
-@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
+//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "product_image")
 public class ProductImage {
 	
+	@JsonView(ProductImageView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
+	@JsonView(ProductImageView.Personal.class)
 	@Size(min = 1, max = 255)
 	@Column(name = "link", nullable = false)
 	private String link;
 	
-	@JsonIgnore
+	@JsonView(ProductImageView.Summary.class)
 	@ManyToOne
 	private Product product;
 

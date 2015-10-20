@@ -27,7 +27,7 @@ public class ProductRepositoryImpl extends AbstractRepository<Product, Integer>i
 	@Override
 	public List<Product> findAll() {
 		Criteria criteria = createEntityCriteria();
-		return (List<Product>) criteria.list();
+		return (List<Product>) criteria.setFetchMode("images", FetchMode.LAZY).list();
 	}
 
 	/**
