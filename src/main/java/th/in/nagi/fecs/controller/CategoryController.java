@@ -21,7 +21,7 @@ import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.service.AuthenticateService;
 import th.in.nagi.fecs.service.CategoryService;
-import th.in.nagi.fecs.service.ProductService;
+import th.in.nagi.fecs.service.FurnitureDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.view.CategoryView;
 import th.in.nagi.fecs.view.SubCategoryView;
@@ -40,7 +40,7 @@ public class CategoryController extends BaseController {
 	 * Service of product
 	 */
 	@Autowired
-	private ProductService productService;
+	private FurnitureDescriptionService furnitureDescriptionService;
 
 	/**
 	 * Service of category

@@ -25,7 +25,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import th.in.nagi.fecs.view.ProductView;
+import th.in.nagi.fecs.view.FurnitureDescriptionView;
 import th.in.nagi.fecs.view.SubCategoryView;
 
 @Entity
@@ -50,7 +50,7 @@ public class SubCategory {
 	@JsonView(SubCategoryView.ElementalProduct.class)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "subCategory")
 	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-	private Set<Product> products;
+	private Set<FurnitureDescription> furnitureDescriptions;
 
 	public Integer getId() {
 		return id;
@@ -68,16 +68,16 @@ public class SubCategory {
 		this.name = name;
 	}
 
-	public Set<Product> getProducts() {
-		return products;
+	public Set<FurnitureDescription> getProducts() {
+		return furnitureDescriptions;
 	}
 
 	public Category getCategory() {
 		return category;
 	}
 
-	public void setProducts(Set<Product> products) {
-		this.products = products;
+	public void setProducts(Set<FurnitureDescription> furnitureDescriptions) {
+		this.furnitureDescriptions = furnitureDescriptions;
 	}
 
 	public void setCategory(Category category) {
@@ -90,7 +90,7 @@ public class SubCategory {
 			return true;
 		if (obj == null)
 			return false;
-		if (!(obj instanceof Product))
+		if (!(obj instanceof FurnitureDescription))
 			return false;
 		SubCategory other = (SubCategory) obj;
 		if (id != other.id) {

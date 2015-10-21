@@ -22,12 +22,12 @@ import th.in.nagi.fecs.message.FailureMessage;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Category;
-import th.in.nagi.fecs.model.Product;
+import th.in.nagi.fecs.model.FurnitureDescription;
 import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.service.AuthenticateService;
-import th.in.nagi.fecs.service.ProductService;
+import th.in.nagi.fecs.service.FurnitureDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
-import th.in.nagi.fecs.view.ProductView;
+import th.in.nagi.fecs.view.FurnitureDescriptionView;
 
 
 /**
@@ -37,13 +37,13 @@ import th.in.nagi.fecs.view.ProductView;
  */
 @RestController
 @RequestMapping("/api/product")
-public class ProductController extends BaseController {
+public class FurnitureDescriptionController extends BaseController {
 	
 	/**
 	 * Service of product
 	 */
 	@Autowired
-    private ProductService productService;
+    private FurnitureDescriptionService furnitureDescriptionService;
 	
 	/**
 	 * Service of subcategory
@@ -62,12 +62,12 @@ public class ProductController extends BaseController {
 	 * @param serialNumber
 	 * @return a product that have the serialNumber
 	 */
-	@JsonView(ProductView.Summary.class)
+	@JsonView(FurnitureDescriptionView.Summary.class)
 	@RequestMapping(value="/{serialNumber}", method=RequestMethod.GET)
     public Message getDetail(@PathVariable String serialNumber) {
-		Product product = productService.findBySerialNumber(serialNumber);
-		if (product != null){
-			return new SuccessMessage(Message.SUCCESS, product);
+		FurnitureDescription furnitureDescription = furnitureDescriptionService.findBySerialNumber(serialNumber);
+		if (furnitureDescription != null){
+			return new SuccessMessage(Message.SUCCESS, furnitureDescription);
 		}
 		return new FailureMessage(Message.FAIL, "Not found product.");
         
@@ -77,12 +77,12 @@ public class ProductController extends BaseController {
 	 * Return all products
 	 * @return list of all products
 	 */
-	@JsonView(ProductView.Summary.class)
+	@JsonView(FurnitureDescriptionView.Summary.class)
 	@RequestMapping(value="/all", method=RequestMethod.GET)
     public Message showAllProduct() {
-		List<Product> product = productService.findAll();
-		if (product != null){
-			return new SuccessMessage(Message.SUCCESS, product);
+		List<FurnitureDescription> furnitureDescription = furnitureDescriptionService.findAll();
+		if (furnitureDescription != null){
+			return new SuccessMessage(Message.SUCCESS, furnitureDescription);
 		}
 		return new FailureMessage(Message.FAIL, "Not found product.");
     }
@@ -93,56 +93,56 @@ public class ProductController extends BaseController {
     * @param size size of the list
     * @return limit list of product 
     */
-	@JsonView(ProductView.Summary.class)
+	@JsonView(FurnitureDescriptionView.Summary.class)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Message getListProduct(@RequestParam(value = "start", required = false)int start,
    		@RequestParam(value = "size", required = false)int size) {
-		int productListSize = productService.findAll().size();
+		int productListSize = furnitureDescriptionService.findAll().size();
 		if(size > productListSize - start){
 		   size = productListSize - start;
 		}
-		List<Product> products = (productService.findAndAscByName(start, size));
-		if(products == null) {
+		List<FurnitureDescription> furnitureDescriptions = (furnitureDescriptionService.findAndAscByName(start, size));
+		if(furnitureDescriptions == null) {
     	   return new FailureMessage(Message.FAIL, "Not found product.");
 		}
-		return new SuccessMessage(Message.SUCCESS, products);
+		return new SuccessMessage(Message.SUCCESS, furnitureDescriptions);
 	}
    
    	/**
    	 * create and add new product to database
-   	 * @param product new product
+   	 * @param furnitureDescription new product
    	 * @param id id of subcategory of product
    	 * @return message success if not return message fail
    	 */
    	@ResponseBody
 	@RequestMapping(value="/new", method=RequestMethod.POST)
-   	public Message createNewProduct(@RequestBody Product product,
+   	public Message createNewProduct(@RequestBody FurnitureDescription furnitureDescription,
 		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new FailureMessage(Message.FAIL, "This user does not allow");
 		}
    		
-   		product.setSubCategory(subCategoryService.findByKey(id));
+   		furnitureDescription.setSubCategory(subCategoryService.findByKey(id));
    		
-   		System.out.println(product.getSubCategory().getName());
+   		System.out.println(furnitureDescription.getSubCategory().getName());
    		try {
-			productService.store(product);
+			furnitureDescriptionService.store(furnitureDescription);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Create Product failed");
+			return new FailureMessage(Message.FAIL, "Create FurnitureDescription failed");
 		}
-		return new SuccessMessage(Message.SUCCESS, "Product has added");
+		return new SuccessMessage(Message.SUCCESS, "FurnitureDescription has added");
    	}
    	
 	/**
 	 * edit information of product
-	 * @param product new information that want to edit
+	 * @param furnitureDescription new information that want to edit
 	 * @param id id of new subcategory of product
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
-	public Message editProduct(@RequestBody Product product,
+	public Message editProduct(@RequestBody FurnitureDescription furnitureDescription,
 		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
@@ -151,44 +151,44 @@ public class ProductController extends BaseController {
 		
 		SubCategory subCategory = subCategoryService.findByKey(id);
 		if(subCategory != null){
-			product.setSubCategory(subCategory);
+			furnitureDescription.setSubCategory(subCategory);
 		}
 //		if(oldProduct == null){
 //			return new FailureMessage(Message.FAIL, "This product is not existed");
 //		}
 //		
 //		oldProduct.setName(product.getName());
-		product.setSubCategory(subCategoryService.findByKey(id));
+		furnitureDescription.setSubCategory(subCategoryService.findByKey(id));
 		try {
-			productService.update(product);
+			furnitureDescriptionService.update(furnitureDescription);
 		} catch (Exception e) {
 			return new FailureMessage(Message.FAIL, "Edit product failed");
 		}
 		
-		return new SuccessMessage(Message.SUCCESS, "Product" +" has edited");
+		return new SuccessMessage(Message.SUCCESS, "FurnitureDescription" +" has edited");
 	}
 	
 	/**
 	 * delete a product
-	 * @param product put id of product that want to delete 
+	 * @param furnitureDescription put id of product that want to delete 
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
 	@RequestMapping(value="/delete", method=RequestMethod.POST)
-	public Message deleteProduct(@RequestBody Product product, @RequestHeader(value = "token") String token) {
+	public Message deleteProduct(@RequestBody FurnitureDescription furnitureDescription, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new FailureMessage(Message.FAIL, "This user does not allow");
 		}
 		
-		System.out.println(product.getSerialNumber());
+		System.out.println(furnitureDescription.getSerialNumber());
 		try {
-			productService.removeBySerialNumber(product.getSerialNumber());;
+			furnitureDescriptionService.removeBySerialNumber(furnitureDescription.getSerialNumber());;
 		} catch (Exception e) {
 			System.out.println(e);
 			return new FailureMessage(Message.FAIL, "Remove product failed");
 		}
-		return new SuccessMessage(Message.SUCCESS, "Product" + " has removed");
+		return new SuccessMessage(Message.SUCCESS, "FurnitureDescription" + " has removed");
 	}
    
 }

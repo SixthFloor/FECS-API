@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import th.in.nagi.fecs.view.CategoryView;
-import th.in.nagi.fecs.view.ProductView;
+import th.in.nagi.fecs.view.FurnitureDescriptionView;
 
 /**
  * Category model
@@ -71,12 +71,12 @@ public class Category {
 	}
 	
 	@JsonIgnore
-	public Set<Product> getProducts() {
-		Set<Product> products = new HashSet<>();
+	public Set<FurnitureDescription> getProducts() {
+		Set<FurnitureDescription> furnitureDescriptions = new HashSet<>();
 		for (SubCategory subCategory : getSubCategories()) {
-			products.addAll(subCategory.getProducts());
+			furnitureDescriptions.addAll(subCategory.getProducts());
 		}
-		return products;
+		return furnitureDescriptions;
 	}
 
 	/**
