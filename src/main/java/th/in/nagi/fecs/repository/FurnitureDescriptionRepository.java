@@ -2,7 +2,7 @@ package th.in.nagi.fecs.repository;
 
 import java.util.List;
 
-import th.in.nagi.fecs.model.Product;
+import th.in.nagi.fecs.model.FurnitureDescription;
 
 /**
  * Collection of tools for managing product.
@@ -10,15 +10,15 @@ import th.in.nagi.fecs.model.Product;
  * @author Thanachote Visetsuthimont
  *
  */
-public interface ProductRepository extends Repository<Product, Integer> {
+public interface FurnitureDescriptionRepository extends Repository<FurnitureDescription, Integer> {
 
 	/**
 	 * Query product by serial number.
 	 * 
 	 * @param serialNumber
-	 * @return Product
+	 * @return FurnitureDescription
 	 */
-	public Product findBySerialNumber(String serialNumber);
+	public FurnitureDescription findBySerialNumber(String serialNumber);
 
 	/**
 	 * Remove product by using serial number.
@@ -32,35 +32,35 @@ public interface ProductRepository extends Repository<Product, Integer> {
 	 * 
 	 * @param start
 	 * @param size
-	 * @return List<Product>
+	 * @return List<FurnitureDescription>
 	 */
-	public List<Product> findAndAscByName(int start, int size);
+	public List<FurnitureDescription> findAndAscByName(int start, int size);
 
 	/**
 	 * Query products with limit size and descending by name.
 	 * 
 	 * @param start
 	 * @param size
-	 * @return List<Product>
+	 * @return List<FurnitureDescription>
 	 */
-	public List<Product> findAndDescByName(int start, int size);
+	public List<FurnitureDescription> findAndDescByName(int start, int size);
 
 	/**
 	 * Query products with limit size and ascending by price.
 	 * 
 	 * @param start
 	 * @param size
-	 * @return List<Product>
+	 * @return List<FurnitureDescription>
 	 */
-	public List<Product> findAndAscByPrice(int start, int size);
+	public List<FurnitureDescription> findAndAscByPrice(int start, int size);
 
 	/**
 	 * Query products with limit size and descending by price.
 	 * 
 	 * @param start
 	 * @param size
-	 * @return List<Product>
+	 * @return List<FurnitureDescription>
 	 */
-	public List<Product> findAndDescByPrice(int start, int size);
+	public List<FurnitureDescription> findAndDescByPrice(int start, int size);
 
 }

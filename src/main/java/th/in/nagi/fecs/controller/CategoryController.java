@@ -1,12 +1,6 @@
 package th.in.nagi.fecs.controller;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -19,15 +13,17 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import th.in.nagi.fecs.message.ErrorMessage;
+import com.fasterxml.jackson.annotation.JsonView;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Category;
-import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.service.AuthenticateService;
 import th.in.nagi.fecs.service.CategoryService;
-import th.in.nagi.fecs.service.ProductService;
+import th.in.nagi.fecs.service.FurnitureDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
+import th.in.nagi.fecs.view.CategoryView;
+import th.in.nagi.fecs.view.SubCategoryView;
 
 /**
  * Controller for category
@@ -43,7 +39,7 @@ public class CategoryController extends BaseController {
 	 * Service of product
 	 */
 	@Autowired
-	private ProductService productService;
+	private FurnitureDescriptionService furnitureDescriptionService;
 
 	/**
 	 * Service of category
@@ -69,7 +65,7 @@ public class CategoryController extends BaseController {
 	 * @param categoryName
 	 * @return list of products in the category
 	 */
-	@ResponseBody
+	@JsonView(CategoryView.Summary.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	public Message showAllCategory() {
 		return new SuccessMessage(Message.SUCCESS, categoryService.findAll(), "200");
@@ -81,7 +77,7 @@ public class CategoryController extends BaseController {
 	 * @param categoryName
 	 * @return list of subcategory
 	 */
-	@ResponseBody
+	@JsonView(SubCategoryView.Summary.class)
 	@RequestMapping(value = "/subCategory/all", method = RequestMethod.GET)
 	public Message showAllSubCategory() {
 		return new SuccessMessage(Message.SUCCESS, subCategoryService.findAll(), "200");
@@ -97,7 +93,7 @@ public class CategoryController extends BaseController {
 	 *            size of the list
 	 * @return limit list of category
 	 */
-	@ResponseBody
+	@JsonView(CategoryView.Summary.class)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public Message getListUsers(@RequestParam(value = "start", required = false) int start,
 			@RequestParam(value = "size", required = false) int size) {
@@ -121,7 +117,7 @@ public class CategoryController extends BaseController {
 	 *            size of the list
 	 * @return limit list of subCategory
 	 */
-	@ResponseBody
+	@JsonView(SubCategoryView.Summary.class)
 	@RequestMapping(value = "/subCategory/list", method = RequestMethod.GET)
 	public Message getListsubCategorys(@RequestParam(value = "start", required = false) int start,
 			@RequestParam(value = "size", required = false) int size) {
@@ -143,7 +139,7 @@ public class CategoryController extends BaseController {
 	 *            category name that want to show products inside
 	 * @return list of product
 	 */
-	@ResponseBody
+	@JsonView(CategoryView.Summary.class)
 	@RequestMapping(value = "/{categoryName}", method = RequestMethod.GET)
 	public Message showProductsByCategory(@PathVariable String categoryName) {
 

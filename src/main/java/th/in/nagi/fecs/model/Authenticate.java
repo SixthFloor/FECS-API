@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
- * Product model
+ * FurnitureDescription model
  * @author Nara Surawit
  *
  */
@@ -125,9 +125,9 @@ public class Authenticate {
 //            return true;
 //        if (obj == null)
 //            return false;
-//        if (!(obj instanceof Product))
+//        if (!(obj instanceof FurnitureDescription))
 //            return false;
-//        Product other = (Product) obj;
+//        FurnitureDescription other = (FurnitureDescription) obj;
 //        if (id != other.id){
 //            return false;
 //        } else if (!serialNumber.equals(other.serialNumber))
