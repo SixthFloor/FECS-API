@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -67,16 +69,16 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public Message getAllUsers(@RequestHeader(value = "token") String token) {
+    public ResponseEntity getAllUsers(@RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
         Set<User> users = new HashSet<User>(getUserService().findAll());
         if(users != null) {
-			return new SuccessMessage(Message.SUCCESS, users, "200");
+        	return new ResponseEntity(users, HttpStatus.OK);
 		}
-		return new ErrorMessage(Message.ERROR, "Not found user.", "400");
+        return new ResponseEntity(new Message("Not found user"), HttpStatus.BAD_REQUEST);
     }
     
     /**
@@ -90,23 +92,23 @@ public class UsersController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Message getListUsers(@RequestParam(value = "start", required = false) int start,
+	public ResponseEntity getListUsers(@RequestParam(value = "start", required = false) int start,
 			@RequestParam(value = "size", required = false) int size,@RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		int userListSize = userService.findAll().size();
 		if (size > userListSize - start) {
 			size = userListSize - start;
 		}
-		System.out.println(userListSize);
-		System.out.println(start+"                                                   "+size);
+//		System.out.println(userListSize);
+//		System.out.println(start+"                                                   "+size);
 		List<User> user = (userService.findAndAscByFirstName(start, size));
 		if (user == null) {
-			return new ErrorMessage(Message.ERROR, "Not found user.", "400");
+			return new ResponseEntity(new Message("Not found user"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, user, "200");
+		return new ResponseEntity(user, HttpStatus.OK);
 	}
 	
     
@@ -117,17 +119,17 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
-    public Message getUserByEmail(@PathVariable String email, @RequestHeader(value = "token") String token) {
+    public ResponseEntity getUserByEmail(@PathVariable String email, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
         User user = getUserService().findByEmail(email);
         if(user != null) {
-			return new SuccessMessage(Message.SUCCESS, user, "200");
+        	return new ResponseEntity(user, HttpStatus.OK);
 		}
-		return new ErrorMessage(Message.ERROR, "Not found user.", "400");
+        return new ResponseEntity(new Message("Not found user"), HttpStatus.BAD_REQUEST);
     }
 
     /**
@@ -138,20 +140,20 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = { "/new" }, method = RequestMethod.POST)
-    public Message create(@RequestBody User user, @RequestParam(value = "roleId", required = false)int id) {
+    public ResponseEntity create(@RequestBody User user, @RequestParam(value = "roleId", required = false)int id) {
     	Date date = new Date();
     	String passwordHash = user.changeToHash(user.getPassword());
     	user.setPassword(passwordHash);
     	user.setJoiningDate(date);
     	user.setRole(roleService.findByKey(id));
-    	System.out.println(user);
+//    	System.out.println(user);
     	try {
 			getUserService().store(user);
 		} catch (Exception e) {
-			System.out.println(e);
-			return new ErrorMessage(Message.ERROR, "Create user failed", "400");
+//			System.out.println(e);
+			return new ResponseEntity(new Message("Create user failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, user, "201");
+    	return new ResponseEntity(user, HttpStatus.CREATED);
     }
     
 
@@ -162,17 +164,17 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = {"/editByMember" }, method = RequestMethod.PUT)
-    public Message editUserByMember(@RequestBody User newUser, @RequestHeader(value = "token") String token) {
+    public ResponseEntity editUserByMember(@RequestBody User newUser, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.MEMBER)) {
-			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 //        User user = getUserService().findByUsername(newUser.getUsername());
     	try {
     		getUserService().update(newUser);
 		} catch (Exception e) {
-			return new ErrorMessage(Message.ERROR, "User not found", "400");
+			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, getUserService().findByEmail(newUser.getEmail()).getEmail(), "200");
+    	return new ResponseEntity(getUserService().findByEmail(newUser.getEmail()).getEmail(), HttpStatus.OK);
     }
     
     /**
@@ -182,10 +184,10 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = {"/editByAdmin" }, method = RequestMethod.PUT)
-    public Message editUserByAdmin(@RequestBody User newUser, @RequestHeader(value = "token") String token) {
+    public ResponseEntity editUserByAdmin(@RequestBody User newUser, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		if(!authenticateService.getRole(token).getName().equals(authenticateService.OWNER)){
 			newUser.setRole(null);
@@ -194,9 +196,9 @@ public class UsersController extends BaseController {
     	try {
     		getUserService().update(newUser);
 		} catch (Exception e) {
-			return new ErrorMessage(Message.ERROR, "User not found", "400");
+			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, getUserService().findByEmail(newUser.getEmail()).getEmail(), "200");
+    	return new ResponseEntity(getUserService().findByEmail(newUser.getEmail()).getEmail(), HttpStatus.OK);
     }
     /*
      * This method will delete an user by it's Username value.
@@ -208,22 +210,22 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = {"/delete" }, method = RequestMethod.DELETE)
-    public Message deleteUser(@RequestBody User tempUser, @RequestHeader(value = "token") String token) {
+    public ResponseEntity deleteUser(@RequestBody User tempUser, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.OWNER)) {
-			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
     	User user = getUserService().findByEmail(tempUser.getEmail());
     	String passwordHash = user.changeToHash(tempUser.getPassword());
     	
     	if(!user.getPassword().equals(passwordHash)){
-    		return new ErrorMessage(Message.ERROR, "Incorrect password", "400");
+    		return new ResponseEntity(new Message("Incorrect password"), HttpStatus.BAD_REQUEST);
     	}
        
         try {
         	getUserService().removeByEmail(user.getEmail());
 		} catch (Exception e) {
-			return new ErrorMessage(Message.ERROR, "User not found", "400");
+			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, user.getEmail() +" has removed", "200");
+        return new ResponseEntity(new Message("User has removed"), HttpStatus.OK);
     }
  }

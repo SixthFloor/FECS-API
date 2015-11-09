@@ -37,7 +37,7 @@ import th.in.nagi.fecs.view.FurnitureDescriptionView;
  *
  */
 @RestController
-@RequestMapping("/api/product")
+@RequestMapping("/api/furniture")
 public class FurnitureDescriptionController extends BaseController {
 	
 	/**
@@ -132,7 +132,7 @@ public class FurnitureDescriptionController extends BaseController {
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("Create FurnitureDescription failed"), HttpStatus.BAD_REQUEST);
 		}
-   		return new ResponseEntity(new Message("FurnitureDescription has added"), HttpStatus.OK);
+   		return new ResponseEntity(new Message("FurnitureDescription has added"), HttpStatus.CREATED);
    	}
    	
 	/**
@@ -142,7 +142,7 @@ public class FurnitureDescriptionController extends BaseController {
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value="/edit", method=RequestMethod.POST)
+	@RequestMapping(value="/edit", method=RequestMethod.PUT)
 	public ResponseEntity editProduct(@RequestBody FurnitureDescription furnitureDescription,
 		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
@@ -174,11 +174,11 @@ public class FurnitureDescriptionController extends BaseController {
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value="/delete", method=RequestMethod.POST)
-	public Message deleteProduct(@RequestBody FurnitureDescription furnitureDescription, @RequestHeader(value = "token") String token) {
+	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
+	public ResponseEntity deleteProduct(@RequestBody FurnitureDescription furnitureDescription, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		
 		System.out.println(furnitureDescription.getSerialNumber());
@@ -186,9 +186,9 @@ public class FurnitureDescriptionController extends BaseController {
 			furnitureDescriptionService.removeBySerialNumber(furnitureDescription.getSerialNumber());;
 		} catch (Exception e) {
 			System.out.println(e);
-			return new ErrorMessage(Message.ERROR, "Remove product failed", "400");
+			return new ResponseEntity(new Message("Remove product failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, "FurnitureDescription" + " has removed", "200");
+		return new ResponseEntity(new Message("FurniturerDescription has removed"), HttpStatus.OK);
 	}
    
 }
