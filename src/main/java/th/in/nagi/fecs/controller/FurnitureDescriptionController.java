@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -63,12 +65,12 @@ public class FurnitureDescriptionController extends BaseController {
 	 */
 	@JsonView(FurnitureDescriptionView.Summary.class)
 	@RequestMapping(value="/{serialNumber}", method=RequestMethod.GET)
-    public Message getDetail(@PathVariable String serialNumber) {
+    public ResponseEntity getDetail(@PathVariable String serialNumber) {
 		FurnitureDescription furnitureDescription = furnitureDescriptionService.findBySerialNumber(serialNumber);
 		if (furnitureDescription != null){
-			return new SuccessMessage(Message.SUCCESS, furnitureDescription, "200");
+			return  new ResponseEntity(furnitureDescription, HttpStatus.OK);
 		}
-		return new ErrorMessage(Message.ERROR, "Not found product.", "400");
+		return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
         
     }
 	
@@ -78,12 +80,12 @@ public class FurnitureDescriptionController extends BaseController {
 	 */
 	@JsonView(FurnitureDescriptionView.Summary.class)
 	@RequestMapping(value="/all", method=RequestMethod.GET)
-    public Message showAllProduct() {
+    public ResponseEntity showAllProduct() {
 		List<FurnitureDescription> furnitureDescription = furnitureDescriptionService.findAll();
 		if (furnitureDescription != null){
-			return new SuccessMessage(Message.SUCCESS, furnitureDescription, "200");
+			return new ResponseEntity(furnitureDescription, HttpStatus.OK);
 		}
-		return new ErrorMessage(Message.ERROR, "Not found product.", "400");
+		return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
     }
 	
    /**
@@ -94,7 +96,7 @@ public class FurnitureDescriptionController extends BaseController {
     */
 	@JsonView(FurnitureDescriptionView.Summary.class)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Message getListProduct(@RequestParam(value = "start", required = false)int start,
+	public ResponseEntity getListProduct(@RequestParam(value = "start", required = false)int start,
    		@RequestParam(value = "size", required = false)int size) {
 		int productListSize = furnitureDescriptionService.findAll().size();
 		if(size > productListSize - start){
@@ -102,9 +104,9 @@ public class FurnitureDescriptionController extends BaseController {
 		}
 		List<FurnitureDescription> furnitureDescriptions = (furnitureDescriptionService.findAndAscByName(start, size));
 		if(furnitureDescriptions == null) {
-    	   return new ErrorMessage(Message.ERROR, "Not found product.", "400");
+			return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, furnitureDescriptions, "200");
+		return new ResponseEntity(furnitureDescriptions, HttpStatus.OK);
 	}
    
    	/**
@@ -115,11 +117,11 @@ public class FurnitureDescriptionController extends BaseController {
    	 */
    	@ResponseBody
 	@RequestMapping(value="/new", method=RequestMethod.POST)
-   	public Message createNewProduct(@RequestBody FurnitureDescription furnitureDescription,
+   	public ResponseEntity createNewProduct(@RequestBody FurnitureDescription furnitureDescription,
 		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
    		
    		furnitureDescription.setSubCategory(subCategoryService.findByKey(id));
@@ -128,9 +130,9 @@ public class FurnitureDescriptionController extends BaseController {
    		try {
 			furnitureDescriptionService.store(furnitureDescription);
 		} catch (Exception e) {
-			return new ErrorMessage(Message.ERROR, "Create FurnitureDescription failed", "400");
+			return new ResponseEntity(new Message("Create FurnitureDescription failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, "FurnitureDescription has added", "200");
+   		return new ResponseEntity(new Message("FurnitureDescription has added"), HttpStatus.OK);
    	}
    	
 	/**
@@ -141,11 +143,11 @@ public class FurnitureDescriptionController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/edit", method=RequestMethod.POST)
-	public Message editProduct(@RequestBody FurnitureDescription furnitureDescription,
+	public ResponseEntity editProduct(@RequestBody FurnitureDescription furnitureDescription,
 		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		
 		SubCategory subCategory = subCategoryService.findByKey(id);
@@ -161,10 +163,9 @@ public class FurnitureDescriptionController extends BaseController {
 		try {
 			furnitureDescriptionService.update(furnitureDescription);
 		} catch (Exception e) {
-			return new ErrorMessage(Message.ERROR, "Edit product failed", "400");
+			return new ResponseEntity(new Message("Edit product failed"), HttpStatus.BAD_REQUEST);
 		}
-		
-		return new SuccessMessage(Message.SUCCESS, "FurnitureDescription" +" has edited", "200");
+		return new ResponseEntity(new Message("FurnitureDescription has editted"), HttpStatus.OK);
 	}
 	
 	/**
