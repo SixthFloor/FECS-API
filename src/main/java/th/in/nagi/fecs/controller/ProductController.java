@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import th.in.nagi.fecs.message.ErrorMessage;
-import th.in.nagi.fecs.message.FailureMessage;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Category;
@@ -64,9 +63,9 @@ public class ProductController extends BaseController {
     public Message getDetail(@PathVariable String serialNumber) {
 		Product product = productService.findBySerialNumber(serialNumber);
 		if (product != null){
-			return new SuccessMessage(Message.SUCCESS, product);
+			return new SuccessMessage(Message.SUCCESS, product, "200");
 		}
-		return new FailureMessage(Message.FAIL, "Not found product.");
+		return new ErrorMessage(Message.ERROR, "Not found product.", "400");
         
     }
 	
@@ -79,9 +78,9 @@ public class ProductController extends BaseController {
     public Message showAllProduct() {
 		List<Product> product = productService.findAll();
 		if (product != null){
-			return new SuccessMessage(Message.SUCCESS, product);
+			return new SuccessMessage(Message.SUCCESS, product, "200");
 		}
-		return new FailureMessage(Message.FAIL, "Not found product.");
+		return new ErrorMessage(Message.ERROR, "Not found product.", "400");
     }
 	
    /**
@@ -100,9 +99,9 @@ public class ProductController extends BaseController {
 		}
 		List<Product> products = (productService.findAndAscByName(start, size));
 		if(products == null) {
-    	   return new FailureMessage(Message.FAIL, "Not found product.");
+    	   return new ErrorMessage(Message.ERROR, "Not found product.", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, products);
+		return new SuccessMessage(Message.SUCCESS, products, "200");
 	}
    
    	/**
@@ -117,7 +116,7 @@ public class ProductController extends BaseController {
 		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
 		}
    		
    		product.setSubCategory(subCategoryService.findByKey(id));
@@ -126,9 +125,9 @@ public class ProductController extends BaseController {
    		try {
 			productService.store(product);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Create Product failed");
+			return new ErrorMessage(Message.ERROR, "Create Product failed", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, "Product has added");
+		return new SuccessMessage(Message.SUCCESS, "Product has added", "201");
    	}
    	
 	/**
@@ -138,12 +137,12 @@ public class ProductController extends BaseController {
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value="/edit", method=RequestMethod.POST)
+	@RequestMapping(value="/edit", method=RequestMethod.PUT)
 	public Message editProduct(@RequestBody Product product,
 		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
 		}
 		
 		SubCategory subCategory = subCategoryService.findByKey(id);
@@ -159,10 +158,10 @@ public class ProductController extends BaseController {
 		try {
 			productService.update(product);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Edit product failed");
+			return new ErrorMessage(Message.ERROR, "Edit product failed", "400");
 		}
 		
-		return new SuccessMessage(Message.SUCCESS, "Product" +" has edited");
+		return new SuccessMessage(Message.SUCCESS, "Product" +" has edited", "200");
 	}
 	
 	/**
@@ -171,11 +170,11 @@ public class ProductController extends BaseController {
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value="/delete", method=RequestMethod.POST)
+	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
 	public Message deleteProduct(@RequestBody Product product, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
 		}
 		
 		System.out.println(product.getSerialNumber());
@@ -183,9 +182,9 @@ public class ProductController extends BaseController {
 			productService.removeBySerialNumber(product.getSerialNumber());;
 		} catch (Exception e) {
 			System.out.println(e);
-			return new FailureMessage(Message.FAIL, "Remove product failed");
+			return new ErrorMessage(Message.ERROR, "Remove product failed", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, "Product" + " has removed");
+		return new SuccessMessage(Message.SUCCESS, "Product" + " has removed", "200");
 	}
    
 }

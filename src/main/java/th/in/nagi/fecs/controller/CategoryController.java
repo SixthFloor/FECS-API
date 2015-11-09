@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import th.in.nagi.fecs.message.ErrorMessage;
-import th.in.nagi.fecs.message.FailureMessage;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Category;
@@ -73,7 +72,7 @@ public class CategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	public Message showAllCategory() {
-		return new SuccessMessage(Message.SUCCESS, categoryService.findAll());
+		return new SuccessMessage(Message.SUCCESS, categoryService.findAll(), "200");
 	}
 	
 	/**
@@ -85,7 +84,7 @@ public class CategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/subCategory/all", method = RequestMethod.GET)
 	public Message showAllSubCategory() {
-		return new SuccessMessage(Message.SUCCESS, subCategoryService.findAll());
+		return new SuccessMessage(Message.SUCCESS, subCategoryService.findAll(), "200");
 	}
 
 
@@ -108,9 +107,9 @@ public class CategoryController extends BaseController {
 		}
 		List<Category> category = (categoryService.findAndAscByName(start, size));
 		if (category == null) {
-			return new FailureMessage(Message.FAIL, "Not found category.");
+			return new ErrorMessage(Message.ERROR, "Not found category.", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, category);
+		return new SuccessMessage(Message.SUCCESS, category, "200");
 	}
 	
 	/**
@@ -132,9 +131,9 @@ public class CategoryController extends BaseController {
 		}
 		List<SubCategory> subCategory = (subCategoryService.findAndAscByName(start, size));
 		if (subCategory == null) {
-			return new FailureMessage(Message.FAIL, "Not found subCategory.");
+			return new ErrorMessage(Message.ERROR, "Not found subCategory.", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, subCategory);
+		return new SuccessMessage(Message.SUCCESS, subCategory, "200");
 	}
 	
 	/**
@@ -150,13 +149,13 @@ public class CategoryController extends BaseController {
 
 		Category category = categoryService.findByName(categoryName);
 		if (categoryService.findByName(categoryName) == null) {
-			return new FailureMessage(Message.FAIL, "This category name is not existed");
+			return new ErrorMessage(Message.ERROR, "This category name is not existed", "400");
 		}
 
 		if (category == null) {
-			return new FailureMessage(Message.FAIL, "No products in this category");
+			return new ErrorMessage(Message.ERROR, "No products in this category", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, category.getProducts());
+		return new SuccessMessage(Message.SUCCESS, category.getProducts(), "200");
 	}
 
 	/**
@@ -171,17 +170,17 @@ public class CategoryController extends BaseController {
 	public Message createNewCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
 		}
 		if (categoryService.findByName(category.getName()) != null) {
-			return new FailureMessage(Message.FAIL, "This category name is existed");
+			return new ErrorMessage(Message.ERROR, "This category name is existed", "400");
 		}
 		try {
 			categoryService.store(category);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Create category failed");
+			return new ErrorMessage(Message.ERROR, "Create category failed", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, category);
+		return new SuccessMessage(Message.SUCCESS, category, "200");
 	}
 
 	/**
@@ -198,19 +197,19 @@ public class CategoryController extends BaseController {
 	public Message addSubCategory(@RequestBody SubCategory subCategory, @PathVariable String categoryName, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
 		}
 		if (subCategoryService.findByName(subCategory.getName()) != null) {
-			return new FailureMessage(Message.FAIL, "This subCategory name is existed");
+			return new ErrorMessage(Message.ERROR, "This subCategory name is not existed", "400");
 		}
 		Category category = categoryService.findByName(categoryName);
 		subCategory.setCategory(category);
 		try {
 			subCategoryService.store(subCategory);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Create subCategory failed");
+			return new ErrorMessage(Message.ERROR, "Create subCategory failed", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, subCategory);
+		return new SuccessMessage(Message.SUCCESS, subCategory, "200");
 	}
 
 	/**
@@ -221,16 +220,16 @@ public class CategoryController extends BaseController {
 	 * @return category if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/edit", method = RequestMethod.POST)
+	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
 	public Message editCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
 		}
 
 		Category oldCategory = categoryService.findByKey(category.getId());
 		if (oldCategory == null) {
-			return new FailureMessage(Message.FAIL, "This category name is not existed");
+			return new ErrorMessage(Message.ERROR, "This category name is not existed", "400");
 		}
 
 		oldCategory.setName(category.getName());
@@ -238,10 +237,10 @@ public class CategoryController extends BaseController {
 		try {
 			categoryService.update(oldCategory);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Edit category failed");
+			return new ErrorMessage(Message.ERROR, "Edit category failed", "400");
 		}
 
-		return new SuccessMessage(Message.SUCCESS, category);
+		return new SuccessMessage(Message.SUCCESS, category, "200");
 	}
 
 	/**
@@ -254,18 +253,18 @@ public class CategoryController extends BaseController {
 	 * @return category if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/subCategory/edit", method = RequestMethod.POST)
+	@RequestMapping(value = "/subCategory/edit", method = RequestMethod.PUT)
 	public Message editSubCategory(@RequestBody SubCategory subCategory,
 			@RequestParam(value = "newCategoryName", required = false) String categoryName, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
 		}
 
 		Category category = categoryService.findByName(categoryName);
 		SubCategory oldSubCategory = subCategoryService.findByKey(subCategory.getId());
 		if (oldSubCategory == null) {
-			return new FailureMessage(Message.FAIL, "this subCategory is not exist");
+			return new ErrorMessage(Message.ERROR, "this subCategory is not exist", "400");
 		}
 
 		oldSubCategory.setName(subCategory.getName());
@@ -276,9 +275,9 @@ public class CategoryController extends BaseController {
 		try {
 			subCategoryService.update(oldSubCategory);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Create subCategory failed");
+			return new ErrorMessage(Message.ERROR, "Create subCategory failed", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, subCategory);
+		return new SuccessMessage(Message.SUCCESS, subCategory, "200");
 	}
 
 	/**
@@ -289,19 +288,19 @@ public class CategoryController extends BaseController {
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	public Message deleteCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
 		}
 
 		try {
 			categoryService.removeById(category.getId());
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Remove category failed");
+			return new ErrorMessage(Message.ERROR, "Remove category failed", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, "category" + " has removed");
+		return new SuccessMessage(Message.SUCCESS, "category" + " has removed", "200");
 	}
 
 	/**
@@ -312,18 +311,18 @@ public class CategoryController extends BaseController {
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/subCategory/delete", method = RequestMethod.POST)
+	@RequestMapping(value = "/subCategory/delete", method = RequestMethod.DELETE)
 	public Message deleteSubCategory(@RequestBody SubCategory subCategory, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ErrorMessage(Message.ERROR, "This user does not allow", "401");
 		}
 
 		try {
 			subCategoryService.removeById(subCategory.getId());
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Remove subCategory failed");
+			return new ErrorMessage(Message.ERROR, "Remove subCategory failed", "400");
 		}
-		return new SuccessMessage(Message.SUCCESS, "subCategory" + " has removed");
+		return new SuccessMessage(Message.SUCCESS, "subCategory" + " has removed", "200");
 	}
 }

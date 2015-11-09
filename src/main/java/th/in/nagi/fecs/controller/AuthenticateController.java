@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import th.in.nagi.fecs.message.FailureMessage;
+import th.in.nagi.fecs.message.ErrorMessage;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Authenticate;
@@ -76,9 +76,9 @@ public class AuthenticateController extends BaseController {
 	public Message getAuthenticateByUsername(@PathVariable String email) {
 		List<Authenticate> authenticate = getAuthenticateService().findByEmail(email);
 		if (authenticate != null) {
-			return new SuccessMessage(Message.SUCCESS, authenticate);
+			return new SuccessMessage(Message.SUCCESS, authenticate, "200");
 		}
-		return new FailureMessage(Message.FAIL, "Not found authenticate.");
+		return new ErrorMessage(Message.ERROR, "Not found authenticate.","400");
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class AuthenticateController extends BaseController {
 		String passwordHash = user.changeToHash(tempUser.getPassword());
 
 		if (!user.getPassword().equals(passwordHash)) {
-			return new FailureMessage(Message.FAIL, "Incorrect password");
+			return new ErrorMessage(Message.ERROR, "Incorrect password", "400");
 		}
 
 		Date date = new Date();
@@ -130,9 +130,9 @@ public class AuthenticateController extends BaseController {
 		if (authenticate != null) {
 			getAuthenticateService().store(authenticate);
 			Authenticate dataBaseAuthenticate = getAuthenticateService().findByToken(authenticate.getToken());
-			return new SuccessMessage(Message.SUCCESS, dataBaseAuthenticate.getToken());
+			return new SuccessMessage(Message.SUCCESS, dataBaseAuthenticate.getToken(), "201");
 		}
-		return new FailureMessage(Message.FAIL, "Not found authenticate.");
+		return new ErrorMessage(Message.ERROR, "Not found authenticate.", "400");
 	}
 
 	/**
@@ -146,8 +146,8 @@ public class AuthenticateController extends BaseController {
 	public Message checkToken(@RequestBody Authenticate authenticate) {
 		if (authenticateService.isExpiration(authenticate.getToken())) {
 			return new SuccessMessage(Message.SUCCESS,
-					authenticateService.findByToken(authenticate.getToken()).getUser().getEmail());
+					authenticateService.findByToken(authenticate.getToken()).getUser().getEmail(), "201");
 		}
-		return new FailureMessage(Message.FAIL, "token is expiration");
+		return new ErrorMessage(Message.ERROR, "token is expiration", "400");
 	}
 }
