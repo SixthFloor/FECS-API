@@ -190,7 +190,7 @@ public class UsersController extends BaseController {
      * @return message message and email of user or not return message fail and string "not found"
      */
     @ResponseBody
-    @RequestMapping(value = {"/editByMember" }, method = RequestMethod.PUT)
+    @RequestMapping(value = {"/edit" }, method = RequestMethod.PUT)
     public ResponseEntity editUserByMember(@RequestBody User newUser, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.MEMBER
 				, authenticateService.STAFF, authenticateService.MANAGER, authenticateService.OWNER)) {
