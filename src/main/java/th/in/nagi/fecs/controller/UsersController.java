@@ -154,7 +154,7 @@ public class UsersController extends BaseController {
 //			System.out.println(e);
 			return new ResponseEntity(new Message("Create user failed"), HttpStatus.BAD_REQUEST);
 		}
-    	return new ResponseEntity(user, HttpStatus.CREATED);
+    	return new ResponseEntity(new Message("The user has created"), HttpStatus.CREATED);
     }
     
     /**
@@ -181,7 +181,7 @@ public class UsersController extends BaseController {
 //			System.out.println(e);
 			return new ResponseEntity(new Message("Create user failed"), HttpStatus.BAD_REQUEST);
 		}
-    	return new ResponseEntity(user, HttpStatus.CREATED);
+    	return new ResponseEntity(new Message("The user has created"), HttpStatus.CREATED);
     }
 
     /**
