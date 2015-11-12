@@ -47,7 +47,7 @@ public class SubCategory {
 	@ManyToOne
 	private Category category;
 
-	@JsonView(SubCategoryView.ElementalProduct.class)
+	@JsonView(SubCategoryView.ElementalFurnitureDescription.class)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "subCategory")
 	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
 	private Set<FurnitureDescription> furnitureDescriptions;
