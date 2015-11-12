@@ -10,7 +10,7 @@ import th.in.nagi.fecs.view.BaseView;
  * @author Thanachote Visetsuthimont
  *
  */
-public abstract class Message {
+public class Message {
 
 	public static String SUCCESS = "success";
 	public static String FAIL = "fail";
@@ -20,13 +20,13 @@ public abstract class Message {
 	 * Have 3 type. success, fail, error
 	 */
 	@JsonView(BaseView.Standardized.class)
-	private String status;
+	private String description;
 
-	public Message(String status) {
-		this.status = status;
+	public Message(String description) {
+		this.description = description;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getDescription() {
+		return description;
 	}
 }

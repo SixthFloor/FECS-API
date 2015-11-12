@@ -3,6 +3,8 @@ package th.in.nagi.fecs.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -12,9 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import th.in.nagi.fecs.message.ErrorMessage;
 import com.fasterxml.jackson.annotation.JsonView;
-
-import th.in.nagi.fecs.message.FailureMessage;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Category;
@@ -68,8 +69,8 @@ public class CategoryController extends BaseController {
 	 */
 	@JsonView(CategoryView.Summary.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
-	public Message showAllCategory() {
-		return new SuccessMessage(Message.SUCCESS, categoryService.findAll());
+	public ResponseEntity showAllCategory() {
+		return new ResponseEntity(categoryService.findAll(), HttpStatus.OK);
 	}
 	
 	/**
@@ -80,8 +81,8 @@ public class CategoryController extends BaseController {
 	 */
 	@JsonView(SubCategoryView.Summary.class)
 	@RequestMapping(value = "/subCategory/all", method = RequestMethod.GET)
-	public Message showAllSubCategory() {
-		return new SuccessMessage(Message.SUCCESS, subCategoryService.findAll());
+	public ResponseEntity showAllSubCategory() {
+		return new ResponseEntity(subCategoryService.findAll(), HttpStatus.OK);
 	}
 
 
@@ -96,7 +97,7 @@ public class CategoryController extends BaseController {
 	 */
 	@JsonView(CategoryView.Summary.class)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public Message getListUsers(@RequestParam(value = "start", required = false) int start,
+	public ResponseEntity getListUsers(@RequestParam(value = "start", required = false) int start,
 			@RequestParam(value = "size", required = false) int size) {
 		int categoryListSize = categoryService.findAll().size();
 		if (size > categoryListSize - start) {
@@ -104,9 +105,9 @@ public class CategoryController extends BaseController {
 		}
 		List<Category> category = (categoryService.findAndAscByName(start, size));
 		if (category == null) {
-			return new FailureMessage(Message.FAIL, "Not found category.");
+			return new ResponseEntity(new Message("Not found category"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, category);
+		return new ResponseEntity(category, HttpStatus.OK);
 	}
 	
 	/**
@@ -120,7 +121,7 @@ public class CategoryController extends BaseController {
 	 */
 	@JsonView(SubCategoryView.Summary.class)
 	@RequestMapping(value = "/subCategory/list", method = RequestMethod.GET)
-	public Message getListsubCategorys(@RequestParam(value = "start", required = false) int start,
+	public ResponseEntity getListsubCategorys(@RequestParam(value = "start", required = false) int start,
 			@RequestParam(value = "size", required = false) int size) {
 		int subCategoryListSize = subCategoryService.findAll().size();
 		if (size > subCategoryListSize - start) {
@@ -128,9 +129,9 @@ public class CategoryController extends BaseController {
 		}
 		List<SubCategory> subCategory = (subCategoryService.findAndAscByName(start, size));
 		if (subCategory == null) {
-			return new FailureMessage(Message.FAIL, "Not found subCategory.");
+			return new ResponseEntity(new Message("Not found subCategory"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, subCategory);
+		return new ResponseEntity(subCategory, HttpStatus.OK);
 	}
 	
 	/**
@@ -142,17 +143,17 @@ public class CategoryController extends BaseController {
 	 */
 	@JsonView(CategoryView.Summary.class)
 	@RequestMapping(value = "/{categoryName}", method = RequestMethod.GET)
-	public Message showProductsByCategory(@PathVariable String categoryName) {
+	public ResponseEntity showProductsByCategory(@PathVariable String categoryName) {
 
 		Category category = categoryService.findByName(categoryName);
 		if (categoryService.findByName(categoryName) == null) {
-			return new FailureMessage(Message.FAIL, "This category name is not existed");
+			return new ResponseEntity(new Message("This category name is not existed"), HttpStatus.BAD_REQUEST);
 		}
 
 		if (category == null) {
-			return new FailureMessage(Message.FAIL, "No products in this category");
+			return new ResponseEntity(new Message("No products in this category"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, category.getProducts());
+		return new ResponseEntity(category.getProducts(), HttpStatus.OK);
 	}
 
 	/**
@@ -164,20 +165,20 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
-	public Message createNewCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+	public ResponseEntity createNewCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		if (categoryService.findByName(category.getName()) != null) {
-			return new FailureMessage(Message.FAIL, "This category name is existed");
+			return new ResponseEntity(new Message("This category name is existed"), HttpStatus.BAD_REQUEST);
 		}
 		try {
 			categoryService.store(category);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Create category failed");
+			return new ResponseEntity(new Message("Create category failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, category);
+		return new ResponseEntity(category, HttpStatus.CREATED);
 	}
 
 	/**
@@ -191,22 +192,22 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "{categoryName}/subCategory/new", method = RequestMethod.POST)
-	public Message addSubCategory(@RequestBody SubCategory subCategory, @PathVariable String categoryName, @RequestHeader(value = "token") String token) {
+	public ResponseEntity addSubCategory(@RequestBody SubCategory subCategory, @PathVariable String categoryName, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		if (subCategoryService.findByName(subCategory.getName()) != null) {
-			return new FailureMessage(Message.FAIL, "This subCategory name is existed");
+			return new ResponseEntity(new Message("This subCategory name is not existed"), HttpStatus.BAD_REQUEST);
 		}
 		Category category = categoryService.findByName(categoryName);
 		subCategory.setCategory(category);
 		try {
 			subCategoryService.store(subCategory);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Create subCategory failed");
+			return new ResponseEntity(new Message("Create subCategory failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, subCategory);
+		return new ResponseEntity(subCategory, HttpStatus.CREATED);
 	}
 
 	/**
@@ -217,16 +218,16 @@ public class CategoryController extends BaseController {
 	 * @return category if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/edit", method = RequestMethod.POST)
-	public Message editCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
+	public ResponseEntity editCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		Category oldCategory = categoryService.findByKey(category.getId());
 		if (oldCategory == null) {
-			return new FailureMessage(Message.FAIL, "This category name is not existed");
+			return new ResponseEntity(new Message("This category name is not existed"), HttpStatus.BAD_REQUEST);
 		}
 
 		oldCategory.setName(category.getName());
@@ -234,10 +235,9 @@ public class CategoryController extends BaseController {
 		try {
 			categoryService.update(oldCategory);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Edit category failed");
+			return new ResponseEntity(new Message("Edit category failed"), HttpStatus.BAD_REQUEST);
 		}
-
-		return new SuccessMessage(Message.SUCCESS, category);
+		return new ResponseEntity(category, HttpStatus.OK);
 	}
 
 	/**
@@ -250,18 +250,18 @@ public class CategoryController extends BaseController {
 	 * @return category if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/subCategory/edit", method = RequestMethod.POST)
-	public Message editSubCategory(@RequestBody SubCategory subCategory,
+	@RequestMapping(value = "/subCategory/edit", method = RequestMethod.PUT)
+	public ResponseEntity editSubCategory(@RequestBody SubCategory subCategory,
 			@RequestParam(value = "newCategoryName", required = false) String categoryName, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		Category category = categoryService.findByName(categoryName);
 		SubCategory oldSubCategory = subCategoryService.findByKey(subCategory.getId());
 		if (oldSubCategory == null) {
-			return new FailureMessage(Message.FAIL, "this subCategory is not exist");
+			return new ResponseEntity(new Message("This subCategory is not exist"), HttpStatus.BAD_REQUEST);
 		}
 
 		oldSubCategory.setName(subCategory.getName());
@@ -272,9 +272,9 @@ public class CategoryController extends BaseController {
 		try {
 			subCategoryService.update(oldSubCategory);
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Create subCategory failed");
+			return new ResponseEntity(new Message("Create subCategory failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, subCategory);
+		return new ResponseEntity(subCategory, HttpStatus.OK);
 	}
 
 	/**
@@ -285,19 +285,19 @@ public class CategoryController extends BaseController {
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/delete", method = RequestMethod.POST)
-	public Message deleteCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
+	public ResponseEntity deleteCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		try {
 			categoryService.removeById(category.getId());
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Remove category failed");
+			return new ResponseEntity(new Message("Remove category failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, "category" + " has removed");
+		return new ResponseEntity(new Message("Category has removed"), HttpStatus.OK);
 	}
 
 	/**
@@ -308,18 +308,18 @@ public class CategoryController extends BaseController {
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/subCategory/delete", method = RequestMethod.POST)
-	public Message deleteSubCategory(@RequestBody SubCategory subCategory, @RequestHeader(value = "token") String token) {
+	@RequestMapping(value = "/subCategory/delete", method = RequestMethod.DELETE)
+	public ResponseEntity deleteSubCategory(@RequestBody SubCategory subCategory, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
-			return new FailureMessage(Message.FAIL, "This user does not allow");
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		try {
 			subCategoryService.removeById(subCategory.getId());
 		} catch (Exception e) {
-			return new FailureMessage(Message.FAIL, "Remove subCategory failed");
+			return new ResponseEntity(new Message("Remove subCategory failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new SuccessMessage(Message.SUCCESS, "subCategory" + " has removed");
+		return new ResponseEntity(new Message("SubCategory has removed"), HttpStatus.OK);
 	}
 }

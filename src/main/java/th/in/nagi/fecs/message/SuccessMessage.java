@@ -17,10 +17,12 @@ public class SuccessMessage extends Message {
 	 */
 	@JsonView(BaseView.Standardized.class)
 	private Object data;
+	private String httpCode;
 
-	public SuccessMessage(String status, Object data) {
+	public SuccessMessage(String status, Object data, String httpCode) {
 		super(status);
 		this.data = data;
+		this.httpCode = httpCode;
 	}
 
 	public Object getData() {

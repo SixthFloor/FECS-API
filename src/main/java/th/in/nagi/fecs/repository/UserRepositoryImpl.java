@@ -76,7 +76,7 @@ public class UserRepositoryImpl extends AbstractRepository<User, Integer>impleme
 	@Override
 	public List<User> findAndAscByFirstName(int start, int size) {
 		List<User> list = createEntityCriteria().setFetchMode("authenticate", FetchMode.LAZY)
-				.addOrder(org.hibernate.criterion.Order.asc("name")).setFirstResult(start).setMaxResults(size).list();
+				.addOrder(org.hibernate.criterion.Order.asc("firstName")).setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
 
@@ -86,7 +86,7 @@ public class UserRepositoryImpl extends AbstractRepository<User, Integer>impleme
 	@Override
 	public List<User> findAndDescByFirstName(int start, int size) {
 		List<User> list = createEntityCriteria().setFetchMode("authenticate", FetchMode.LAZY)
-				.addOrder(org.hibernate.criterion.Order.desc("name")).setFirstResult(start).setMaxResults(size).list();
+				.addOrder(org.hibernate.criterion.Order.desc("firstName")).setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
 

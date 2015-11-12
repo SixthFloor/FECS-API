@@ -17,15 +17,17 @@ public class ErrorMessage extends Message {
 	 * Information to send to client.
 	 */
 	@JsonView(BaseView.Standardized.class)
-	private String message;
-
-	public ErrorMessage(String status, String message) {
+	private Object data;
+	private String httpCode;
+	
+	public ErrorMessage(String status, Object data, String httpCode) {
 		super(status);
-		this.message = message;
+		this.data = data;
+		this.httpCode = httpCode;
 	}
 
-	public String getMessage() {
-		return message;
+	public Object getData() {
+		return data;
 	}
 
 }

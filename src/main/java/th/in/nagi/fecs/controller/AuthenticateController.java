@@ -7,6 +7,8 @@ import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import th.in.nagi.fecs.message.FailureMessage;
+import th.in.nagi.fecs.message.ErrorMessage;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.Authenticate;
@@ -73,12 +75,12 @@ public class AuthenticateController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
-	public Message getAuthenticateByUsername(@PathVariable String email) {
+	public ResponseEntity getAuthenticateByUsername(@PathVariable String email) {
 		List<Authenticate> authenticate = getAuthenticateService().findByEmail(email);
 		if (authenticate != null) {
-			return new SuccessMessage(Message.SUCCESS, authenticate);
+			return new ResponseEntity(authenticate, HttpStatus.OK);
 		}
-		return new FailureMessage(Message.FAIL, "Not found authenticate.");
+		return new ResponseEntity(new Message("Not found authenticate"), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -92,14 +94,14 @@ public class AuthenticateController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public Message login(@RequestBody User tempUser) {
+	public ResponseEntity login(@RequestBody User tempUser) {
 		System.out.println(tempUser.getEmail());
 		System.out.println(tempUser.getPassword());
 		User user = getUserService().findByEmail(tempUser.getEmail());
 		String passwordHash = user.changeToHash(tempUser.getPassword());
 
 		if (!user.getPassword().equals(passwordHash)) {
-			return new FailureMessage(Message.FAIL, "Incorrect password");
+			return new ResponseEntity(new Message("Incorrect password"), HttpStatus.BAD_REQUEST);
 		}
 
 		Date date = new Date();
@@ -130,9 +132,9 @@ public class AuthenticateController extends BaseController {
 		if (authenticate != null) {
 			getAuthenticateService().store(authenticate);
 			Authenticate dataBaseAuthenticate = getAuthenticateService().findByToken(authenticate.getToken());
-			return new SuccessMessage(Message.SUCCESS, dataBaseAuthenticate.getToken());
+			return new ResponseEntity(dataBaseAuthenticate.getToken(), HttpStatus.CREATED);
 		}
-		return new FailureMessage(Message.FAIL, "Not found authenticate.");
+		return new ResponseEntity(new Message("Not found authenticate"), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -143,11 +145,11 @@ public class AuthenticateController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/token", method = RequestMethod.POST)
-	public Message checkToken(@RequestBody Authenticate authenticate) {
+	public ResponseEntity checkToken(@RequestBody Authenticate authenticate) {
 		if (authenticateService.isExpiration(authenticate.getToken())) {
-			return new SuccessMessage(Message.SUCCESS,
-					authenticateService.findByToken(authenticate.getToken()).getUser().getEmail());
+			return new ResponseEntity(authenticateService.findByToken(authenticate.getToken()).getUser().getEmail(),
+					HttpStatus.CREATED);
 		}
-		return new FailureMessage(Message.FAIL, "token is expiration");
+		return new ResponseEntity(new Message("Token is expiration."), HttpStatus.BAD_REQUEST);
 	}
 }
