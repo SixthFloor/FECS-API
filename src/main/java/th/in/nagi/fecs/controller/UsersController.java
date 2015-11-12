@@ -165,7 +165,8 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = { "/newByOwner" }, method = RequestMethod.POST)
-    public ResponseEntity createUserByOwner(@RequestBody User user,  @RequestHeader(value = "token") String token) {
+    public ResponseEntity createUserByOwner(@RequestBody User user,  @RequestHeader(value = "token") String token
+    		, @RequestParam(value = "roleId", required = false)int id) {
     	if (!authenticateService.checkPermission(token, authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
@@ -173,7 +174,7 @@ public class UsersController extends BaseController {
     	String passwordHash = user.changeToHash(user.getPassword());
     	user.setPassword(passwordHash);
     	user.setJoiningDate(date);
-//    	user.setRole(roleService.findByKey(id));
+    	user.setRole(roleService.findByKey(id));
 //    	System.out.println(user);
     	try {
 			getUserService().store(user);
@@ -200,6 +201,7 @@ public class UsersController extends BaseController {
 			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
 //        User user = getUserService().findByUsername(newUser.getUsername());
+		newUser.setRole(null);
     	try {
     		getUserService().update(newUser);
 		} catch (Exception e) {

@@ -126,7 +126,7 @@ public class FurnitureDescriptionController extends BaseController {
    		
    		furnitureDescription.setSubCategory(subCategoryService.findByKey(id));
    		
-   		System.out.println(furnitureDescription.getSubCategory().getName());
+//   		System.out.println(furnitureDescription.getSubCategory().getName());
    		try {
 			furnitureDescriptionService.store(furnitureDescription);
 		} catch (Exception e) {
@@ -154,12 +154,7 @@ public class FurnitureDescriptionController extends BaseController {
 		if(subCategory != null){
 			furnitureDescription.setSubCategory(subCategory);
 		}
-//		if(oldProduct == null){
-//			return new FailureMessage(Message.FAIL, "This product is not existed");
-//		}
-//		
-//		oldProduct.setName(product.getName());
-		furnitureDescription.setSubCategory(subCategoryService.findByKey(id));
+		
 		try {
 			furnitureDescriptionService.update(furnitureDescription);
 		} catch (Exception e) {
