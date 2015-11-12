@@ -54,17 +54,38 @@ public class UserServiceImpl implements UserService {
 			if (user.getLastName() != null) {
 				entity.setRole(user.getRole());
 			}
-			entity.setJoiningDate(user.getJoiningDate());
-			entity.setAddress1(user.getAddress1());
-			entity.setAddress2(user.getAddress2());
-			entity.setCard_name(user.getCard_name());
-			entity.setCardCVV(user.getCardCVV());
-			entity.setEmail(user.getEmail());
-			entity.setExpirationDate(user.getExpirationDate());
-			entity.setPassword(user.getPassword());
-			entity.setProvince(user.getProvince());
-			entity.setZipcode(user.getZipcode());
-			entity.setTelephone_number(user.getTelephone_number());
+//			entity.setJoiningDate(user.getJoiningDate());
+			if (user.getAddress1() != null) {
+				entity.setAddress1(user.getAddress1());
+			}
+			if (user.getAddress2() != null) {
+				entity.setAddress2(user.getAddress1());
+			}
+//			entity.setAddress2(user.getAddress2());
+			if (user.getCard_name() != null) {
+				entity.setCard_name(user.getCard_name());
+			}
+			if (user.getCardCVV() != null) {
+				entity.setCardCVV(user.getCardCVV());
+			}
+			if (user.getEmail() != null) {
+				entity.setEmail(user.getEmail());
+			}
+			if (user.getExpirationDate() != null) {
+				entity.setExpirationDate(user.getExpirationDate());
+			}
+			if (user.getPassword() != null) {
+				entity.setPassword(user.getPassword());
+			}
+			if (user.getProvince() != null) {
+				entity.setProvince(user.getProvince());
+			}
+			if (user.getZipcode() != null) {
+				entity.setZipcode(user.getZipcode());
+			}
+			if (user.getTelephone_number() != null) {
+				entity.setTelephone_number(user.getTelephone_number());
+			}
 		}
 	}
 
