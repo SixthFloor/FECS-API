@@ -14,19 +14,19 @@ public class HTTPErrorHandler {
 	@ResponseBody
 	@RequestMapping(value = "/400")
 	public Message error400() {
-		return new ErrorMessage(Message.ERROR, "Bad Request");
+		return new Message("Bad Request");
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/404")
 	public Message error404() {
-		return new ErrorMessage(Message.ERROR, "Page Not Found");
+		return new Message("Page Not Found");
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/500")
 	public Message error500() {
-		return new ErrorMessage(Message.ERROR, "Internal Server Error");
+		return new Message("Internal Server Error");
 	}
 
 }
