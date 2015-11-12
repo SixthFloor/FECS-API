@@ -147,7 +147,7 @@ public class AuthenticateController extends BaseController {
 	@RequestMapping(value = "/token", method = RequestMethod.POST)
 	public ResponseEntity checkToken(@RequestBody Authenticate authenticate) {
 		if (authenticateService.isExpiration(authenticate.getToken())) {
-			return new ResponseEntity(authenticateService.findByToken(authenticate.getToken()).getUser().getEmail(),
+			return new ResponseEntity(new Message(authenticateService.findByToken(authenticate.getToken()).getUser().getEmail()),
 					HttpStatus.CREATED);
 		}
 		return new ResponseEntity(new Message("Token is expiration."), HttpStatus.BAD_REQUEST);
