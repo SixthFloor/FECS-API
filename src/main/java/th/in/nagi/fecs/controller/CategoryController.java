@@ -67,7 +67,7 @@ public class CategoryController extends BaseController {
 	 * @param categoryName
 	 * @return list of products in the category
 	 */
-	@JsonView(CategoryView.Summary.class)
+	@JsonView(CategoryView.Personal.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	public ResponseEntity showAllCategory() {
 		return new ResponseEntity(categoryService.findAll(), HttpStatus.OK);
@@ -79,7 +79,7 @@ public class CategoryController extends BaseController {
 	 * @param categoryName
 	 * @return list of subcategory
 	 */
-	@JsonView(SubCategoryView.Summary.class)
+	@JsonView(SubCategoryView.Personal.class)
 	@RequestMapping(value = "/subCategory/all", method = RequestMethod.GET)
 	public ResponseEntity showAllSubCategory() {
 		return new ResponseEntity(subCategoryService.findAll(), HttpStatus.OK);
@@ -146,14 +146,30 @@ public class CategoryController extends BaseController {
 	public ResponseEntity showProductsByCategory(@PathVariable String categoryName) {
 
 		Category category = categoryService.findByName(categoryName);
-		if (categoryService.findByName(categoryName) == null) {
+		if (category == null) {
 			return new ResponseEntity(new Message("This category name is not existed"), HttpStatus.BAD_REQUEST);
 		}
 
-		if (category == null) {
-			return new ResponseEntity(new Message("No products in this category"), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity(category.getSubCategories(), HttpStatus.OK);
+	}
+	
+	/**
+	 * Return list of product in the category
+	 * 
+	 * @param categoryName
+	 *            category name that want to show products inside
+	 * @return list of product
+	 */
+	@JsonView(CategoryView.Summary.class)
+	@RequestMapping(value = "/{subCategoryName}", method = RequestMethod.GET)
+	public ResponseEntity showProductsBySubCategory(@PathVariable String subCategoryName) {
+
+		SubCategory subCategory = subCategoryService.findByName(subCategoryName);
+		if (subCategory == null) {
+			return new ResponseEntity(new Message("This subCategory name is not existed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(category.getProducts(), HttpStatus.OK);
+
+		return new ResponseEntity(subCategory.getProducts(), HttpStatus.OK);
 	}
 
 	/**
@@ -178,7 +194,7 @@ public class CategoryController extends BaseController {
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("Create category failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(category, HttpStatus.CREATED);
+		return new ResponseEntity(new Message("Category has created"), HttpStatus.CREATED);
 	}
 
 	/**
@@ -207,7 +223,7 @@ public class CategoryController extends BaseController {
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("Create subCategory failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(subCategory, HttpStatus.CREATED);
+		return new ResponseEntity(new Message("subCategory has created"), HttpStatus.CREATED);
 	}
 
 	/**
@@ -237,7 +253,7 @@ public class CategoryController extends BaseController {
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("Edit category failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(category, HttpStatus.OK);
+		return new ResponseEntity(new Message("Category has editted"), HttpStatus.OK);
 	}
 
 	/**
@@ -274,7 +290,7 @@ public class CategoryController extends BaseController {
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("Create subCategory failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(subCategory, HttpStatus.OK);
+		return new ResponseEntity(new Message("subCategory has editted"), HttpStatus.OK);
 	}
 
 	/**

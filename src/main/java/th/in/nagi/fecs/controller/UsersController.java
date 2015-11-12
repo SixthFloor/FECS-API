@@ -230,7 +230,7 @@ public class UsersController extends BaseController {
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
-    	return new ResponseEntity(getUserService().findByEmail(newUser.getEmail()).getEmail(), HttpStatus.OK);
+    	return new ResponseEntity(new Message("getUserService().findByEmail(newUser.getEmail()).getEmail()"), HttpStatus.OK);
     }
     /*
      * This method will delete an user by it's Username value.

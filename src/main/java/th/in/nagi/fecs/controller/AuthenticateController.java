@@ -132,7 +132,7 @@ public class AuthenticateController extends BaseController {
 		if (authenticate != null) {
 			getAuthenticateService().store(authenticate);
 			Authenticate dataBaseAuthenticate = getAuthenticateService().findByToken(authenticate.getToken());
-			return new ResponseEntity(dataBaseAuthenticate.getToken(), HttpStatus.CREATED);
+			return new ResponseEntity(new Message(dataBaseAuthenticate.getToken()), HttpStatus.CREATED);
 		}
 		return new ResponseEntity(new Message("Not found authenticate"), HttpStatus.BAD_REQUEST);
 	}
