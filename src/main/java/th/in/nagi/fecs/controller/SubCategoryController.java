@@ -126,7 +126,7 @@ public class SubCategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
 	public ResponseEntity addSubCategory(@RequestBody SubCategory subCategory, @RequestParam String categoryName,
-			@RequestHeader(value = "token") String token) {
+			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -157,7 +157,7 @@ public class SubCategoryController extends BaseController {
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
 	public ResponseEntity editSubCategory(@RequestBody SubCategory subCategory,
 			@RequestParam(value = "newCategoryName", required = false) String categoryName,
-			@RequestHeader(value = "token") String token) {
+			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -192,7 +192,7 @@ public class SubCategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	public ResponseEntity deleteSubCategory(@RequestBody SubCategory subCategory,
-			@RequestHeader(value = "token") String token) {
+			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);

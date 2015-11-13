@@ -123,8 +123,8 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
-	public ResponseEntity createNewCategory(@RequestBody Category category,
-			@RequestHeader(value = "token") String token) {
+	public ResponseEntity createNewCategory(@RequestBody Category category, @RequestHeader(value = "Authorization") String token) {
+
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -149,7 +149,7 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
-	public ResponseEntity editCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+	public ResponseEntity editCategory(@RequestBody Category category, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -170,6 +170,8 @@ public class CategoryController extends BaseController {
 		return new ResponseEntity(new Message("Category has editted"), HttpStatus.OK);
 	}
 
+	
+
 	/**
 	 * Delete category
 	 * 
@@ -179,7 +181,7 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-	public ResponseEntity deleteCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+	public ResponseEntity deleteCategory(@RequestBody Category category, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -192,4 +194,5 @@ public class CategoryController extends BaseController {
 		}
 		return new ResponseEntity(new Message("Category has removed"), HttpStatus.OK);
 	}
+
 }
