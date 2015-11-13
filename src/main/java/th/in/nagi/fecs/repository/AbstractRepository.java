@@ -9,7 +9,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import th.in.nagi.fecs.model.Authenticate;
+import th.in.nagi.fecs.model.Authentication;
 
 public abstract class AbstractRepository<E, K extends Serializable>
         implements Repository<E, K> {
@@ -56,7 +56,7 @@ public abstract class AbstractRepository<E, K extends Serializable>
 	 * Query by key.
 	 * 
 	 * @param key
-	 * @return Authenticate
+	 * @return Authentication
 	 */
 	@Override
 	public E findByKey(K key) {

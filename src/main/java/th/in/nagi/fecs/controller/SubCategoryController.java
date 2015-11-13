@@ -21,10 +21,10 @@ import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.service.AuthenticateService;
 import th.in.nagi.fecs.service.CategoryService;
-import th.in.nagi.fecs.service.FurnitureDescriptionService;
+import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.view.CategoryView;
-import th.in.nagi.fecs.view.FurnitureDescriptionView;
+import th.in.nagi.fecs.view.ProductDescriptionView;
 import th.in.nagi.fecs.view.SubCategoryView;
 
 /**
@@ -41,7 +41,7 @@ public class SubCategoryController extends BaseController {
 	 * Service of product
 	 */
 	@Autowired
-	private FurnitureDescriptionService furnitureDescriptionService;
+	private ProductDescriptionService productDescriptionService;
 
 	/**
 	 * Service of category
@@ -104,14 +104,14 @@ public class SubCategoryController extends BaseController {
 	 *            category name that want to show products inside
 	 * @return list of product
 	 */
-	@JsonView(FurnitureDescriptionView.ElementalImage.class)
+	@JsonView(ProductDescriptionView.ElementalImage.class)
 	@RequestMapping(value = "/{subCategoryName}", method = RequestMethod.GET)
 	public ResponseEntity showProductsBySubCategory(@PathVariable String subCategoryName) {
 		SubCategory subCategory = subCategoryService.findByName(subCategoryName);
 		if (subCategory == null) {
 			return new ResponseEntity(new Message("This subCategory name is not existed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(subCategory.getProducts(), HttpStatus.OK);
+		return new ResponseEntity(subCategory.getProductDescriptions(), HttpStatus.OK);
 	}
 
 	/**

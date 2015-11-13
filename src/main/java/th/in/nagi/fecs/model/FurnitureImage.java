@@ -12,28 +12,28 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
-import th.in.nagi.fecs.view.FurnitureImageView;
-import th.in.nagi.fecs.view.FurnitureDescriptionView;
+import th.in.nagi.fecs.view.ProductImageView;
+import th.in.nagi.fecs.view.ProductDescriptionView;
 
 @Entity
 //@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "furniture_image")
 public class FurnitureImage {
 	
-	@JsonView(FurnitureImageView.Personal.class)
+	@JsonView(ProductImageView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 	
-	@JsonView(FurnitureImageView.Personal.class)
+	@JsonView(ProductImageView.Personal.class)
 	@Size(min = 1, max = 255)
 	@Column(name = "link", nullable = false)
 	private String link;
 	
-	@JsonView(FurnitureImageView.Summary.class)
+	@JsonView(ProductImageView.Summary.class)
 	@ManyToOne
 	@JoinColumn(name="furniture_description_id")
-	private FurnitureDescription furnitureDescription;
+	private ProductDescription furnitureDescription;
 
 	public Integer getId() {
 		return id;

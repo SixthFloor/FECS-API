@@ -24,7 +24,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
-import th.in.nagi.fecs.view.FurnitureDescriptionView;
+import th.in.nagi.fecs.view.ProductDescriptionView;
 
 /**
  * FurnitureDescription model
@@ -33,13 +33,13 @@ import th.in.nagi.fecs.view.FurnitureDescriptionView;
  */
 @Entity
 //@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-@Table(name = "furniture_description")
-public class FurnitureDescription {
+@Table(name = "product_description")
+public class ProductDescription {
 
 	/**
 	 * id of product
 	 */
-	@JsonView(FurnitureDescriptionView.Personal.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
@@ -47,14 +47,14 @@ public class FurnitureDescription {
 	/**
 	 * serialNumber of product
 	 */
-	@JsonView(FurnitureDescriptionView.Personal.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@Column(name = "serial_number", unique=true)
 	private String serialNumber;
 
 	/**
 	 * name of product
 	 */
-	@JsonView(FurnitureDescriptionView.Personal.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@Size(min = 1, max = 50)
 	@Column(name = "name", nullable = false)
 	private String name;
@@ -62,7 +62,7 @@ public class FurnitureDescription {
 	/**
 	 * price of product
 	 */
-	@JsonView(FurnitureDescriptionView.Personal.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@Min(0)
 	@Column(name = "price", nullable = false)
 	private double price;
@@ -70,7 +70,7 @@ public class FurnitureDescription {
 	/**
 	 * description of product
 	 */
-	@JsonView(FurnitureDescriptionView.Personal.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@Size(min = 1, max = 255)
 	@Column(name = "description", nullable = true)
 	private String description;
@@ -78,19 +78,15 @@ public class FurnitureDescription {
 	/**
 	 * dimension description of product
 	 */
-	@JsonView(FurnitureDescriptionView.Personal.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@Size(min = 1, max = 255)
 	@Column(name = "dimension_description", nullable = true)
 	private String dimensionDescription;
 
-	@JsonView(FurnitureDescriptionView.ElementalImage.class)
+	@JsonView(ProductDescriptionView.ElementalImage.class)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "furnitureDescription")
 	private Set<FurnitureImage> images;
 	
-	@JsonView(FurnitureDescriptionView.ElementalSubCategory.class)
-	@ManyToOne
-	@JoinColumn(name="sub_category_id")
-	private SubCategory subCategory;
 	
 	/**
 	 * Return dimension description
@@ -204,14 +200,6 @@ public class FurnitureDescription {
 		this.images = images;
 	}
 
-	public SubCategory getSubCategory() {
-		return subCategory;
-	}
-
-	public void setSubCategory(SubCategory subCategory) {
-		this.subCategory = subCategory;
-	}
-
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -227,9 +215,9 @@ public class FurnitureDescription {
             return true;
         if (obj == null)
             return false;
-        if (!(obj instanceof FurnitureDescription))
+        if (!(obj instanceof ProductDescription))
             return false;
-        FurnitureDescription other = (FurnitureDescription) obj;
+        ProductDescription other = (ProductDescription) obj;
         if (id != other.id){
             return false;
         } else if (!serialNumber.equals(other.serialNumber))

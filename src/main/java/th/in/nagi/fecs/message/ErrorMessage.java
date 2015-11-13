@@ -3,7 +3,7 @@ package th.in.nagi.fecs.message;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.BaseView;
-import th.in.nagi.fecs.view.FurnitureDescriptionView;
+import th.in.nagi.fecs.view.ProductDescriptionView;
 
 /**
  * Use for error message only.

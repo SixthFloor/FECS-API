@@ -6,25 +6,24 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import th.in.nagi.fecs.model.FurnitureDescription;
-import th.in.nagi.fecs.repository.FurnitureDescriptionRepository;
+import th.in.nagi.fecs.model.ProductDescription;
+import th.in.nagi.fecs.repository.ProductDescriptionRepository;
 
 /**
- * Provide product service for managing easier. 
- * Ex. add, remove, edit.
+ * Provide product service for managing easier. Ex. add, remove, edit.
  * 
  * @author Thanachote Visetsuthimont
  *
  */
 @Service("furnitureDescriptionService")
 @Transactional
-public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionService {
+public class ProductDescriptionServiceImpl implements ProductDescriptionService {
 
 	/**
 	 * Tool for managing product in database.
 	 */
 	@Autowired
-	private FurnitureDescriptionRepository furnitureDescriptionRepository;
+	private ProductDescriptionRepository productDescriptionRepository;
 
 	/**
 	 * Find product by using index.
@@ -33,8 +32,8 @@ public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionServ
 	 * @return FurnitureDescription
 	 */
 	@Override
-	public FurnitureDescription findByKey(Integer id) {
-		return furnitureDescriptionRepository.findByKey(id);
+	public ProductDescription findByKey(Integer id) {
+		return productDescriptionRepository.findByKey(id);
 	}
 
 	/**
@@ -43,16 +42,16 @@ public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionServ
 	 * @param furnitureDescription
 	 */
 	@Override
-	public void store(FurnitureDescription furnitureDescription) {
-		furnitureDescriptionRepository.store(furnitureDescription);
+	public void store(ProductDescription furnitureDescription) {
+		productDescriptionRepository.store(furnitureDescription);
 	}
 
 	/**
 	 * Update product's detail in database.
 	 */
 	@Override
-	public void update(FurnitureDescription furnitureDescription) {
-		FurnitureDescription entity = furnitureDescriptionRepository.findByKey(furnitureDescription.getId());
+	public void update(ProductDescription furnitureDescription) {
+		ProductDescription entity = productDescriptionRepository.findByKey(furnitureDescription.getId());
 		if (entity != null) {
 			entity.setSerialNumber(furnitureDescription.getSerialNumber());
 			entity.setName(furnitureDescription.getName());
@@ -60,7 +59,7 @@ public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionServ
 			entity.setDescription(furnitureDescription.getDescription());
 			entity.setDimensionDescription(furnitureDescription.getDimensionDescription());
 			entity.setImages(furnitureDescription.getImages());
-			entity.setSubCategory(furnitureDescription.getSubCategory());
+//			entity.setSubCategory(furnitureDescription.getSubCategory());
 		}
 	}
 
@@ -70,8 +69,8 @@ public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionServ
 	 * @return List<FurnitureDescription>
 	 */
 	@Override
-	public List<FurnitureDescription> findAll() {
-		return furnitureDescriptionRepository.findAll();
+	public List<ProductDescription> findAll() {
+		return productDescriptionRepository.findAll();
 	}
 
 	/**
@@ -80,8 +79,8 @@ public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionServ
 	 * @return FurnitureDescription
 	 */
 	@Override
-	public FurnitureDescription findBySerialNumber(String serialNumber) {
-		return furnitureDescriptionRepository.findBySerialNumber(serialNumber);
+	public ProductDescription findBySerialNumber(String serialNumber) {
+		return productDescriptionRepository.findBySerialNumber(serialNumber);
 	}
 
 	/**
@@ -91,7 +90,7 @@ public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionServ
 	 */
 	@Override
 	public void removeBySerialNumber(String serialNumber) {
-		furnitureDescriptionRepository.removeBySerialNumber(serialNumber);
+		productDescriptionRepository.removeBySerialNumber(serialNumber);
 
 	}
 
@@ -103,8 +102,8 @@ public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionServ
 	 * @return List<FurnitureDescription>
 	 */
 	@Override
-	public List<FurnitureDescription> findAndAscByName(int start, int size) {
-		return furnitureDescriptionRepository.findAndAscByName(start, size);
+	public List<ProductDescription> findAndAscByName(int start, int size) {
+		return productDescriptionRepository.findAndAscByName(start, size);
 	}
 
 	/**
@@ -115,8 +114,8 @@ public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionServ
 	 * @return List<FurnitureDescription>
 	 */
 	@Override
-	public List<FurnitureDescription> findAndDescByName(int start, int size) {
-		return furnitureDescriptionRepository.findAndDescByName(start, size);
+	public List<ProductDescription> findAndDescByName(int start, int size) {
+		return productDescriptionRepository.findAndDescByName(start, size);
 	}
 
 	/**
@@ -127,8 +126,8 @@ public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionServ
 	 * @return List<FurnitureDescription>
 	 */
 	@Override
-	public List<FurnitureDescription> findAndAscByPrice(int start, int size) {
-		return furnitureDescriptionRepository.findAndAscByPrice(start, size);
+	public List<ProductDescription> findAndAscByPrice(int start, int size) {
+		return productDescriptionRepository.findAndAscByPrice(start, size);
 	}
 
 	/**
@@ -139,7 +138,7 @@ public class FurnitureDescriptionServiceImpl implements FurnitureDescriptionServ
 	 * @return List<FurnitureDescription>
 	 */
 	@Override
-	public List<FurnitureDescription> findAndDescByPrice(int start, int size) {
-		return furnitureDescriptionRepository.findAndDescByPrice(start, size);
+	public List<ProductDescription> findAndDescByPrice(int start, int size) {
+		return productDescriptionRepository.findAndDescByPrice(start, size);
 	}
 }

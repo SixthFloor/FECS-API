@@ -22,26 +22,34 @@ import org.hibernate.validator.constraints.NotEmpty;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import th.in.nagi.fecs.view.UserView;
 
 @Entity
 @Table(name = "user")
 public class User {
 
+	@JsonView(UserView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 
+	@JsonView(UserView.Personal.class)
 	@Column(name = "email", nullable = false)
 	private String email;
 
+	@JsonView(UserView.Personal.class)
 	@Size(min = 3, max = 50)
 	@Column(name = "first_name", nullable = false)
 	private String firstName;
 
+	@JsonView(UserView.Personal.class)
 	@Size(min = 3, max = 50)
 	@Column(name = "last_name", nullable = false)
 	private String lastName;
 
+	@JsonView(UserView.Personal.class)
 	@Column(name = "joining_date", nullable = false)
 	private Date joiningDate;
 
@@ -49,36 +57,43 @@ public class User {
 	@Column(name = "password", nullable = false)
 	private String password;
 
+	@JsonView(UserView.Location.class)
 	@Column(name = "address_1", nullable = true)
 	private String address1;
 
+	@JsonView(UserView.Location.class)
 	@Column(name = "address_2", nullable = true)
 	private String address2;
 
+	@JsonView(UserView.Location.class)
 	@Column(name = "province", nullable = true)
 	private String province;
 
+	@JsonView(UserView.Location.class)
 	@Size(min = 5, max = 5)
 	@Column(name = "zipcode", nullable = true)
 	private String zipcode;
 
+	@JsonView(UserView.Location.class)
 	@Size(min = 9, max = 10)
 	@Column(name = "telephone_number", nullable = true)
 	private String telephone_number;
 
+	@JsonView(UserView.PaymentInformation.class)
 	@Column(name = "card_name", nullable = true)
 	private String card_name;
 
+	@JsonView(UserView.PaymentInformation.class)
 	@Column(name = "expiration_date", nullable = true)
 	private String expirationDate;
 
+	@JsonView(UserView.PaymentInformation.class)
 	@Size(min = 3, max = 3)
 	@Column(name = "card_cvv", nullable = true)
 	private String cardCVV;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-	@JsonManagedReference
-	private List<Authenticate> authenticate;
+	private List<Authentication> authentication;
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	private Role role;
@@ -163,12 +178,12 @@ public class User {
 		this.role = role;
 	}
 
-	public List<Authenticate> getAuthenticate() {
-		return authenticate;
+	public List<Authentication> getAuthenticate() {
+		return authentication;
 	}
 
-	public void setAuthenticate(List<Authenticate> authenticate) {
-		this.authenticate = authenticate;
+	public void setAuthenticate(List<Authentication> authentication) {
+		this.authentication = authentication;
 	}
 
 	public Integer getId() {

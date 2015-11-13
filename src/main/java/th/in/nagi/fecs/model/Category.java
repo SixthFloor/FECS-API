@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import th.in.nagi.fecs.view.CategoryView;
-import th.in.nagi.fecs.view.FurnitureDescriptionView;
+import th.in.nagi.fecs.view.ProductDescriptionView;
 
 /**
  * Category model
@@ -55,30 +55,7 @@ public class Category {
 	@Size(min = 1, max = 50)
 	@Column(name = "name", nullable = false)
 	private String name;
-
-	@JsonView(CategoryView.ElementalSubCategory.class)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "category")
-	@Cascade(org.hibernate.annotations.CascadeType.DELETE_ORPHAN)
-	private Set<SubCategory> subCategories;
-
 	
-	public Set<SubCategory> getSubCategories() {
-		return subCategories;
-	}
-
-	public void setSubCategories(Set<SubCategory> subCategories) {
-		this.subCategories = subCategories;
-	}
-	
-	@JsonIgnore
-	public Set<FurnitureDescription> getProducts() {
-		Set<FurnitureDescription> furnitureDescriptions = new HashSet<>();
-		for (SubCategory subCategory : getSubCategories()) {
-			furnitureDescriptions.addAll(subCategory.getProducts());
-		}
-		return furnitureDescriptions;
-	}
-
 	/**
 	 * Set new id of category
 	 * 

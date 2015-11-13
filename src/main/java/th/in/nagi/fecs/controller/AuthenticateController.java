@@ -14,16 +14,17 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 
-import th.in.nagi.fecs.message.ErrorMessage;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import th.in.nagi.fecs.message.Message;
-import th.in.nagi.fecs.message.SuccessMessage;
-import th.in.nagi.fecs.model.Authenticate;
+import th.in.nagi.fecs.model.Authentication;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.service.AuthenticateService;
 import th.in.nagi.fecs.service.UserService;
+import th.in.nagi.fecs.view.AuthenticationView;
+import th.in.nagi.fecs.view.UserView;
 
 /**
  * Controller for authenticate.
@@ -36,7 +37,7 @@ import th.in.nagi.fecs.service.UserService;
 public class AuthenticateController extends BaseController {
 
 	/**
-	 * Authenticate service
+	 * Authentication service
 	 */
 	@Autowired
 	private AuthenticateService authenticateService;
@@ -73,12 +74,12 @@ public class AuthenticateController extends BaseController {
 	 * @return message message and authenticate if not success return message
 	 *         and string "not found"
 	 */
-	@ResponseBody
+	@JsonView(AuthenticationView.Personal.class)
 	@RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
 	public ResponseEntity getAuthenticateByUsername(@PathVariable String email) {
-		List<Authenticate> authenticate = getAuthenticateService().findByEmail(email);
-		if (authenticate != null) {
-			return new ResponseEntity(authenticate, HttpStatus.OK);
+		List<Authentication> authentication = getAuthenticateService().findByEmail(email);
+		if (authentication != null) {
+			return new ResponseEntity(authentication, HttpStatus.OK);
 		}
 		return new ResponseEntity(new Message("Not found authenticate"), HttpStatus.BAD_REQUEST);
 	}
@@ -92,7 +93,7 @@ public class AuthenticateController extends BaseController {
 	 * @return message message and token if not success return message and
 	 *         string "not found"
 	 */
-	@ResponseBody
+	@JsonView(AuthenticationView.Personal.class)
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity login(@RequestBody User tempUser) {
 		System.out.println(tempUser.getEmail());
@@ -127,12 +128,12 @@ public class AuthenticateController extends BaseController {
 			e.printStackTrace();
 		}
 		date.setDate((date.getDate() + 1));
-		Authenticate authenticate = new Authenticate(textHash, user, date);
+		Authentication authentication = new Authentication(textHash, user, date);
 
-		if (authenticate != null) {
-			getAuthenticateService().store(authenticate);
-			Authenticate dataBaseAuthenticate = getAuthenticateService().findByToken(authenticate.getToken());
-			return new ResponseEntity(new Message(dataBaseAuthenticate.getToken()), HttpStatus.CREATED);
+		if (authentication != null) {
+			getAuthenticateService().store(authentication);
+			Authentication dataBaseAuthenticate = getAuthenticateService().findByToken(authentication.getToken());
+			return new ResponseEntity(authentication, HttpStatus.CREATED);
 		}
 		return new ResponseEntity(new Message("Not found authenticate"), HttpStatus.BAD_REQUEST);
 	}
@@ -140,15 +141,16 @@ public class AuthenticateController extends BaseController {
 	/**
 	 * check token in database and token of input user
 	 * 
-	 * @param authenticate
+	 * @param authentication
 	 * @return message message and email of user ,or not return message fail.
 	 */
-	@ResponseBody
+	@JsonView(UserView.Personal.class)
 	@RequestMapping(value = "/token", method = RequestMethod.POST)
-	public ResponseEntity checkToken(@RequestBody Authenticate authenticate) {
-		if (authenticateService.isExpiration(authenticate.getToken())) {
-			return new ResponseEntity(new Message(authenticateService.findByToken(authenticate.getToken()).getUser().getEmail()),
-					HttpStatus.CREATED);
+	public ResponseEntity checkToken(@RequestBody Authentication authentication) {
+		if (authenticateService.isExpiration(authentication.getToken())) {
+			System.out.println(authentication.getUser());
+			return new ResponseEntity(authenticateService.findByToken(authentication.getToken()).getUser(),
+					HttpStatus.OK);
 		}
 		return new ResponseEntity(new Message("Token is expiration."), HttpStatus.BAD_REQUEST);
 	}

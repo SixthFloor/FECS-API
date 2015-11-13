@@ -2,7 +2,7 @@ package th.in.nagi.fecs.service;
 
 import java.util.List;
 
-import th.in.nagi.fecs.model.Authenticate;
+import th.in.nagi.fecs.model.Authentication;
 import th.in.nagi.fecs.model.Role;
 
 public interface AuthenticateService {
@@ -12,17 +12,17 @@ public interface AuthenticateService {
 	public final String MANAGER = "member";
 	public final String OWNER = "owner";
 
-	Authenticate findByKey(Integer id);
+	Authentication findByKey(Integer id);
 
-	void store(Authenticate authenticate);
+	void store(Authentication authentication);
 
-	void update(Authenticate authenticate);
+	void update(Authentication authentication);
 
-	List<Authenticate> findAll();
+	List<Authentication> findAll();
 
-	Authenticate findByToken(String token);
+	Authentication findByToken(String token);
 
-	List<Authenticate> findByEmail(String email);
+	List<Authentication> findByEmail(String email);
 
 	void removeByToken(String token);
 

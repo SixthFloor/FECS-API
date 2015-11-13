@@ -31,7 +31,7 @@ public class SubCategoryRepositoryImpl extends AbstractRepository<SubCategory, I
 	@Override
 	public List<SubCategory> findAll() {
 		Criteria criteria = createEntityCriteria();
-		return (List<SubCategory>) criteria.setFetchMode("furnitureDescriptions", FetchMode.LAZY).list();
+		return (List<SubCategory>) criteria.list();
 	}
 
 	/**
@@ -69,7 +69,7 @@ public class SubCategoryRepositoryImpl extends AbstractRepository<SubCategory, I
 	 */
 	@Override
 	public List<SubCategory> findAndAscByName(int start, int size) {
-		List<SubCategory> list = createEntityCriteria().setFetchMode("furnitureDescriptions", FetchMode.LAZY)
+		List<SubCategory> list = createEntityCriteria()
 				.addOrder(org.hibernate.criterion.Order.asc("name")).setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}
@@ -79,7 +79,7 @@ public class SubCategoryRepositoryImpl extends AbstractRepository<SubCategory, I
 	 */
 	@Override
 	public List<SubCategory> findAndDescByName(int start, int size) {
-		List<SubCategory> list = createEntityCriteria().setFetchMode("furnitureDescriptions", FetchMode.LAZY)
+		List<SubCategory> list = createEntityCriteria()
 				.addOrder(org.hibernate.criterion.Order.desc("name")).setFirstResult(start).setMaxResults(size).list();
 		return list;
 	}

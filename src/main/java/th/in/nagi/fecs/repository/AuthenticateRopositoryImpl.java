@@ -7,7 +7,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import th.in.nagi.fecs.model.Authenticate;
+import th.in.nagi.fecs.model.Authentication;
 
 /**
  * Tool for managing authentication in database.
@@ -16,28 +16,28 @@ import th.in.nagi.fecs.model.Authenticate;
  *
  */
 @Repository("authenticateRopository")
-public class AuthenticateRopositoryImpl extends AbstractRepository<Authenticate, Integer>
+public class AuthenticateRopositoryImpl extends AbstractRepository<Authentication, Integer>
 		implements AuthenticateRepository {
 
 	/**
 	 * Query all authentication in database.
 	 * 
-	 * @return List<Authenticate>
+	 * @return List<Authentication>
 	 */
 	@Override
-	public List<Authenticate> findAll() {
+	public List<Authentication> findAll() {
 		Criteria criteria = createEntityCriteria();
-		return (List<Authenticate>) criteria.list();
+		return (List<Authentication>) criteria.list();
 	}
 
 	/**
 	 * Query authentication by key.
 	 * 
 	 * @param key
-	 * @return Authenticate
+	 * @return Authentication
 	 */
 	@Override
-	public Authenticate findByKey(Integer key) {
+	public Authentication findByKey(Integer key) {
 		return getByKey(key);
 	}
 
@@ -47,7 +47,7 @@ public class AuthenticateRopositoryImpl extends AbstractRepository<Authenticate,
 	 * @param entity
 	 */
 	@Override
-	public void store(Authenticate entity) {
+	public void store(Authentication entity) {
 		persist(entity);
 	}
 
@@ -65,17 +65,17 @@ public class AuthenticateRopositoryImpl extends AbstractRepository<Authenticate,
 	 * {@inheritDoc}
 	 */
 	@Override
-	public Authenticate findByToken(String token) {
+	public Authentication findByToken(String token) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("token", token));
-		return (Authenticate) criteria.uniqueResult();
+		return (Authentication) criteria.uniqueResult();
 	}
 
 	// @Override
-	// public List<Authenticate> findByUser(User user) {
+	// public List<Authentication> findByUser(User user) {
 	// Criteria criteria = createEntityCriteria();
 	// criteria.add(Restrictions.eq("user", user));
-	// return (List<Authenticate>) criteria.list();
+	// return (List<Authentication>) criteria.list();
 	// }
 
 	/**

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import th.in.nagi.fecs.model.Authenticate;
+import th.in.nagi.fecs.model.Authentication;
 import th.in.nagi.fecs.model.Role;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.AuthenticateRepository;
@@ -48,32 +48,32 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 * Find datum in authentication table.
 	 * 
 	 * @param id
-	 * @return Authenticate
+	 * @return Authentication
 	 */
 	@Override
-	public Authenticate findByKey(Integer id) {
+	public Authentication findByKey(Integer id) {
 		return authenticateRepository.findByKey(id);
 	}
 
 	/**
 	 * Save datum to database.
 	 * 
-	 * @param authenticate
+	 * @param authentication
 	 */
 	@Override
-	public void store(Authenticate authenticate) {
-		authenticateRepository.store(authenticate);
+	public void store(Authentication authentication) {
+		authenticateRepository.store(authentication);
 	}
 
 	/**
 	 * Update user's authentication in database.
 	 * 
-	 * @param authenticate
+	 * @param authentication
 	 */
 	@Override
-	public void update(Authenticate authenticate) {
+	public void update(Authentication authentication) {
 		// TODO Auto-generated method stub
-		// Authenticate entity =
+		// Authentication entity =
 		// authenticateRepository.findByKey(authenticate.getId());
 		// if (entity != null) {
 		// entity.setUsername(authenticate.getUsername());
@@ -84,10 +84,10 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	/**
 	 * Find all authentication in database.
 	 * 
-	 * @return list<Authenticate>
+	 * @return list<Authentication>
 	 */
 	@Override
-	public List<Authenticate> findAll() {
+	public List<Authentication> findAll() {
 		return authenticateRepository.findAll();
 	}
 
@@ -95,10 +95,10 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 * Find authentication by using token.
 	 * 
 	 * @param token
-	 * @return Authenticate
+	 * @return Authentication
 	 */
 	@Override
-	public Authenticate findByToken(String token) {
+	public Authentication findByToken(String token) {
 		return authenticateRepository.findByToken(token);
 	}
 
@@ -116,7 +116,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 * Find tokens by using user's email.
 	 */
 	@Override
-	public List<Authenticate> findByEmail(String email) {
+	public List<Authentication> findByEmail(String email) {
 		User user = userService.findByEmail(email);
 		return user.getAuthenticate();
 

@@ -31,6 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import th.in.nagi.fecs.view.AuthenticationView;
 
 /**
  * FurnitureDescription model
@@ -39,7 +42,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
  */
 @Entity
 @Table(name = "authenticate")
-public class Authenticate {
+public class Authentication {
 
 	/**
 	 * id of product
@@ -51,6 +54,7 @@ public class Authenticate {
 	/**
 	 * serialNumber of product
 	 */
+	@JsonView(AuthenticationView.Personal.class)
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "token")
 	private String token;
@@ -60,21 +64,21 @@ public class Authenticate {
 	 */
 	
 	@ManyToOne
-	@JsonBackReference
 	private User user;
 	
+	@JsonView(AuthenticationView.Personal.class)
     @Column(name = "expiration_date", nullable = false)
 	private Date expDate;
 	
-	public Authenticate(){
+	public Authentication(){
 		
 	}
 	
-	public Authenticate(String token){
+	public Authentication(String token){
 		this.token = token;
 	}
 	
-	public Authenticate(String token, User user, Date date){
+	public Authentication(String token, User user, Date date){
 		this.token = token;
 		this.user = user;
 		this.expDate =date;

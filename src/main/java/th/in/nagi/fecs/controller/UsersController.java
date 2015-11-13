@@ -1,6 +1,5 @@
 package th.in.nagi.fecs.controller;
 
-import java.lang.annotation.Retention;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -18,14 +17,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import th.in.nagi.fecs.message.ErrorMessage;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import th.in.nagi.fecs.message.Message;
-import th.in.nagi.fecs.message.SuccessMessage;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.service.AuthenticateService;
 import th.in.nagi.fecs.service.RoleService;
 import th.in.nagi.fecs.service.UserService;
+import th.in.nagi.fecs.view.UserView;
 
 /**
  * Controller for users.
@@ -67,7 +67,7 @@ public class UsersController extends BaseController {
      * Lists all existing users. 
      * @return list of users
      */
-    @ResponseBody
+    @JsonView(UserView.Personal.class)
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity getAllUsers(@RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
@@ -90,7 +90,7 @@ public class UsersController extends BaseController {
 	 *            size of the list
 	 * @return limit list of user
 	 */
-	@ResponseBody
+    @JsonView(UserView.Personal.class)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ResponseEntity getListUsers(@RequestParam(value = "start", required = false) int start,
 			@RequestParam(value = "size", required = false) int size,@RequestHeader(value = "token") String token) {
@@ -117,7 +117,7 @@ public class UsersController extends BaseController {
      * @param email email of user that want to show
      * @return user if not return message fail
      */
-    @ResponseBody
+    @JsonView(UserView.Personal.class)
     @RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
     public ResponseEntity getUserByEmail(@PathVariable String email, @RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,

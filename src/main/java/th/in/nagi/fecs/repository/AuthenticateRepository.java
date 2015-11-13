@@ -1,6 +1,6 @@
 package th.in.nagi.fecs.repository;
 
-import th.in.nagi.fecs.model.Authenticate;
+import th.in.nagi.fecs.model.Authentication;
 
 /**
  * Collection of tool for managing authentication in database.
@@ -8,17 +8,17 @@ import th.in.nagi.fecs.model.Authenticate;
  * @author Nara Surawit
  *
  */
-public interface AuthenticateRepository extends Repository<Authenticate, Integer> {
+public interface AuthenticateRepository extends Repository<Authentication, Integer> {
 
 	/**
 	 * Find authentication by token
 	 * 
 	 * @param token
-	 * @return Authenticate
+	 * @return Authentication
 	 */
-	public Authenticate findByToken(String token);
+	public Authentication findByToken(String token);
 
-	// public List<Authenticate> findByUser(User username);
+	// public List<Authentication> findByUser(User username);
 
 	/**
 	 * Remove authentication by token
