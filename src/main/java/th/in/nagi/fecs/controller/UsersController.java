@@ -69,7 +69,7 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public ResponseEntity getAllUsers(@RequestHeader(value = "token") String token) {
+    public ResponseEntity getAllUsers(@RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -93,7 +93,7 @@ public class UsersController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ResponseEntity getListUsers(@RequestParam(value = "start", required = false) int start,
-			@RequestParam(value = "size", required = false) int size,@RequestHeader(value = "token") String token) {
+			@RequestParam(value = "size", required = false) int size,@RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -119,7 +119,7 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
-    public ResponseEntity getUserByEmail(@PathVariable String email, @RequestHeader(value = "token") String token) {
+    public ResponseEntity getUserByEmail(@PathVariable String email, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -165,7 +165,7 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = { "/newByOwner" }, method = RequestMethod.POST)
-    public ResponseEntity createUserByOwner(@RequestBody User user,  @RequestHeader(value = "token") String token
+    public ResponseEntity createUserByOwner(@RequestBody User user,  @RequestHeader(value = "Authorization") String token
     		, @RequestParam(value = "roleId", required = false)int id) {
     	if (!authenticateService.checkPermission(token, authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -192,7 +192,7 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = {"/edit" }, method = RequestMethod.PUT)
-    public ResponseEntity editUserByMember(@RequestBody User newUser, @RequestHeader(value = "token") String token) {
+    public ResponseEntity editUserByMember(@RequestBody User newUser, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.MEMBER
 				, authenticateService.STAFF, authenticateService.MANAGER, authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -217,7 +217,7 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = {"/editByOwner" }, method = RequestMethod.PUT)
-    public ResponseEntity editUserByAdmin(@RequestBody User newUser, @RequestHeader(value = "token") String token) {
+    public ResponseEntity editUserByAdmin(@RequestBody User newUser, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
@@ -242,7 +242,7 @@ public class UsersController extends BaseController {
      */
     @ResponseBody
     @RequestMapping(value = {"/delete" }, method = RequestMethod.DELETE)
-    public ResponseEntity deleteUser(@RequestBody User tempUser, @RequestHeader(value = "token") String token) {
+    public ResponseEntity deleteUser(@RequestBody User tempUser, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}

@@ -118,7 +118,7 @@ public class FurnitureDescriptionController extends BaseController {
    	@ResponseBody
 	@RequestMapping(value="/new", method=RequestMethod.POST)
    	public ResponseEntity createNewProduct(@RequestBody FurnitureDescription furnitureDescription,
-		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
+		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -144,7 +144,7 @@ public class FurnitureDescriptionController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value="/edit", method=RequestMethod.PUT)
 	public ResponseEntity editProduct(@RequestBody FurnitureDescription furnitureDescription,
-		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "token") String token) {
+		   @RequestParam(value = "subCategoryId", required = false)int id, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -170,7 +170,7 @@ public class FurnitureDescriptionController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value="/delete", method=RequestMethod.DELETE)
-	public ResponseEntity deleteProduct(@RequestBody FurnitureDescription furnitureDescription, @RequestHeader(value = "token") String token) {
+	public ResponseEntity deleteProduct(@RequestBody FurnitureDescription furnitureDescription, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);

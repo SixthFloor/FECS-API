@@ -181,7 +181,7 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
-	public ResponseEntity createNewCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+	public ResponseEntity createNewCategory(@RequestBody Category category, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -208,7 +208,7 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "{categoryName}/subCategory/new", method = RequestMethod.POST)
-	public ResponseEntity addSubCategory(@RequestBody SubCategory subCategory, @PathVariable String categoryName, @RequestHeader(value = "token") String token) {
+	public ResponseEntity addSubCategory(@RequestBody SubCategory subCategory, @PathVariable String categoryName, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -235,7 +235,7 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
-	public ResponseEntity editCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+	public ResponseEntity editCategory(@RequestBody Category category, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -268,7 +268,7 @@ public class CategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/subCategory/edit", method = RequestMethod.PUT)
 	public ResponseEntity editSubCategory(@RequestBody SubCategory subCategory,
-			@RequestParam(value = "newCategoryName", required = false) String categoryName, @RequestHeader(value = "token") String token) {
+			@RequestParam(value = "newCategoryName", required = false) String categoryName, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -302,7 +302,7 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-	public ResponseEntity deleteCategory(@RequestBody Category category, @RequestHeader(value = "token") String token) {
+	public ResponseEntity deleteCategory(@RequestBody Category category, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -325,7 +325,7 @@ public class CategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/subCategory/delete", method = RequestMethod.DELETE)
-	public ResponseEntity deleteSubCategory(@RequestBody SubCategory subCategory, @RequestHeader(value = "token") String token) {
+	public ResponseEntity deleteSubCategory(@RequestBody SubCategory subCategory, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
