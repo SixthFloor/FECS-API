@@ -111,7 +111,7 @@ public class CategoryController extends BaseController {
 			return new ResponseEntity(new Message("This category name is not existed"), HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity(category.getSubCategories(), HttpStatus.OK);
+		return new ResponseEntity(category, HttpStatus.OK);
 	}
 
 	/**

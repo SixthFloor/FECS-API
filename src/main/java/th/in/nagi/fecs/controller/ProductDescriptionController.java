@@ -127,7 +127,7 @@ public class ProductDescriptionController extends BaseController {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-		productDescription.setSubCategory(subCategoryService.findByKey(id));
+//		productDescription.setSubCategory(subCategoryService.findByKey(id));
 
 		// System.out.println(furnitureDescription.getSubCategory().getName());
 		try {
@@ -150,17 +150,16 @@ public class ProductDescriptionController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
 	public ResponseEntity editProduct(@RequestBody ProductDescription productDescription,
-			@RequestParam(value = "subCategoryId", required = false) int id,
 			@RequestHeader(value = "token") String token) {
 		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
 				authenticateService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-		SubCategory subCategory = subCategoryService.findByKey(id);
-		if (subCategory != null) {
-			productDescription.setSubCategory(subCategory);
-		}
+//		SubCategory subCategory = subCategoryService.findByKey(id);
+//		if (subCategory != null) {
+//			productDescription.setSubCategory(subCategory);
+//		}
 
 		try {
 			productDescriptionService.update(productDescription);
