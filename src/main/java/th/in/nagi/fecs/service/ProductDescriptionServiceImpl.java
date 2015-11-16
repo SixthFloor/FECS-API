@@ -15,7 +15,7 @@ import th.in.nagi.fecs.repository.ProductDescriptionRepository;
  * @author Thanachote Visetsuthimont
  *
  */
-@Service("furnitureDescriptionService")
+@Service("productDescriptionService")
 @Transactional
 public class ProductDescriptionServiceImpl implements ProductDescriptionService {
 

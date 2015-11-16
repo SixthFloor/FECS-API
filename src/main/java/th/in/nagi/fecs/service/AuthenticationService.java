@@ -5,7 +5,7 @@ import java.util.List;
 import th.in.nagi.fecs.model.Authentication;
 import th.in.nagi.fecs.model.Role;
 
-public interface AuthenticateService {
+public interface AuthenticationService {
 	
 	public final String MEMBER = "member";
 	public final String STAFF = "staff";

@@ -8,7 +8,7 @@ import th.in.nagi.fecs.model.Authentication;
  * @author Nara Surawit
  *
  */
-public interface AuthenticateRepository extends Repository<Authentication, Integer> {
+public interface AuthenticationRepository extends Repository<Authentication, Integer> {
 
 	/**
 	 * Find authentication by token

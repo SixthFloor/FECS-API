@@ -14,7 +14,7 @@ import th.in.nagi.fecs.model.Category;
  * @author Thanachote Visetsuthimont
  *
  */
-@Repository("categoryRopository")
+@Repository("categoryRepository")
 public class CategoryRepositoryImpl extends AbstractRepository<Category, Integer>implements CategoryRepository {
 
 	/**

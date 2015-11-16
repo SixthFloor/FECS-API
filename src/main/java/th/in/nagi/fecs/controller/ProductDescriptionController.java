@@ -19,7 +19,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.model.SubCategory;
-import th.in.nagi.fecs.service.AuthenticateService;
+import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.view.ProductDescriptionView;
@@ -50,7 +50,7 @@ public class ProductDescriptionController extends BaseController {
 	 * Service of authenticate
 	 */
 	@Autowired
-	private AuthenticateService authenticateService;
+	private AuthenticationService authenticationService;
 
 	/**
 	 * Return a product that have the serialNumber
@@ -122,12 +122,12 @@ public class ProductDescriptionController extends BaseController {
 	public ResponseEntity createNewProduct(@RequestBody ProductDescription productDescription,
 			@RequestParam(value = "subCategoryId", required = false) int id,
 			@RequestHeader(value = "token") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
-				authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-		productDescription.setSubCategory(subCategoryService.findByKey(id));
+//		productDescription.setSubCategory(subCategoryService.findByKey(id));
 
 		// System.out.println(furnitureDescription.getSubCategory().getName());
 		try {
@@ -152,14 +152,14 @@ public class ProductDescriptionController extends BaseController {
 	public ResponseEntity editProduct(@RequestBody ProductDescription productDescription,
 			@RequestParam(value = "subCategoryId", required = false) int id,
 			@RequestHeader(value = "token") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
-				authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		SubCategory subCategory = subCategoryService.findByKey(id);
 		if (subCategory != null) {
-			productDescription.setSubCategory(subCategory);
+//			productDescription.setSubCategory(subCategory);
 		}
 
 		try {
@@ -181,8 +181,8 @@ public class ProductDescriptionController extends BaseController {
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	public ResponseEntity deleteProduct(@RequestBody ProductDescription productDescription,
 			@RequestHeader(value = "token") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
-				authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 

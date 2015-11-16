@@ -16,8 +16,8 @@ import th.in.nagi.fecs.model.SubCategory;
  * @author Nara Surawit
  *
  */
-@Repository("catalogRopository")
-public class CatalogRopositoryImpl extends AbstractRepository<Catalog, Integer>implements CatalogRepository {
+@Repository("catalogRepository")
+public class CatalogRepositoryImpl extends AbstractRepository<Catalog, Integer>implements CatalogRepository {
 
 	/**
 	 * Query all Catalog in database.

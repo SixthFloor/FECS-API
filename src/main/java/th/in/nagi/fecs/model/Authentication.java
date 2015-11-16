@@ -41,7 +41,7 @@ import th.in.nagi.fecs.view.AuthenticationView;
  *
  */
 @Entity
-@Table(name = "authenticate")
+@Table(name = "authentication")
 public class Authentication {
 
 	/**

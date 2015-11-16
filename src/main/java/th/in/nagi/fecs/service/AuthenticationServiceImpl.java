@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import th.in.nagi.fecs.model.Authentication;
 import th.in.nagi.fecs.model.Role;
 import th.in.nagi.fecs.model.User;
-import th.in.nagi.fecs.repository.AuthenticateRepository;
+import th.in.nagi.fecs.repository.AuthenticationRepository;
 import th.in.nagi.fecs.repository.RoleRepository;
 
 /**
@@ -22,15 +22,15 @@ import th.in.nagi.fecs.repository.RoleRepository;
  * @author Nara Surawit
  *
  */
-@Service("authenticateService")
+@Service("authenticationService")
 @Transactional
-public class AuthenticateServiceImpl implements AuthenticateService {
+public class AuthenticationServiceImpl implements AuthenticationService {
 
 	/**
 	 * Tool for managing authentication table that link to database.
 	 */
 	@Autowired
-	private AuthenticateRepository authenticateRepository;
+	private AuthenticationRepository authenticationRepository;
 
 	/**
 	 * Tool for managing role table that link to database.
@@ -52,7 +52,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 */
 	@Override
 	public Authentication findByKey(Integer id) {
-		return authenticateRepository.findByKey(id);
+		return authenticationRepository.findByKey(id);
 	}
 
 	/**
@@ -62,7 +62,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 */
 	@Override
 	public void store(Authentication authentication) {
-		authenticateRepository.store(authentication);
+		authenticationRepository.store(authentication);
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	public void update(Authentication authentication) {
 		// TODO Auto-generated method stub
 		// Authentication entity =
-		// authenticateRepository.findByKey(authenticate.getId());
+		// authenticationRepository.findByKey(authenticate.getId());
 		// if (entity != null) {
 		// entity.setUsername(authenticate.getUsername());
 		// entity.setToken(authenticate.getToken());
@@ -88,7 +88,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 */
 	@Override
 	public List<Authentication> findAll() {
-		return authenticateRepository.findAll();
+		return authenticationRepository.findAll();
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 */
 	@Override
 	public Authentication findByToken(String token) {
-		return authenticateRepository.findByToken(token);
+		return authenticationRepository.findByToken(token);
 	}
 
 	/**
@@ -109,7 +109,7 @@ public class AuthenticateServiceImpl implements AuthenticateService {
 	 */
 	@Override
 	public void removeByToken(String token) {
-		authenticateRepository.removeByToken(token);
+		authenticationRepository.removeByToken(token);
 	}
 
 	/**

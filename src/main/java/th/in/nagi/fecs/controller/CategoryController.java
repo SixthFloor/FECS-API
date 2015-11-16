@@ -18,7 +18,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Category;
-import th.in.nagi.fecs.service.AuthenticateService;
+import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.CategoryService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
@@ -57,7 +57,7 @@ public class CategoryController extends BaseController {
 	 * authenticate service.
 	 */
 	@Autowired
-	private AuthenticateService authenticateService;
+	private AuthenticationService authenticationService;
 
 	/**
 	 * Return list of category
@@ -111,7 +111,7 @@ public class CategoryController extends BaseController {
 			return new ResponseEntity(new Message("This category name is not existed"), HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity(category.getSubCategories(), HttpStatus.OK);
+		return new ResponseEntity(category, HttpStatus.OK);
 	}
 
 	/**
@@ -125,8 +125,8 @@ public class CategoryController extends BaseController {
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
 	public ResponseEntity createNewCategory(@RequestBody Category category, @RequestHeader(value = "Authorization") String token) {
 
-		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
-				authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		if (categoryService.findByName(category.getName()) != null) {
@@ -150,8 +150,8 @@ public class CategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
 	public ResponseEntity editCategory(@RequestBody Category category, @RequestHeader(value = "Authorization") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
-				authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
@@ -182,8 +182,8 @@ public class CategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	public ResponseEntity deleteCategory(@RequestBody Category category, @RequestHeader(value = "Authorization") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
-				authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 

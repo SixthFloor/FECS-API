@@ -15,7 +15,7 @@ import th.in.nagi.fecs.model.ProductDescription;
  * @author Thanachote Visetsuthimont
  *
  */
-@Repository("furnitureDescriptionRepository")
+@Repository("productDescriptionRepository")
 public class ProductDescriptionRepositoryImpl extends AbstractRepository<ProductDescription, Integer>
 		implements ProductDescriptionRepository {
 

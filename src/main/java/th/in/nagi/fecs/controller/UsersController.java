@@ -22,7 +22,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.User;
-import th.in.nagi.fecs.service.AuthenticateService;
+import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.RoleService;
 import th.in.nagi.fecs.service.UserService;
 import th.in.nagi.fecs.view.UserView;
@@ -47,7 +47,7 @@ public class UsersController extends BaseController {
      * authenticate service.
      */
     @Autowired
-    private AuthenticateService authenticateService;
+    private AuthenticationService authenticationService;
     
     /**
      * role service
@@ -70,8 +70,8 @@ public class UsersController extends BaseController {
     @JsonView(UserView.Personal.class)
     @RequestMapping(value = "/all", method = RequestMethod.GET)
     public ResponseEntity getAllUsers(@RequestHeader(value = "Authorization") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
-				authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
         Set<User> users = new HashSet<User>(getUserService().findAll());
@@ -94,8 +94,8 @@ public class UsersController extends BaseController {
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ResponseEntity getListUsers(@RequestParam(value = "start", required = false) int start,
 			@RequestParam(value = "size", required = false) int size,@RequestHeader(value = "Authorization") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
-				authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		int userListSize = userService.findAll().size();
@@ -120,8 +120,8 @@ public class UsersController extends BaseController {
     @JsonView(UserView.Personal.class)
     @RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
     public ResponseEntity getUserByEmail(@PathVariable String email, @RequestHeader(value = "Authorization") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.STAFF, authenticateService.MANAGER,
-				authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
@@ -167,7 +167,7 @@ public class UsersController extends BaseController {
     @RequestMapping(value = { "/newByOwner" }, method = RequestMethod.POST)
     public ResponseEntity createUserByOwner(@RequestBody User user,  @RequestHeader(value = "Authorization") String token
     		, @RequestParam(value = "roleId", required = false)int id) {
-    	if (!authenticateService.checkPermission(token, authenticateService.OWNER)) {
+    	if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
     	Date date = new Date();
@@ -193,11 +193,11 @@ public class UsersController extends BaseController {
     @ResponseBody
     @RequestMapping(value = {"/edit" }, method = RequestMethod.PUT)
     public ResponseEntity editUserByMember(@RequestBody User newUser, @RequestHeader(value = "Authorization") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.MEMBER
-				, authenticateService.STAFF, authenticateService.MANAGER, authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER
+				, authenticationService.STAFF, authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		if(authenticateService.findByToken(token).getUser().getId() != newUser.getId()){
+		if(authenticationService.findByToken(token).getUser().getId() != newUser.getId()){
 			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
 //        User user = getUserService().findByUsername(newUser.getUsername());
@@ -218,10 +218,10 @@ public class UsersController extends BaseController {
     @ResponseBody
     @RequestMapping(value = {"/editByOwner" }, method = RequestMethod.PUT)
     public ResponseEntity editUserByAdmin(@RequestBody User newUser, @RequestHeader(value = "Authorization") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-//		if(!authenticateService.getRole(token).getName().equals(authenticateService.OWNER)){
+//		if(!authenticationService.getRole(token).getName().equals(authenticationService.OWNER)){
 //			newUser.setRole(null);
 //		}
 //        User user = getUserService().findByUsername(newUser.getUsername());
@@ -243,7 +243,7 @@ public class UsersController extends BaseController {
     @ResponseBody
     @RequestMapping(value = {"/delete" }, method = RequestMethod.DELETE)
     public ResponseEntity deleteUser(@RequestBody User tempUser, @RequestHeader(value = "Authorization") String token) {
-		if (!authenticateService.checkPermission(token, authenticateService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
     	User user = getUserService().findByEmail(tempUser.getEmail());

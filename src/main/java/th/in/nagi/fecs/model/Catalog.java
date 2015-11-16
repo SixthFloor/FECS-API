@@ -13,6 +13,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
@@ -47,14 +48,17 @@ public class Catalog {
 	private Integer id;
 
 	@JsonView(CategoryView.Personal.class)
+	@ManyToOne
 	@JoinColumn(name="category_id")
 	private Category category;
 
 	@JsonView(CategoryView.Personal.class)
+	@ManyToOne
 	@JoinColumn(name="sub_category_id")
 	private SubCategory subCategory;
 
 	@JsonView(CategoryView.Personal.class)
+	@ManyToOne
 	@JoinColumn(name="product_description_id")
 	private ProductDescription productDescription;
 

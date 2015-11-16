@@ -21,7 +21,7 @@ import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Authentication;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.User;
-import th.in.nagi.fecs.service.AuthenticateService;
+import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.UserService;
 import th.in.nagi.fecs.view.AuthenticationView;
 import th.in.nagi.fecs.view.UserView;
@@ -40,7 +40,7 @@ public class AuthenticateController extends BaseController {
 	 * Authentication service
 	 */
 	@Autowired
-	private AuthenticateService authenticateService;
+	private AuthenticationService authenticationService;
 
 	/**
 	 * User service
@@ -53,8 +53,8 @@ public class AuthenticateController extends BaseController {
 	 * 
 	 * @return authenticate service
 	 */
-	protected AuthenticateService getAuthenticateService() {
-		return authenticateService;
+	protected AuthenticationService getAuthenticateService() {
+		return authenticationService;
 	}
 
 	/**
@@ -147,9 +147,9 @@ public class AuthenticateController extends BaseController {
 	@JsonView(UserView.Personal.class)
 	@RequestMapping(value = "/token", method = RequestMethod.POST)
 	public ResponseEntity checkToken(@RequestBody Authentication authentication) {
-		if (authenticateService.isExpiration(authentication.getToken())) {
+		if (authenticationService.isExpiration(authentication.getToken())) {
 			System.out.println(authentication.getUser());
-			return new ResponseEntity(authenticateService.findByToken(authentication.getToken()).getUser(),
+			return new ResponseEntity(authenticationService.findByToken(authentication.getToken()).getUser(),
 					HttpStatus.OK);
 		}
 		return new ResponseEntity(new Message("Token is expiration."), HttpStatus.BAD_REQUEST);

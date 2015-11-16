@@ -18,7 +18,7 @@ import th.in.nagi.fecs.repository.CatalogRepository;
  * @author Thanachote Visetsuthimont
  *
  */
-@Service("categoryService")
+@Service("catalogService")
 @Transactional
 public class CatalogServiceImpl implements CatalogService {
 

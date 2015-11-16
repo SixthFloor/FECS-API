@@ -15,9 +15,9 @@ import th.in.nagi.fecs.model.Authentication;
  * @author Nara Surawit
  *
  */
-@Repository("authenticateRopository")
-public class AuthenticateRopositoryImpl extends AbstractRepository<Authentication, Integer>
-		implements AuthenticateRepository {
+@Repository("authenticationRepository")
+public class AuthenticationRepositoryImpl extends AbstractRepository<Authentication, Integer>
+		implements AuthenticationRepository {
 
 	/**
 	 * Query all authentication in database.
