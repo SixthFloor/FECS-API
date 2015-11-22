@@ -2,15 +2,35 @@ package th.in.nagi.fecs.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import th.in.nagi.fecs.model.Role;
+import th.in.nagi.fecs.repository.RoleRepository;
 
-public interface RoleService {
-	Role findByKey(Integer id);
+@Service("roleService")
+@Transactional
+public class RoleService {
+	
+	@Autowired
+	RoleRepository roleRepository; 
 
-	void store(Role category);
+	public Role findByKey(Integer id) {		
+		return roleRepository.findByKey(id);
+	}
 
-	void removeById(Integer id);
+	public void store(Role role) {
+		roleRepository.store(role);
+	}
 
-	List<Role> findAll();
+
+	public void removeById(Integer id) {
+		roleRepository.remove(id);
+	}
+
+	public List<Role> findAll() {
+		return roleRepository.findAll();
+	}
 
 }
