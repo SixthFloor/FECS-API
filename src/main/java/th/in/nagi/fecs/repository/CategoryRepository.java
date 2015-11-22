@@ -2,39 +2,87 @@ package th.in.nagi.fecs.repository;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
 import th.in.nagi.fecs.model.Category;
 
 /**
- * Collection of tools for category.
+ * Tools for managing category.
  * 
  * @author Thanachote Visetsuthimont
  *
  */
-public interface CategoryRepository extends Repository<Category, Integer> {
+@Repository("categoryRepository")
+public class CategoryRepository extends AbstractRepository<Category, Integer> {
 
 	/**
-	 * Query categories with limit size and ascending by name.
+	 * Query all categories in database.
 	 * 
-	 * @param start
-	 * @param size
 	 * @return List<Category>
 	 */
-	List<Category> findAndAscByName(int start, int size);
+	@Override
+	public List<Category> findAll() {
+		Criteria criteria = createEntityCriteria();
+		return criteria.list();
+	}
 
 	/**
-	 * Query categories with limit size and descending by name.
+	 * Query category by key.
 	 * 
-	 * @param start
-	 * @param size
-	 * @return List<Category>
-	 */
-	List<Category> findAndDescByName(int start, int size);
-
-	/**
-	 * Query category by name.
-	 * 
-	 * @param name
 	 * @return Category
 	 */
-	Category findByName(String name);
+	@Override
+	public Category findByKey(Integer key) {
+		return getByKey(key);
+	}
+
+	/**
+	 * Save category in database.
+	 * 
+	 * @param entity
+	 */
+	@Override
+	public void store(Category entity) {
+		persist(entity);
+	}
+
+	/**
+	 * Remove category in database by key.
+	 * 
+	 * @param key
+	 */
+	@Override
+	public void remove(Integer key) {
+		remove(getByKey(key));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Category> findAndAscByName(int start, int size) {
+		List<Category> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name"))
+				.setFirstResult(start).setMaxResults(size).list();
+		return list;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<Category> findAndDescByName(int start, int size) {
+		List<Category> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name"))
+				.setFirstResult(start).setMaxResults(size).list();
+		return list;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Category findByName(String name) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("name", name));
+		return (Category) criteria.uniqueResult();
+	}
+
 }

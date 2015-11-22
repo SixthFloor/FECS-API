@@ -2,49 +2,88 @@ package th.in.nagi.fecs.repository;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
 import th.in.nagi.fecs.model.User;
 
 /**
- * Repository for users
+ * Implemented user repository
  * 
  * @author Chonnipa Kittisiriprasert
  *
  */
-public interface UserRepository extends Repository<User, Integer> {
+@Repository("userRepository")
+public class UserRepository extends AbstractRepository<User, Integer> {
 
 	/**
-	 * Finds a user that matches the given email.
-	 * 
-	 * @param email
-	 *            email
-	 * @return user that matches the given email
+	 * {@inheritDoc}
 	 */
-	User findByEmail(String email);
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<User> findAll() {
+		Criteria criteria = createEntityCriteria();
+		return criteria.setFetchMode("authenticate", FetchMode.LAZY).list();
+	}
 
 	/**
-	 * Removes an existing user from this repository.
-	 * 
-	 * @param email
-	 *            email
+	 * {@inheritDoc}
 	 */
-	void removeByEmail(String email);
+	@Override
+	public User findByKey(Integer key) {
+		return getByKey(key);
+	}
 
 	/**
-	 * Query users with limit size and ascending by name.
-	 * 
-	 * @param start
-	 * @param size
-	 * @return List<User>
+	 * {@inheritDoc}
 	 */
-	List<User> findAndAscByFirstName(int start, int size);
+	@Override
+	public void store(User user) {
+		persist(user);
+	}
 
 	/**
-	 * Query users with limit size and descending by name.
-	 * 
-	 * @param start
-	 * @param size
-	 * @return List<User>
+	 * {@inheritDoc}
 	 */
-	List<User> findAndDescByFirstName(int start, int size);
+	@Override
+	public void remove(Integer key) {
+		remove(key);
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public User findByEmail(String email) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("email", email));
+		return (User) criteria.uniqueResult();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeByEmail(String email) {
+		remove(findByEmail(email));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<User> findAndAscByFirstName(int start, int size) {
+		List<User> list = createEntityCriteria().setFetchMode("authenticate", FetchMode.LAZY)
+				.addOrder(org.hibernate.criterion.Order.asc("firstName")).setFirstResult(start).setMaxResults(size).list();
+		return list;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<User> findAndDescByFirstName(int start, int size) {
+		List<User> list = createEntityCriteria().setFetchMode("authenticate", FetchMode.LAZY)
+				.addOrder(org.hibernate.criterion.Order.desc("firstName")).setFirstResult(start).setMaxResults(size).list();
+		return list;
+	}
 
 }

@@ -1,30 +1,88 @@
 package th.in.nagi.fecs.repository;
 
+import java.util.List;
+
+import org.hibernate.Criteria;
+import org.hibernate.Query;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
 import th.in.nagi.fecs.model.Authentication;
 
 /**
- * Collection of tool for managing authentication in database.
+ * Tool for managing authentication in database.
  * 
  * @author Nara Surawit
  *
  */
-public interface AuthenticationRepository extends Repository<Authentication, Integer> {
+@Repository("authenticationRepository")
+public class AuthenticationRepository extends AbstractRepository<Authentication, Integer> {
 
 	/**
-	 * Find authentication by token
+	 * Query all authentication in database.
 	 * 
-	 * @param token
+	 * @return List<Authentication>
+	 */
+	@Override
+	public List<Authentication> findAll() {
+		Criteria criteria = createEntityCriteria();
+		return criteria.list();
+	}
+
+	/**
+	 * Query authentication by key.
+	 * 
+	 * @param key
 	 * @return Authentication
 	 */
-	public Authentication findByToken(String token);
-
-	// public List<Authentication> findByUser(User username);
+	@Override
+	public Authentication findByKey(Integer key) {
+		return getByKey(key);
+	}
 
 	/**
-	 * Remove authentication by token
+	 * Save authentication to database.
 	 * 
-	 * @param token
+	 * @param entity
 	 */
-	public void removeByToken(String token);
+	@Override
+	public void store(Authentication entity) {
+		persist(entity);
+	}
+
+	/**
+	 * Remove authentication by key.
+	 * 
+	 * @param key
+	 */
+	@Override
+	public void remove(Integer key) {
+		remove(getByKey(key));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Authentication findByToken(String token) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("token", token));
+		return (Authentication) criteria.uniqueResult();
+	}
+
+	// @Override
+	// public List<Authentication> findByUser(User user) {
+	// Criteria criteria = createEntityCriteria();
+	// criteria.add(Restrictions.eq("user", user));
+	// return (List<Authentication>) criteria.list();
+	// }
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void removeByToken(String token) {
+		Query query = getSession().createSQLQuery("delete from authenticate where token = :token");
+		query.setString("token", token);
+		query.executeUpdate();
+	}
 
 }

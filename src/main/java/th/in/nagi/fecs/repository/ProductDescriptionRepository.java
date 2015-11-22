@@ -2,65 +2,111 @@ package th.in.nagi.fecs.repository;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
 import th.in.nagi.fecs.model.ProductDescription;
 
 /**
- * Collection of tools for managing product.
+ * Tools for managing product.
  * 
  * @author Thanachote Visetsuthimont
  *
  */
-public interface ProductDescriptionRepository extends Repository<ProductDescription, Integer> {
+@Repository("productDescriptionRepository")
+public class ProductDescriptionRepository extends AbstractRepository<ProductDescription, Integer> {
 
 	/**
-	 * Query product by serial number.
+	 * Query all products in database.
 	 * 
-	 * @param serialNumber
+	 * @return List<FurnitureDescription>
+	 */
+	@Override
+	public List<ProductDescription> findAll() {
+		Criteria criteria = createEntityCriteria();
+		return criteria.setFetchMode("images", FetchMode.LAZY).list();
+	}
+
+	/**
+	 * Query product by key.
+	 * 
 	 * @return FurnitureDescription
 	 */
-	public ProductDescription findBySerialNumber(String serialNumber);
+	@Override
+	public ProductDescription findByKey(Integer key) {
+		return getByKey(key);
+	}
 
 	/**
-	 * Remove product by using serial number.
+	 * Save product in database.
 	 * 
-	 * @param serialNumber
+	 * @param entity
 	 */
-	public void removeBySerialNumber(String serialNumber);
+	@Override
+	public void store(ProductDescription entity) {
+		persist(entity);
+
+	}
 
 	/**
-	 * Query products with limit size and ascending by name.
+	 * Remove product in database by key.
 	 * 
-	 * @param start
-	 * @param size
-	 * @return List<FurnitureDescription>
+	 * @param key
 	 */
-	public List<ProductDescription> findAndAscByName(int start, int size);
+	@Override
+	public void remove(Integer key) {
+		remove(getByKey(key));
+	}
 
 	/**
-	 * Query products with limit size and descending by name.
-	 * 
-	 * @param start
-	 * @param size
-	 * @return List<FurnitureDescription>
+	 * {@inheritDoc}
 	 */
-	public List<ProductDescription> findAndDescByName(int start, int size);
+	public ProductDescription findBySerialNumber(String serialNumber) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("serialNumber", serialNumber));
+		return (ProductDescription) criteria.uniqueResult();
+	}
 
 	/**
-	 * Query products with limit size and ascending by price.
-	 * 
-	 * @param start
-	 * @param size
-	 * @return List<FurnitureDescription>
+	 * {@inheritDoc}
 	 */
-	public List<ProductDescription> findAndAscByPrice(int start, int size);
+	public void removeBySerialNumber(String serialNumber) {
+		remove(findBySerialNumber(serialNumber));
+	}
 
 	/**
-	 * Query products with limit size and descending by price.
-	 * 
-	 * @param start
-	 * @param size
-	 * @return List<FurnitureDescription>
+	 * {@inheritDoc}
 	 */
-	public List<ProductDescription> findAndDescByPrice(int start, int size);
+	public List<ProductDescription> findAndAscByName(int start, int size) {
+		List<ProductDescription> furnitureDescriptions = createEntityCriteria().setFetchMode("images", FetchMode.LAZY)
+				.addOrder(org.hibernate.criterion.Order.asc("name")).setFirstResult(start).setMaxResults(size).list();
+		return furnitureDescriptions;
+	}
+
+	public List<ProductDescription> findAndDescByName(int start, int size) {
+		List<ProductDescription> furnitureDescriptions = createEntityCriteria().setFetchMode("images", FetchMode.LAZY)
+				.addOrder(org.hibernate.criterion.Order.desc("name")).setFirstResult(start).setMaxResults(size).list();
+		return furnitureDescriptions;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<ProductDescription> findAndAscByPrice(int start, int size) {
+		List<ProductDescription> furnitureDescriptions = createEntityCriteria()
+				.addOrder(org.hibernate.criterion.Order.asc("price")).setFirstResult(start).setMaxResults(size).list();
+		return furnitureDescriptions;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public List<ProductDescription> findAndDescByPrice(int start, int size) {
+		List<ProductDescription> furnitureDescriptions = createEntityCriteria()
+				.addOrder(org.hibernate.criterion.Order.desc("price")).setFirstResult(start).setMaxResults(size).list();
+		return furnitureDescriptions;
+	}
 
 }
