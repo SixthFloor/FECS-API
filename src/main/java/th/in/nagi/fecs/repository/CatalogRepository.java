@@ -61,16 +61,16 @@ public class CatalogRepository extends AbstractRepository<Catalog, Integer> {
 		remove(getByKey(key));
 	}
 
-	public List<Catalog> findByCategory(Category category) {
-		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("category_id", category.getId()));
-		return criteria.list();
-	}
-
-	public List<Catalog> findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
-		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("category_id", category.getId()));
-		criteria.add(Restrictions.eq("sub_category_id", subcategory.getId()));
-		return criteria.list();
-	}
+//	public List<Catalog> findByCategory(Category category) {
+//		Criteria criteria = createEntityCriteria();
+//		criteria.add(Restrictions.eq("category_id", category.getId()));
+//		return criteria.list();
+//	}
+//
+//	public List<Catalog> findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
+//		Criteria criteria = createEntityCriteria();
+//		criteria.add(Restrictions.eq("category_id", category.getId()));
+//		criteria.add(Restrictions.eq("sub_category_id", subcategory.getId()));
+//		return criteria.list();
+//	}
 }

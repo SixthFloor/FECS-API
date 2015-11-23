@@ -17,8 +17,8 @@ import th.in.nagi.fecs.view.ProductDescriptionView;
 
 @Entity
 //@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
-@Table(name = "furniture_image")
-public class FurnitureImage {
+@Table(name = "product_image")
+public class ProductImage {
 	
 	@JsonView(ProductImageView.Personal.class)
 	@Id
@@ -32,8 +32,8 @@ public class FurnitureImage {
 	
 	@JsonView(ProductImageView.Summary.class)
 	@ManyToOne
-	@JoinColumn(name="furniture_description_id")
-	private ProductDescription furnitureDescription;
+	@JoinColumn(name="product_description_id")
+	private ProductDescription productDescription;
 
 	public Integer getId() {
 		return id;

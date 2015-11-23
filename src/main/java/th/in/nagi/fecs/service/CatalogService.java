@@ -37,9 +37,10 @@ public class CatalogService {
 	public void update(Catalog catalog) {
 		Catalog entity = catalogRepository.findByKey(catalog.getId());
 		if (entity != null) {
-			entity.setCategory(catalog.getCategory());
+//			entity.setCategory(catalog.getCategory());
+			entity.setType(catalog.getType());
 			entity.setProductDescription(catalog.getProductDescription());
-			entity.setSubCategory(catalog.getSubCategory());
+//			entity.setSubCategory(catalog.getSubCategory());
 		}
 
 	}
@@ -62,12 +63,19 @@ public class CatalogService {
 		return null;
 	}
 
-	public List<Catalog> findByCategory(Category category) {
-		return catalogRepository.findByCategory(category);
-	}
-
-	public List<Catalog> findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
-		return catalogRepository.findByCategoryAndSubCategory(category, subcategory);
-	}
+//	public List<Catalog> findByCategory(Category category) {
+//		return catalogRepository.findByCategory(category);
+//	}
+//
+//	public List<Catalog> findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
+//		return catalogRepository.findByCategoryAndSubCategory(category, subcategory);
+//	}
+	
+//	public List<SubCategory> findSubCategory(Category category){
+//		List<Catalog> catalogs = catalogRepository.findByCategory(category);
+//		for (Catalog catalog: catalogs){
+//			
+//		}
+//	}
 
 }

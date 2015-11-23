@@ -84,8 +84,8 @@ public class ProductDescription {
 	private String dimensionDescription;
 
 	@JsonView(ProductDescriptionView.ElementalImage.class)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "furnitureDescription")
-	private Set<FurnitureImage> images;
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "productDescription")
+	private Set<ProductImage> images;
 	
 	
 	/**
@@ -192,11 +192,11 @@ public class ProductDescription {
 	// return this.category;
 	// }
     
-    public Set<FurnitureImage> getImages() {
+    public Set<ProductImage> getImages() {
 		return images;
 	}
 
-	public void setImages(Set<FurnitureImage> images) {
+	public void setImages(Set<ProductImage> images) {
 		this.images = images;
 	}
 
