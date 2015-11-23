@@ -34,7 +34,7 @@ public class Type {
 	@JsonView(TypeView.SubCategory.class)
 	@ManyToOne
 	@JoinColumn(name="sub_category_id")
-	private SubCategory subCategory;
+	private List<SubCategory> subCategory;
 	
 	@JsonView(TypeView.Catalogs.class)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "type")
@@ -56,11 +56,11 @@ public class Type {
 		this.category = category;
 	}
 
-	public SubCategory getSubCategory() {
+	public List<SubCategory> getSubCategory() {
 		return subCategory;
 	}
 
-	public void setSubCategory(SubCategory subCategory) {
+	public void setSubCategory(List<SubCategory> subCategory) {
 		this.subCategory = subCategory;
 	}
 
