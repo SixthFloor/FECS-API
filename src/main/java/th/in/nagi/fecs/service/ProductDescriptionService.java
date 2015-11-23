@@ -2,28 +2,133 @@ package th.in.nagi.fecs.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import th.in.nagi.fecs.model.ProductDescription;
+import th.in.nagi.fecs.repository.ProductDescriptionRepository;
 
-public interface ProductDescriptionService {
+/**
+ * Provide product service for managing easier. Ex. add, remove, edit.
+ * 
+ * @author Thanachote Visetsuthimont
+ *
+ */
+@Service("productDescriptionService")
+@Transactional
+public class ProductDescriptionService {
 
-	ProductDescription findByKey(Integer id);
+	/**
+	 * Tool for managing product in database.
+	 */
+	@Autowired
+	private ProductDescriptionRepository productDescriptionRepository;
 
-	void store(ProductDescription furnitureDescription);
+	/**
+	 * Find product by using index.
+	 * 
+	 * @param id
+	 * @return FurnitureDescription
+	 */
+	public ProductDescription findByKey(Integer id) {
+		return productDescriptionRepository.findByKey(id);
+	}
 
-	void update(ProductDescription furnitureDescription);
+	/**
+	 * Save product in database.
+	 * 
+	 * @param furnitureDescription
+	 */
+	public void store(ProductDescription furnitureDescription) {
+		productDescriptionRepository.store(furnitureDescription);
+	}
 
-	List<ProductDescription> findAll();
+	/**
+	 * Update product's detail in database.
+	 */
+	public void update(ProductDescription furnitureDescription) {
+		ProductDescription entity = productDescriptionRepository.findByKey(furnitureDescription.getId());
+		if (entity != null) {
+			entity.setSerialNumber(furnitureDescription.getSerialNumber());
+			entity.setName(furnitureDescription.getName());
+			entity.setPrice(furnitureDescription.getPrice());
+			entity.setDescription(furnitureDescription.getDescription());
+			entity.setDimensionDescription(furnitureDescription.getDimensionDescription());
+			entity.setImages(furnitureDescription.getImages());
+//			entity.setSubCategory(furnitureDescription.getSubCategory());
+		}
+	}
 
-	ProductDescription findBySerialNumber(String serialNumber);
+	/**
+	 * Find all products in database.
+	 * 
+	 * @return List<FurnitureDescription>
+	 */
+	public List<ProductDescription> findAll() {
+		return productDescriptionRepository.findAll();
+	}
 
-	void removeBySerialNumber(String serialNumber);
+	/**
+	 * Find products by using serial number.
+	 * 
+	 * @return FurnitureDescription
+	 */
+	public ProductDescription findBySerialNumber(String serialNumber) {
+		return productDescriptionRepository.findBySerialNumber(serialNumber);
+	}
 
-	List<ProductDescription> findAndAscByName(int start, int size);
+	/**
+	 * Remove products by using serial number.
+	 * 
+	 * @param serialNumber
+	 */
+	public void removeBySerialNumber(String serialNumber) {
+		productDescriptionRepository.removeBySerialNumber(serialNumber);
 
-	List<ProductDescription> findAndDescByName(int start, int size);
+	}
 
-	List<ProductDescription> findAndAscByPrice(int start, int size);
+	/**
+	 * Find products with limit size and ascending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * @return List<FurnitureDescription>
+	 */
+	public List<ProductDescription> findAndAscByName(int start, int size) {
+		return productDescriptionRepository.findAndAscByName(start, size);
+	}
 
-	List<ProductDescription> findAndDescByPrice(int start, int size);
+	/**
+	 * Find products with limit size and descending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * @return List<FurnitureDescription>
+	 */
+	public List<ProductDescription> findAndDescByName(int start, int size) {
+		return productDescriptionRepository.findAndDescByName(start, size);
+	}
 
+	/**
+	 * Find products with limit size and ascending by price.
+	 * 
+	 * @param start
+	 * @param size
+	 * @return List<FurnitureDescription>
+	 */
+	public List<ProductDescription> findAndAscByPrice(int start, int size) {
+		return productDescriptionRepository.findAndAscByPrice(start, size);
+	}
+
+	/**
+	 * Find products with limit size and descending by price.
+	 * 
+	 * @param start
+	 * @param size
+	 * @return List<FurnitureDescription>
+	 */
+	public List<ProductDescription> findAndDescByPrice(int start, int size) {
+		return productDescriptionRepository.findAndDescByPrice(start, size);
+	}
 }

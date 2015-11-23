@@ -49,33 +49,24 @@ public class Catalog {
 
 	@JsonView(CategoryView.Personal.class)
 	@ManyToOne
-	@JoinColumn(name="category_id")
-	private Category category;
-
-	@JsonView(CategoryView.Personal.class)
-	@ManyToOne
-	@JoinColumn(name="sub_category_id")
-	private SubCategory subCategory;
+	@JoinColumn(name="type_id")
+	private Type type;
 
 	@JsonView(CategoryView.Personal.class)
 	@ManyToOne
 	@JoinColumn(name="product_description_id")
 	private ProductDescription productDescription;
 
-	public Category getCategory() {
-		return category;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
-	public void setCategory(Category category) {
-		this.category = category;
+	public Type getType() {
+		return type;
 	}
 
-	public SubCategory getSubCategory() {
-		return subCategory;
-	}
-
-	public void setSubCategory(SubCategory subCategory) {
-		this.subCategory = subCategory;
+	public void setType(Type type) {
+		this.type = type;
 	}
 
 	public ProductDescription getProductDescription() {

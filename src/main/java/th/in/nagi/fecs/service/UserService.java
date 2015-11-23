@@ -2,78 +2,142 @@ package th.in.nagi.fecs.service;
 
 import java.util.List;
 
-import th.in.nagi.fecs.model.Role;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.model.User;
+import th.in.nagi.fecs.model.User;
+import th.in.nagi.fecs.repository.UserRepository;
 
 /**
+ * 
+ * User Service
  * 
  * @author Chonnipa Kittisiriprasert
  *
  */
-public interface UserService {
+@Service("userService")
+@Transactional
+public class UserService {
+
+	@Autowired
+	private UserRepository userRepository;
+
+	public User findByKey(Integer id) {
+		return userRepository.findByKey(id);
+	}
+
+	public void store(User user) {
+		userRepository.store(user);
+	}
+
+	/*
+	 * Since the method is running with Transaction, No need to call hibernate
+	 * update explicitly. Just fetch the entity from db and update it with
+	 * proper values within transaction. It will be updated in db once
+	 * transaction ends.
+	 */
+	/**
+	 * {@inheritDoc}
+	 */
+	public void update(User user) {
+		User entity = userRepository.findByKey(user.getId());
+		if (entity != null) {
+			if (user.getFirstName() != null) {
+				entity.setFirstName(user.getFirstName());
+			}
+			if (user.getLastName() != null) {
+				entity.setLastName(user.getLastName());
+			}
+			if (user.getLastName() != null) {
+				entity.setRole(user.getRole());
+			}
+//			entity.setJoiningDate(user.getJoiningDate());
+			if (user.getAddress1() != null) {
+				entity.setAddress1(user.getAddress1());
+			}
+			if (user.getAddress2() != null) {
+				entity.setAddress2(user.getAddress1());
+			}
+//			entity.setAddress2(user.getAddress2());
+			if (user.getCard_name() != null) {
+				entity.setCard_name(user.getCard_name());
+			}
+			if (user.getCardCVV() != null) {
+				entity.setCardCVV(user.getCardCVV());
+			}
+			if (user.getEmail() != null) {
+				entity.setEmail(user.getEmail());
+			}
+			if (user.getExpirationDate() != null) {
+				entity.setExpirationDate(user.getExpirationDate());
+			}
+			if (user.getPassword() != null) {
+				entity.setPassword(user.getPassword());
+			}
+			if (user.getProvince() != null) {
+				entity.setProvince(user.getProvince());
+			}
+			if (user.getZipcode() != null) {
+				entity.setZipcode(user.getZipcode());
+			}
+			if (user.getTelephone_number() != null) {
+				entity.setTelephone_number(user.getTelephone_number());
+			}
+		}
+	}
 
 	/**
-	 * Finds user by ID.
-	 * 
-	 * @param id
-	 *            id
+	 * {@inheritDoc}
 	 */
-	User findByKey(Integer id);
+	public void removeByEmail(String email) {
+		userRepository.removeByEmail(email);
+	}
 
 	/**
-	 * Saves user to repository
-	 * 
-	 * @param user
-	 *            user
+	 * {@inheritDoc}
 	 */
-	void store(User user);
+	public List<User> findAll() {
+		return userRepository.findAll();
+	}
 
 	/**
-	 * Updates user
-	 * 
-	 * @param user
-	 *            user
+	 * {@inheritDoc}
 	 */
-	void update(User user);
+	public User findByEmail(String email) {
+		return userRepository.findByEmail(email);
+	}
 
 	/**
-	 * Deletes user by email
-	 * 
-	 * @param email
-	 *            email
+	 * {@inheritDoc}
 	 */
-	void removeByEmail(String email);
+	public boolean isEmailUnique(Integer id, String email) {
+		User user = findByEmail(email);
+		return (user == null || ((id != null) && (user.getId() == id)));
+	}
 
 	/**
-	 * Finds all existing users
+	 * Find users with limit size and ascending by name.
 	 * 
-	 * @return list of users
+	 * @param start
+	 * @param size
+	 * @return List<User>
 	 */
-	List<User> findAll();
+	public List<User> findAndAscByFirstName(int start, int size) {
+		return userRepository.findAndAscByFirstName(start, size);
+	}
 
 	/**
-	 * Find user by email
+	 * Find users with limit size and descending by name.
 	 * 
-	 * @param email
-	 *            email
-	 * @return user
+	 * @param start
+	 * @param size
+	 * @return List<User>
 	 */
-	User findByEmail(String email);
-
-	/**
-	 * Returns <tt>true</tt> if email is unique
-	 * 
-	 * @param i
-	 *            id
-	 * @param email
-	 *            email
-	 * @return <tt>true</tt> if email is unique
-	 */
-	boolean isEmailUnique(Integer i, String username);
-	
-	List<User> findAndAscByFirstName(int start, int size);
-
-	List<User> findAndDescByFirstName(int start, int size);
+	public List<User> findAndDescByFirstName(int start, int size) {
+		return userRepository.findAndDescByFirstName(start, size);
+	}
 
 }

@@ -2,25 +2,119 @@ package th.in.nagi.fecs.service;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import th.in.nagi.fecs.model.SubCategory;
+import th.in.nagi.fecs.repository.SubCategoryRepository;
 
-public interface SubCategoryService {
+/**
+ * Provide SubCategory for managing data easier. 
+ * Ex. add, remove, edit.
+ * 
+ * @author Thanachote Visetsuthimont
+ *
+ */
+@Service("subCategoryService")
+@Transactional
+public class SubCategoryService {
 
-	SubCategory findByKey(Integer id);
+	/**
+	 * Tool for managing data in database
+	 */
+	@Autowired
+	private SubCategoryRepository subCategoryRepository;
 
-	void store(SubCategory subCategory);
+	/**
+	 * Find subcategory by using index.
+	 * 
+	 * @param id
+	 */
+	public SubCategory findByKey(Integer id) {
+		return subCategoryRepository.findByKey(id);
+	}
 
-	void update(SubCategory subCategory);
+	/**
+	 * Save subcategory in database.
+	 * 
+	 * @param subCategory
+	 */
+	public void store(SubCategory subCategory) {
+		subCategoryRepository.store(subCategory);
 
-	void removeById(Integer id);
+	}
 
-	void removeByName(String name);
+	/**
+	 * Update subcategory's detail.
+	 * 
+	 * @param subCategory
+	 */
+	public void update(SubCategory subCategory) {
+		SubCategory entity = subCategoryRepository.findByKey(subCategory.getId());
+		if (entity != null) {
+			entity.setName(subCategory.getName());
+//			entity.setCategory(subCategory.getCategory());
+		}
+	}
 
-	List<SubCategory> findAll();
+	/**
+	 * Find all subcategorys in database.
+	 * 
+	 * @return List<SubCategory>
+	 */
+	public List<SubCategory> findAll() {
+		return subCategoryRepository.findAll();
+	}
 
-	List<SubCategory> findAndAscByName(int start, int size);
+	/**
+	 * Find subcategory by using name.
+	 * 
+	 * @param name
+	 * @return SubCategory
+	 */
+	public SubCategory findByName(String name) {
+		return subCategoryRepository.findByName(name);
+	}
 
-	List<SubCategory> findAndDescByName(int start, int size);
+	/**
+	 * Find subcategorys with limit size and ascending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * @return List<SubCategory>
+	 */
+	public List<SubCategory> findAndAscByName(int start, int size) {
+		return subCategoryRepository.findAndAscByName(start, size);
+	}
 
-	SubCategory findByName(String name);
+	/**
+	 * Find subcategorys with limit size and descending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * @return List<SubCategory>
+	 */
+	public List<SubCategory> findAndDescByName(int start, int size) {
+		return subCategoryRepository.findAndDescByName(start, size);
+	}
+
+	/**
+	 * Remove subcategory by using id
+	 * 
+	 * @param id
+	 */
+	public void removeById(Integer id) {
+		subCategoryRepository.remove(id);
+	}
+
+	/**
+	 * Remove subcategory by using name.
+	 * 
+	 * @param name
+	 */
+	public void removeByName(String name) {
+		subCategoryRepository.remove(subCategoryRepository.findByName(name));
+	}
+
 }

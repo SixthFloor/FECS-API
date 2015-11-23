@@ -1,20 +1,27 @@
 package th.in.nagi.fecs.repository;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
+import org.springframework.stereotype.Repository;
+
 import th.in.nagi.fecs.model.Role;
 
 /**
- * Collection of tool for managing role in database.
+ * Tool for managing role in database.
  * 
  * @author Thanachote Visetsuthimont
  *
  */
-public interface RoleRepository extends Repository<Role, Integer> {
+@Repository("roleRepository")
+public class RoleRepository extends AbstractRepository<Role, Integer> {
 
 	/**
-	 * Query role by name.
-	 * 
-	 * @param name
-	 * @return SubCategory
+	 * {@inheritDoc}
 	 */
-	Role findByName(String name);
+	public Role findByName(String name) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("name", name));
+		return (Role) criteria.uniqueResult();
+	}
+
 }

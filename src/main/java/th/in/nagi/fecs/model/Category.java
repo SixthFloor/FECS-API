@@ -3,6 +3,7 @@ package th.in.nagi.fecs.model;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -56,6 +57,17 @@ public class Category {
 	@Column(name = "name", nullable = false)
 	private String name;
 	
+//	@OneToMany(fetch = FetchType.EAGER, mappedBy = "catalog")
+//	private List<Catalog> catalogs;
+//	
+//	public List<Category> getSubCategories() {
+//		catalogs.get
+//	}
+
+//	public void setCatalogs(List<Catalog> catalogs) {
+//		this.catalogs = catalogs;
+//	}
+
 	/**
 	 * Set new id of category
 	 * 

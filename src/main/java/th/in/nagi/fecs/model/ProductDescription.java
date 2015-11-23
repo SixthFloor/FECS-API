@@ -84,7 +84,7 @@ public class ProductDescription {
 	private String dimensionDescription;
 
 	@JsonView(ProductDescriptionView.ElementalImage.class)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "furnitureDescription")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "productDescription")
 	private Set<ProductImage> images;
 	
 	

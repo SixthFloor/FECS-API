@@ -23,6 +23,7 @@ import th.in.nagi.fecs.service.CatalogService;
 import th.in.nagi.fecs.service.CategoryService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
+import th.in.nagi.fecs.service.TypeService;
 import th.in.nagi.fecs.view.CategoryView;
 import th.in.nagi.fecs.view.SubCategoryView;
 
@@ -65,6 +66,12 @@ public class CategoryController extends BaseController {
 	 */
 	@Autowired
 	private CatalogService catalogService;
+	
+	/**
+	 * type service.
+	 */
+	@Autowired
+	private TypeService typeService;
 
 	/**
 	 * Return list of category
@@ -118,7 +125,7 @@ public class CategoryController extends BaseController {
 			return new ResponseEntity(new Message("This category name is not existed"), HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity(catalogService.findByCategory(category), HttpStatus.OK);
+		return new ResponseEntity(typeService.findByCategory(category), HttpStatus.OK);
 	}
 
 	/**
