@@ -111,6 +111,7 @@ public class SubCategoryController extends BaseController {
 		if (subCategory == null) {
 			return new ResponseEntity(new Message("This subCategory name is not existed"), HttpStatus.BAD_REQUEST);
 		}
+//		return new ResponseEntity(subCategory.getProductDescriptions(), HttpStatus.OK);
 		return new ResponseEntity(subCategory, HttpStatus.OK);
 	}
 
@@ -125,7 +126,7 @@ public class SubCategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
-	public ResponseEntity addSubCategory(@RequestBody SubCategory subCategory, @RequestParam String categoryName,
+	public ResponseEntity addSubCategory(@RequestBody SubCategory subCategory, //@RequestParam String categoryName,
 			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
@@ -134,7 +135,7 @@ public class SubCategoryController extends BaseController {
 		if (subCategoryService.findByName(subCategory.getName()) != null) {
 			return new ResponseEntity(new Message("This subCategory name is not existed"), HttpStatus.BAD_REQUEST);
 		}
-		Category category = categoryService.findByName(categoryName);
+//		Category category = categoryService.findByName(categoryName);
 //		subCategory.setCategory(category);
 		try {
 			subCategoryService.store(subCategory);
@@ -156,24 +157,24 @@ public class SubCategoryController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
 	public ResponseEntity editSubCategory(@RequestBody SubCategory subCategory,
-			@RequestParam(value = "newCategoryName", required = false) String categoryName,
+//			@RequestParam(value = "newCategoryName", required = false) String categoryName,
 			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-		Category category = categoryService.findByName(categoryName);
+//		Category category = categoryService.findByName(categoryName);
 		SubCategory oldSubCategory = subCategoryService.findByKey(subCategory.getId());
 		if (oldSubCategory == null) {
 			return new ResponseEntity(new Message("This subCategory is not exist"), HttpStatus.BAD_REQUEST);
 		}
 
-		oldSubCategory.setName(subCategory.getName());
-
-		if (category != null) {
+//		oldSubCategory.setName(subCategory.getName());
+//
+//		if (category != null) {
 //			oldSubCategory.setCategory(category);
-		}
+//		}
 		try {
 			subCategoryService.update(oldSubCategory);
 		} catch (Exception e) {

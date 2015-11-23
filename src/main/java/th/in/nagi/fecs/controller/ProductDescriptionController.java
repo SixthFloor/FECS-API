@@ -31,7 +31,7 @@ import th.in.nagi.fecs.view.ProductDescriptionView;
  *
  */
 @RestController
-@RequestMapping("/api/furniture")
+@RequestMapping("/api/product")
 public class ProductDescriptionController extends BaseController {
 
 	/**
@@ -120,8 +120,8 @@ public class ProductDescriptionController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
 	public ResponseEntity createNewProduct(@RequestBody ProductDescription productDescription,
-			@RequestParam(value = "subCategoryId", required = false) int id,
-			@RequestHeader(value = "token") String token) {
+//			@RequestParam(value = "subCategoryId", required = false) int id,
+			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -150,17 +150,17 @@ public class ProductDescriptionController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
 	public ResponseEntity editProduct(@RequestBody ProductDescription productDescription,
-			@RequestParam(value = "subCategoryId", required = false) int id,
-			@RequestHeader(value = "token") String token) {
+			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-		SubCategory subCategory = subCategoryService.findByKey(id);
-		if (subCategory != null) {
+//		SubCategory subCategory = subCategoryService.findByKey(id);
+//		if (subCategory != null) {
 //			productDescription.setSubCategory(subCategory);
-		}
+//		}
+
 
 		try {
 			productDescriptionService.update(productDescription);
@@ -180,7 +180,7 @@ public class ProductDescriptionController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	public ResponseEntity deleteProduct(@RequestBody ProductDescription productDescription,
-			@RequestHeader(value = "token") String token) {
+			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);

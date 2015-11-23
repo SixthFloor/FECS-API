@@ -19,6 +19,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.service.AuthenticationService;
+import th.in.nagi.fecs.service.CatalogService;
 import th.in.nagi.fecs.service.CategoryService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
@@ -58,6 +59,12 @@ public class CategoryController extends BaseController {
 	 */
 	@Autowired
 	private AuthenticationService authenticationService;
+	
+	/**
+	 * catalog service.
+	 */
+	@Autowired
+	private CatalogService catalogService;
 
 	/**
 	 * Return list of category
@@ -111,7 +118,7 @@ public class CategoryController extends BaseController {
 			return new ResponseEntity(new Message("This category name is not existed"), HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity(category, HttpStatus.OK);
+		return new ResponseEntity(catalogService.findByCategory(category), HttpStatus.OK);
 	}
 
 	/**
