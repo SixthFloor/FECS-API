@@ -15,10 +15,13 @@ public class TypeView {
 	public interface Category extends CategoryView.Personal, Personal{
 	}
 	
-	public interface SubCategory extends SubCategoryView.Personal, Personal{
+	public interface SubCategory extends SubCategoryView.Personal{
 	}
 	
-	public interface Catalogs extends CatalogView.ProductDescription, Personal{
+	public interface Catalogs extends CatalogView.ProductDescription{
+	}
+	
+	public interface SubCategoryAndCatalogs extends SubCategory, Catalogs{	
 	}
 	
 	
