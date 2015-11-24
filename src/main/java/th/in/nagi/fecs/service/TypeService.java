@@ -63,13 +63,15 @@ public class TypeService {
 		return productDescriptions;
 	}
 	
-//	public List<SubCategory> findProductByCategoryAndSubCategory(Category category, SubCategory subcategory) {
-//		List<ProductDescription> productDescriptions = new ArrayList<>();
-//		for (Type type:typeRepository.findByCategoryAndSubCategory(category, subcategory)) {
-//			productDescriptions.add(type.getCategory().);
-//		}
-//		return productDescriptions;
-//	}
+	public List<ProductDescription> findProductByCategoryAndSubCategory(Category category, SubCategory subcategory) {
+		List<ProductDescription> productDescriptions = new ArrayList<>();
+		for (Type type:typeRepository.findByCategoryAndSubCategory(category, subcategory)) {
+			for (Catalog catalog:type.getCatalogs()){
+				productDescriptions.add(catalog.getProductDescription());
+			}
+		}
+		return productDescriptions;
+	}
 	
 	
 

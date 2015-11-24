@@ -33,7 +33,6 @@ public class ProductImage {
 	@JsonView(ProductImageView.Summary.class)
 	@ManyToOne
 	@JoinColumn(name="product_description_id")
-
 	private ProductDescription productDescription;
 
 	public Integer getId() {
