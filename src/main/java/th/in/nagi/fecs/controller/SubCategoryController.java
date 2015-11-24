@@ -112,7 +112,7 @@ public class SubCategoryController extends BaseController {
 	 *            category name that want to show products inside
 	 * @return list of product
 	 */
-	@JsonView(TypeView.Catalogs.class)
+	@JsonView(ProductDescriptionView.ElementalImage.class)
 	@RequestMapping(value = "/{subCategoryName}", method = RequestMethod.GET)
 	public ResponseEntity showProductsBySubCategory(@PathVariable String subCategoryName,
 			@RequestParam(value = "category", required = false) String categoryName) {
@@ -122,11 +122,7 @@ public class SubCategoryController extends BaseController {
 			return new ResponseEntity(new Message("This subCategory name is not existed"), HttpStatus.BAD_REQUEST);
 		}
 		
-//		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+category);
-//		System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"+subCategory);
-		System.out.println(typeService.findByCategoryAndSubCategory(category, subCategory).size());
-//		return new ResponseEntity(subCategory.getProductDescriptions(), HttpStatus.OK);
-		return new ResponseEntity(typeService.findByCategoryAndSubCategory(category, subCategory), HttpStatus.OK);
+		return new ResponseEntity(typeService.findProductByCategoryAndSubCategory(category, subCategory), HttpStatus.OK);
 	}
 
 	/**
