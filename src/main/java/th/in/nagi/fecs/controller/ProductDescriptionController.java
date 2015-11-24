@@ -135,6 +135,7 @@ public class ProductDescriptionController extends BaseController {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		productDescription.setSerialNumber(getSerial(productDescription.getName()));
+		
 //		productDescription.setSubCategory(subCategoryService.findByKey(id));
 
 		// System.out.println(furnitureDescription.getSubCategory().getName());
@@ -207,10 +208,11 @@ public class ProductDescriptionController extends BaseController {
 	}
 	
 	private String getSerial(String productName){
+		productName = productName.toUpperCase();
 		String productCode = ""+productName.charAt(0) + productName.charAt(productName.length()-1);
-		String id = ""+Math.ceil(Math.random()*10)+""+Math.ceil(Math.random()*10)+""+Math.ceil(Math.random()*10)
-			+Math.ceil(Math.random()*10);
-		String serial = String.format("%s%04d", productCode, id);
+		String id = ""+(int)(Math.ceil(Math.random()*10)-1)+""+(int)(Math.ceil(Math.random()*10)-1)+""
+				+(int)(Math.ceil(Math.random()*10)-1)+(int)(Math.ceil(Math.random()*10)-1);
+		String serial = String.format("%s%s", productCode, id);
 		return serial;
 		
 //		(int subCateId, int cateId)
