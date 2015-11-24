@@ -44,10 +44,12 @@ public class CatalogService {
 	public void update(Catalog catalog) {
 		Catalog entity = catalogRepository.findByKey(catalog.getId());
 		if (entity != null) {
-//			entity.setCategory(catalog.getCategory());
-			entity.setType(catalog.getType());
-			entity.setProductDescription(catalog.getProductDescription());
-//			entity.setSubCategory(catalog.getSubCategory());
+			if (catalog.getType() != null){
+				entity.setType(catalog.getType());
+			}
+			if (catalog.getProductDescription() != null){
+				entity.setProductDescription(catalog.getProductDescription());
+			}
 		}
 
 	}

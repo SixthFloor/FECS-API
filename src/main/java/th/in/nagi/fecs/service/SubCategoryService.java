@@ -10,8 +10,7 @@ import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.repository.SubCategoryRepository;
 
 /**
- * Provide SubCategory for managing data easier. 
- * Ex. add, remove, edit.
+ * Provide SubCategory for managing data easier. Ex. add, remove, edit.
  * 
  * @author Thanachote Visetsuthimont
  *
@@ -53,8 +52,10 @@ public class SubCategoryService {
 	public void update(SubCategory subCategory) {
 		SubCategory entity = subCategoryRepository.findByKey(subCategory.getId());
 		if (entity != null) {
-			entity.setName(subCategory.getName());
-//			entity.setCategory(subCategory.getCategory());
+			if (subCategory.getName() != null) {
+				entity.setName(subCategory.getName());
+			}
+			// entity.setCategory(subCategory.getCategory());
 		}
 	}
 

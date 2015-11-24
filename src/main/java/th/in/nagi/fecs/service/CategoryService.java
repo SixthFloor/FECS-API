@@ -10,8 +10,8 @@ import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.repository.CategoryRepository;
 
 /**
- * Provide Category service for managing category easier. 
- * Ex. add, edit, delete, find.
+ * Provide Category service for managing category easier. Ex. add, edit, delete,
+ * find.
  * 
  * @author Thanachote Visetsuthimont
  *
@@ -54,7 +54,9 @@ public class CategoryService {
 	public void update(Category category) {
 		Category entity = categoryRepository.findByKey(category.getId());
 		if (entity != null) {
-			entity.setName(category.getName());
+			if (category.getName() != null) {
+				entity.setName(category.getName());
+			}
 		}
 	}
 

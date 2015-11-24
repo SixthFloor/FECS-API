@@ -47,16 +47,27 @@ public class ProductDescriptionService {
 	/**
 	 * Update product's detail in database.
 	 */
-	public void update(ProductDescription furnitureDescription) {
-		ProductDescription entity = productDescriptionRepository.findByKey(furnitureDescription.getId());
+	public void update(ProductDescription productDescription) {
+		ProductDescription entity = productDescriptionRepository.findByKey(productDescription.getId());
 		if (entity != null) {
-			entity.setSerialNumber(furnitureDescription.getSerialNumber());
-			entity.setName(furnitureDescription.getName());
-			entity.setPrice(furnitureDescription.getPrice());
-			entity.setDescription(furnitureDescription.getDescription());
-			entity.setDimensionDescription(furnitureDescription.getDimensionDescription());
-			entity.setImages(furnitureDescription.getImages());
-//			entity.setSubCategory(furnitureDescription.getSubCategory());
+			if (productDescription.getSerialNumber() != null) {
+				entity.setSerialNumber(productDescription.getSerialNumber());
+			}
+			if (productDescription.getName() != null) {
+				entity.setName(productDescription.getName());
+			}
+			if (productDescription.getPrice() >= 0) {
+				entity.setPrice(productDescription.getPrice());
+			}
+			if (productDescription.getDescription() != null) {
+				entity.setDescription(productDescription.getDescription());
+			}
+			if (productDescription.getDimensionDescription() != null) {
+				entity.setDimensionDescription(productDescription.getDimensionDescription());
+			}
+			if (productDescription.getImages() != null) {
+				entity.setImages(productDescription.getImages());
+			}
 		}
 	}
 

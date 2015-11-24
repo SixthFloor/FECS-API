@@ -37,6 +37,21 @@ public class TypeService {
 		return typeRepository.findAll();
 	}
 
+	public void update(Type type) {
+		Type entity = typeRepository.findByKey(type.getId());
+		if (entity != null) {
+			if (type.getCategory() != null) {
+				entity.setCategory(type.getCategory());
+			}
+			if (type.getSubCategory() != null) {
+				entity.setSubCategory(type.getSubCategory());
+			}
+			if (type.getCatalogs() != null) {
+				entity.setCatalogs(type.getCatalogs());
+			}
+		}
+	}
+	
 	public List<Type> findByCategory(Category category) {
 		return typeRepository.findByCategory(category);
 	}
