@@ -3,6 +3,7 @@ package th.in.nagi.fecs.repository;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -23,14 +24,14 @@ public class TypeRepository extends AbstractRepository<Type, Integer> {
 
 	public List<Type> findByCategory(Category category) {
 		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("category_id", category.getId()));
+		criteria.add(Restrictions.eq("category", category)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 
 	public List<Type> findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
 		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("category_id", category.getId()));
-		criteria.add(Restrictions.eq("sub_category_id", subcategory.getId()));
+		criteria.add(Restrictions.eq("category", category));
+		criteria.add(Restrictions.eq("subCategory", subcategory)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 

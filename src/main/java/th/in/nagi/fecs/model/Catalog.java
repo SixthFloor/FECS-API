@@ -28,6 +28,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import th.in.nagi.fecs.view.CatalogView;
 import th.in.nagi.fecs.view.CategoryView;
 import th.in.nagi.fecs.view.ProductDescriptionView;
 
@@ -42,17 +43,17 @@ import th.in.nagi.fecs.view.ProductDescriptionView;
 @Table(name = "catalog")
 public class Catalog {
 
-	@JsonView(CategoryView.Personal.class)
+	@JsonView(CatalogView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
-	@JsonView(CategoryView.Personal.class)
+	@JsonView(CatalogView.Type.class)
 	@ManyToOne
 	@JoinColumn(name="type_id")
 	private Type type;
 
-	@JsonView(CategoryView.Personal.class)
+	@JsonView(CatalogView.ProductDescription.class)
 	@ManyToOne
 	@JoinColumn(name="product_description_id")
 	private ProductDescription productDescription;

@@ -12,17 +12,14 @@ public class TypeView {
 	public interface Personal extends Standardized{
 	}
 	
-	public interface Category extends CategoryView.Personal{
+	public interface Category extends CategoryView.Personal, Personal{
 	}
 	
-	public interface SubCategory extends SubCategoryView.Personal{
+	public interface SubCategory extends SubCategoryView.Personal, Personal{
 	}
 	
-	public interface Catalogs extends CatalogView.Personal{
+	public interface Catalogs extends CatalogView.ProductDescription, Personal{
 	}
 	
-	public interface PersonalAndCategory extends Personal, Category{
-		
-	}
 	
 }

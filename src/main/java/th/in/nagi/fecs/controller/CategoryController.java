@@ -26,6 +26,7 @@ import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.service.TypeService;
 import th.in.nagi.fecs.view.CategoryView;
 import th.in.nagi.fecs.view.SubCategoryView;
+import th.in.nagi.fecs.view.TypeView;
 
 /**
  * Controller for category
@@ -116,7 +117,7 @@ public class CategoryController extends BaseController {
 	 *            category name that want to show products inside
 	 * @return list of product
 	 */
-	@JsonView(SubCategoryView.Personal.class)
+	@JsonView(TypeView.SubCategory.class)
 	@RequestMapping(value = "/{categoryName}", method = RequestMethod.GET)
 	public ResponseEntity showProductsByCategory(@PathVariable String categoryName) {
 

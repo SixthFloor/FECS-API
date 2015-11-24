@@ -9,4 +9,10 @@ public class CatalogView {
 
 	public interface Personal extends Standardized {
 	}
+	
+	public interface Type extends Personal {
+	}
+	
+	public interface ProductDescription extends Personal, ProductDescriptionView.Summary{
+	}
 }

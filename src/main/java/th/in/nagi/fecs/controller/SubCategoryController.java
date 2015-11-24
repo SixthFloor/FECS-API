@@ -23,9 +23,11 @@ import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.CategoryService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
+import th.in.nagi.fecs.service.TypeService;
 import th.in.nagi.fecs.view.CategoryView;
 import th.in.nagi.fecs.view.ProductDescriptionView;
 import th.in.nagi.fecs.view.SubCategoryView;
+import th.in.nagi.fecs.view.TypeView;
 
 /**
  * Controller for category
@@ -60,6 +62,12 @@ public class SubCategoryController extends BaseController {
 	 */
 	@Autowired
 	private AuthenticationService authenticationService;
+	
+	/**
+	 * type service.
+	 */
+	@Autowired
+	private TypeService typeService;
 
 	/**
 	 * Return list of subcategory
@@ -104,15 +112,21 @@ public class SubCategoryController extends BaseController {
 	 *            category name that want to show products inside
 	 * @return list of product
 	 */
-	@JsonView(ProductDescriptionView.ElementalImage.class)
+	@JsonView(TypeView.Catalogs.class)
 	@RequestMapping(value = "/{subCategoryName}", method = RequestMethod.GET)
-	public ResponseEntity showProductsBySubCategory(@PathVariable String subCategoryName) {
+	public ResponseEntity showProductsBySubCategory(@PathVariable String subCategoryName,
+			@RequestParam(value = "category", required = false) String categoryName) {
+		Category category = categoryService.findByName(categoryName);
 		SubCategory subCategory = subCategoryService.findByName(subCategoryName);
 		if (subCategory == null) {
 			return new ResponseEntity(new Message("This subCategory name is not existed"), HttpStatus.BAD_REQUEST);
 		}
+		
+//		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"+category);
+//		System.out.println("bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb"+subCategory);
+		System.out.println(typeService.findByCategoryAndSubCategory(category, subCategory).size());
 //		return new ResponseEntity(subCategory.getProductDescriptions(), HttpStatus.OK);
-		return new ResponseEntity(subCategory, HttpStatus.OK);
+		return new ResponseEntity(typeService.findByCategoryAndSubCategory(category, subCategory), HttpStatus.OK);
 	}
 
 	/**

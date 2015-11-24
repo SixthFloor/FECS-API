@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.message.Message;
+import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.service.AuthenticationService;
+import th.in.nagi.fecs.service.CategoryService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.view.ProductDescriptionView;
@@ -51,6 +53,12 @@ public class ProductDescriptionController extends BaseController {
 	 */
 	@Autowired
 	private AuthenticationService authenticationService;
+	
+	/**
+	 * Service of category
+	 */
+	@Autowired
+	private CategoryService categoryService;
 
 	/**
 	 * Return a product that have the serialNumber
@@ -126,7 +134,7 @@ public class ProductDescriptionController extends BaseController {
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-
+		productDescription.setSerialNumber(getSerial(productDescription.getName()));
 //		productDescription.setSubCategory(subCategoryService.findByKey(id));
 
 		// System.out.println(furnitureDescription.getSubCategory().getName());
@@ -135,6 +143,7 @@ public class ProductDescriptionController extends BaseController {
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("Create FurnitureDescription failed"), HttpStatus.BAD_REQUEST);
 		}
+		
 		return new ResponseEntity(new Message("FurnitureDescription has added"), HttpStatus.CREATED);
 	}
 
@@ -196,5 +205,26 @@ public class ProductDescriptionController extends BaseController {
 		}
 		return new ResponseEntity(new Message("FurniturerDescription has removed"), HttpStatus.OK);
 	}
-
+	
+	private String getSerial(String productName){
+		String productCode = ""+productName.charAt(0) + productName.charAt(productName.length()-1);
+		String id = ""+Math.ceil(Math.random()*10)+""+Math.ceil(Math.random()*10)+""+Math.ceil(Math.random()*10)
+			+Math.ceil(Math.random()*10);
+		String serial = String.format("%s%04d", productCode, id);
+		return serial;
+		
+//		(int subCateId, int cateId)
+//		SubCategory subCategory = subCategoryService.findByKey(subCateId);
+//		String subCategoryName = subCategory.getName();
+//		
+//		Category category = categoryService.findByKey(cateId);
+//		String categoryName = category.getName();
+//		
+//		String subCategoryCode = ""+subCategoryName.charAt(0) + subCategoryName.charAt(subCategoryName.length()-1);
+//   		String categoryCode = ""+categoryName.charAt(0) + categoryName.charAt(categoryName.length()-1);
+//   		
+//   		String serial = String.format("%s%s%02d%02d", categoryCode, subCategoryCode, subCateId, cateId);
+//   		
+//   		return serial;
+	}
 }
