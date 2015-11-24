@@ -25,6 +25,7 @@ import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.service.TypeService;
 import th.in.nagi.fecs.view.CategoryView;
+import th.in.nagi.fecs.view.ProductDescriptionView;
 import th.in.nagi.fecs.view.SubCategoryView;
 import th.in.nagi.fecs.view.TypeView;
 
@@ -111,14 +112,33 @@ public class CategoryController extends BaseController {
 	}
 
 	/**
+	 * Return list of subcategory in the category
+	 * 
+	 * @param categoryName
+	 *            category name that want to show products inside
+	 * @return list of subcategory
+	 */
+	@JsonView(SubCategoryView.Personal.class)
+	@RequestMapping(value = "/{categoryName}", method = RequestMethod.GET)
+	public ResponseEntity showsubCategoryByCategory(@PathVariable String categoryName) {
+
+		Category category = categoryService.findByName(categoryName);
+		if (category == null) {
+			return new ResponseEntity(new Message("This category name is not existed"), HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity(typeService.findSubcategoryByCategory(category), HttpStatus.OK);
+	}
+	
+	/**
 	 * Return list of product in the category
 	 * 
 	 * @param categoryName
 	 *            category name that want to show products inside
 	 * @return list of product
 	 */
-	@JsonView(TypeView.Summary.class)
-	@RequestMapping(value = "/{categoryName}", method = RequestMethod.GET)
+	@JsonView(ProductDescriptionView.ElementalImage.class)
+	@RequestMapping(value = "/product/{categoryName}", method = RequestMethod.GET)
 	public ResponseEntity showProductsByCategory(@PathVariable String categoryName) {
 
 		Category category = categoryService.findByName(categoryName);
@@ -126,7 +146,7 @@ public class CategoryController extends BaseController {
 			return new ResponseEntity(new Message("This category name is not existed"), HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity(typeService.findByCategory(category), HttpStatus.OK);
+		return new ResponseEntity(typeService.findProductByCategory(category), HttpStatus.OK);
 	}
 
 	/**

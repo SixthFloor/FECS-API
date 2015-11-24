@@ -8,4 +8,5 @@ public class SubCategoryView {
 
 	public interface Summary extends Personal {
 	}
+	
 }
