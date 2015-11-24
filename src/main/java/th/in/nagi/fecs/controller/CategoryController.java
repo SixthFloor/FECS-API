@@ -117,7 +117,7 @@ public class CategoryController extends BaseController {
 	 *            category name that want to show products inside
 	 * @return list of product
 	 */
-	@JsonView(TypeView.SubCategory.class)
+	@JsonView(TypeView.Summary.class)
 	@RequestMapping(value = "/{categoryName}", method = RequestMethod.GET)
 	public ResponseEntity showProductsByCategory(@PathVariable String categoryName) {
 
