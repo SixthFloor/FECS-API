@@ -1,5 +1,6 @@
 package th.in.nagi.fecs.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,5 +43,15 @@ public class TypeService {
 	public List<Type> findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
 		return typeRepository.findByCategoryAndSubCategory(category, subcategory);
 	}
+	
+	public List<SubCategory> findSubcategoryByCategory(Category category) {
+		List<SubCategory> categories = new ArrayList<>();
+		for (Type type:typeRepository.findByCategory(category)) {
+			categories.add(type.getSubCategory());
+		}
+		return categories;
+	}
+	
+	
 
 }
