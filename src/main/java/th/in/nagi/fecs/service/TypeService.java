@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import th.in.nagi.fecs.model.Catalog;
 import th.in.nagi.fecs.model.Category;
+import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.model.Type;
 import th.in.nagi.fecs.repository.TypeRepository;
@@ -51,6 +52,24 @@ public class TypeService {
 		}
 		return categories;
 	}
+	
+	public List<ProductDescription> findProductByCategory(Category category) {
+		List<ProductDescription> productDescriptions = new ArrayList<>();
+		for (Type type:typeRepository.findByCategory(category)) {
+			for (Catalog catalog:type.getCatalogs()){
+				productDescriptions.add(catalog.getProductDescription());
+			}
+		}
+		return productDescriptions;
+	}
+	
+//	public List<SubCategory> findProductByCategoryAndSubCategory(Category category, SubCategory subcategory) {
+//		List<ProductDescription> productDescriptions = new ArrayList<>();
+//		for (Type type:typeRepository.findByCategoryAndSubCategory(category, subcategory)) {
+//			productDescriptions.add(type.getCategory().);
+//		}
+//		return productDescriptions;
+//	}
 	
 	
 
