@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 import th.in.nagi.fecs.model.Catalog;
 import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.SubCategory;
+import th.in.nagi.fecs.model.Type;
 
 /**
  * Tool for managing Catalog in database.
@@ -61,16 +62,9 @@ public class CatalogRepository extends AbstractRepository<Catalog, Integer> {
 		remove(getByKey(key));
 	}
 
-//	public List<Catalog> findByCategory(Category category) {
-//		Criteria criteria = createEntityCriteria();
-//		criteria.add(Restrictions.eq("category_id", category.getId()));
-//		return criteria.list();
-//	}
-//
-//	public List<Catalog> findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
-//		Criteria criteria = createEntityCriteria();
-//		criteria.add(Restrictions.eq("category_id", category.getId()));
-//		criteria.add(Restrictions.eq("sub_category_id", subcategory.getId()));
-//		return criteria.list();
-//	}
+	public List<Catalog> findByType(Type type) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("type", type)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return criteria.list();
+	}
 }

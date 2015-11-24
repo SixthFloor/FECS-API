@@ -28,11 +28,11 @@ public class TypeRepository extends AbstractRepository<Type, Integer> {
 		return criteria.list();
 	}
 
-	public List<Type> findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
+	public Type findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("category", category));
 		criteria.add(Restrictions.eq("subCategory", subcategory)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
-		return criteria.list();
+		return (Type) criteria.uniqueResult();
 	}
 
 }

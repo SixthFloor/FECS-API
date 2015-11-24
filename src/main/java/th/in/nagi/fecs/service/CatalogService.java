@@ -1,5 +1,6 @@
 package th.in.nagi.fecs.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +9,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import th.in.nagi.fecs.model.Catalog;
 import th.in.nagi.fecs.model.Category;
+import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.model.SubCategory;
+import th.in.nagi.fecs.model.Type;
 import th.in.nagi.fecs.repository.CatalogRepository;
+import th.in.nagi.fecs.repository.TypeRepository;
 
 /**
  * Provide Category service for managing category easier. Ex. add, edit, delete,
@@ -24,6 +28,9 @@ public class CatalogService {
 
 	@Autowired
 	private CatalogRepository catalogRepository;
+	
+	@Autowired
+	private TypeRepository typeRepository;
 
 	public Catalog findByKey(Integer id) {
 		return catalogRepository.findByKey(id);
@@ -63,19 +70,36 @@ public class CatalogService {
 		return null;
 	}
 
-//	public List<Catalog> findByCategory(Category category) {
-//		return catalogRepository.findByCategory(category);
-//	}
-//
-//	public List<Catalog> findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
-//		return catalogRepository.findByCategoryAndSubCategory(category, subcategory);
-//	}
+	public boolean createCatalog(Category category, SubCategory subCategory, ProductDescription productDescription) {
+		Type type = typeRepository.findByCategoryAndSubCategory(category, subCategory);
+		if (type == null){
+			return false;
+		}
+		Catalog catalog = new Catalog();
+		catalog.setType(type);
+		catalog.setProductDescription(productDescription);
+		this.store(catalog);
+		return true;
+	}
 	
-//	public List<SubCategory> findSubCategory(Category category){
-//		List<Catalog> catalogs = catalogRepository.findByCategory(category);
-//		for (Catalog catalog: catalogs){
-//			
-//		}
-//	}
+	public boolean createCatalog(Type type, ProductDescription productDescription) {
+		if (type == null){
+			return false;
+		}
+		Catalog catalog = new Catalog();
+		catalog.setType(type);
+		catalog.setProductDescription(productDescription);
+		this.store(catalog);
+		return true;
+	}
+	
+	public List<ProductDescription> findProductByType(Type type) {
+		List<ProductDescription> productDescriptions = new ArrayList<>();
+		for (Catalog catalog:catalogRepository.findByType(type)){
+			productDescriptions.add(catalog.getProductDescription());
+		}
+		return productDescriptions;
+			
+	}
 
 }

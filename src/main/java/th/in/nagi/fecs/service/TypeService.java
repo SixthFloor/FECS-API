@@ -36,43 +36,42 @@ public class TypeService {
 	public List<Type> findAll() {
 		return typeRepository.findAll();
 	}
-	
+
 	public List<Type> findByCategory(Category category) {
 		return typeRepository.findByCategory(category);
 	}
 
-	public List<Type> findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
+	public Type findByCategoryAndSubCategory(Category category, SubCategory subcategory) {
 		return typeRepository.findByCategoryAndSubCategory(category, subcategory);
 	}
-	
+
 	public List<SubCategory> findSubcategoryByCategory(Category category) {
 		List<SubCategory> categories = new ArrayList<>();
-		for (Type type:typeRepository.findByCategory(category)) {
+		for (Type type : typeRepository.findByCategory(category)) {
 			categories.add(type.getSubCategory());
 		}
 		return categories;
 	}
-	
+
 	public List<ProductDescription> findProductByCategory(Category category) {
 		List<ProductDescription> productDescriptions = new ArrayList<>();
-		for (Type type:typeRepository.findByCategory(category)) {
-			for (Catalog catalog:type.getCatalogs()){
+		for (Type type : typeRepository.findByCategory(category)) {
+			for (Catalog catalog : type.getCatalogs()) {
 				productDescriptions.add(catalog.getProductDescription());
 			}
 		}
 		return productDescriptions;
 	}
-	
+
 	public List<ProductDescription> findProductByCategoryAndSubCategory(Category category, SubCategory subcategory) {
 		List<ProductDescription> productDescriptions = new ArrayList<>();
-		for (Type type:typeRepository.findByCategoryAndSubCategory(category, subcategory)) {
-			for (Catalog catalog:type.getCatalogs()){
-				productDescriptions.add(catalog.getProductDescription());
-			}
+		// for (Type type:typeRepository.findByCategoryAndSubCategory(category,
+		// subcategory)) {
+		for (Catalog catalog : typeRepository.findByCategoryAndSubCategory(category, subcategory).getCatalogs()) {
+			productDescriptions.add(catalog.getProductDescription());
+			// }
 		}
 		return productDescriptions;
 	}
-	
-	
 
 }
