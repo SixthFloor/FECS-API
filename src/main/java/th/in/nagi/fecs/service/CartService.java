@@ -13,6 +13,7 @@ import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.model.Type;
+import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.CartRepository;
 import th.in.nagi.fecs.repository.CatalogRepository;
 import th.in.nagi.fecs.repository.TypeRepository;
@@ -57,6 +58,11 @@ public class CartService {
 	public List<Cart> findAll() {
 		return cartRepository.findAll();
 	}
+	
+	public List<Cart> findByUser(User user) {
+		return cartRepository.findByUser(user);
+	}
+
 
 
 }
