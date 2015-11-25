@@ -85,7 +85,7 @@ public class User {
 
 	@JsonView(UserView.PaymentInformation.class)
 	@Column(name = "expiration_date", nullable = true)
-	private String expirationDate;
+	private Date expirationDate;
 
 	@JsonView(UserView.PaymentInformation.class)
 	@Size(min = 3, max = 3)
@@ -154,11 +154,11 @@ public class User {
 		this.card_name = card_name;
 	}
 
-	public String getExpirationDate() {
+	public Date getExpirationDate() {
 		return expirationDate;
 	}
 
-	public void setExpirationDate(String expirationDate) {
+	public void setExpirationDate(Date expirationDate) {
 		this.expirationDate = expirationDate;
 	}
 

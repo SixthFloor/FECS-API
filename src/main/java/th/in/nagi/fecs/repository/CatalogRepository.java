@@ -28,6 +28,7 @@ public class CatalogRepository extends AbstractRepository<Catalog, Integer> {
 	@Override
 	public List<Catalog> findAll() {
 		Criteria criteria = createEntityCriteria();
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 

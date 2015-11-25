@@ -21,7 +21,7 @@ import th.in.nagi.fecs.model.Type;
  */
 @Repository("typeRepository")
 public class TypeRepository extends AbstractRepository<Type, Integer> {
-
+	
 	public List<Type> findByCategory(Category category) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("category", category)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);

@@ -47,7 +47,7 @@ public abstract class AbstractRepository<E, K extends Serializable>
     
 	@Override
 	public List<E> findAll() {
-		Criteria criteria = createEntityCriteria();
+		Criteria criteria = createEntityCriteria().setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 
