@@ -146,7 +146,7 @@ public class UsersController extends BaseController {
     	String passwordHash = user.changeToHash(user.getPassword());
     	user.setPassword(passwordHash);
     	user.setJoiningDate(date);
-    	user.setRole(roleService.findByKey(1));
+    	user.setRole(roleService.findByName(roleService.MEMBER));
 //    	System.out.println(user);
     	try {
 			getUserService().store(user);

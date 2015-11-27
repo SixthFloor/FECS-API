@@ -13,6 +13,11 @@ import th.in.nagi.fecs.repository.RoleRepository;
 @Transactional
 public class RoleService {
 	
+	public final String MEMBER = "member";
+	public final String STAFF = "staff";
+	public final String MANAGER = "member";
+	public final String OWNER = "owner";
+	
 	@Autowired
 	RoleRepository roleRepository; 
 
@@ -31,6 +36,10 @@ public class RoleService {
 
 	public List<Role> findAll() {
 		return roleRepository.findAll();
+	}
+	
+	public Role findByName(String name){
+		return roleRepository.findByName(name);
 	}
 
 }
