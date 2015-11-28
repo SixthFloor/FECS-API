@@ -70,6 +70,7 @@ public class Authentication {
 	public Role getRole() {
 		return user.getRole();
 	}
+	
 
 	public Integer getId() {
 		return id;
@@ -87,6 +88,7 @@ public class Authentication {
 		this.token = token;
 	}
 
+	@JsonView(AuthenticationView.User.class)
 	public User getUser() {
 		return user;
 	}
