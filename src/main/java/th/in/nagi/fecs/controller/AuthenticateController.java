@@ -93,7 +93,7 @@ public class AuthenticateController extends BaseController {
 	 * @return message message and token if not success return message and
 	 *         string "not found"
 	 */
-	@JsonView(AuthenticationView.Personal.class)
+	@JsonView(AuthenticationView.Summary.class)
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity login(@RequestBody User tempUser) {
 		System.out.println(tempUser.getEmail());

@@ -2,6 +2,7 @@ package th.in.nagi.fecs.model;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -84,8 +85,8 @@ public class ProductDescription {
 	private String dimensionDescription;
 
 	@JsonView(ProductDescriptionView.ElementalImage.class)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "productDescription")
-	private Set<ProductImage> images;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productDescription")
+	private List<ProductImage> images;
 	
 	
 	/**
@@ -192,11 +193,11 @@ public class ProductDescription {
 	// return this.category;
 	// }
     
-    public Set<ProductImage> getImages() {
+    public List<ProductImage> getImages() {
 		return images;
 	}
 
-	public void setImages(Set<ProductImage> images) {
+	public void setImages(List<ProductImage> images) {
 		this.images = images;
 	}
 

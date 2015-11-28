@@ -125,17 +125,18 @@ public class ProductDescriptionController extends BaseController {
 	 *            id of subcategory of product
 	 * @return message success if not return message fail
 	 */
+	@JsonView(ProductDescriptionView.Personal.class)
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
 	public ResponseEntity createNewProduct(@RequestBody ProductDescription productDescription,
 //			@RequestParam(value = "subCategoryId", required = false) int id,
 			@RequestHeader(value = "Authorization") String token) {
+		
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		productDescription.setSerialNumber(getSerial(productDescription.getName()));
-		
 //		productDescription.setSubCategory(subCategoryService.findByKey(id));
 
 		// System.out.println(furnitureDescription.getSubCategory().getName());
@@ -144,8 +145,10 @@ public class ProductDescriptionController extends BaseController {
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("Create FurnitureDescription failed"), HttpStatus.BAD_REQUEST);
 		}
+
+		ProductDescription newProduct = productDescriptionService.findBySerialNumber(productDescription.getSerialNumber());
 		
-		return new ResponseEntity(new Message("FurnitureDescription has added"), HttpStatus.CREATED);
+		return new ResponseEntity(newProduct, HttpStatus.CREATED);
 	}
 
 	/**
