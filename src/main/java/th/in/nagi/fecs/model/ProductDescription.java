@@ -85,7 +85,7 @@ public class ProductDescription {
 	private String dimensionDescription;
 
 	@JsonView(ProductDescriptionView.ElementalImage.class)
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "productDescription")
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "productDescription")
 	private List<ProductImage> images;
 	
 	
@@ -251,4 +251,5 @@ public class ProductDescription {
         sb.deleteCharAt(sb.lastIndexOf(","));
         return sb.append("}").toString();
 	}	
+	
 }

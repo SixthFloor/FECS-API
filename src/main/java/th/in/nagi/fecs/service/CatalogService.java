@@ -103,5 +103,13 @@ public class CatalogService {
 		return productDescriptions;
 			
 	}
+	
+	public List<Type> findTypeByProduct(ProductDescription product){
+		List<Type> type = new ArrayList<>();
+		for (Catalog catalog:catalogRepository.findByProduct(product)){
+			type.add(catalog.getType());
+		}
+		return type;
+	}
 
 }

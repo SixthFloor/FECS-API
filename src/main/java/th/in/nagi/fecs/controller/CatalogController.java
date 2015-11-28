@@ -1,8 +1,11 @@
 package th.in.nagi.fecs.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,6 +30,8 @@ import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.service.TypeService;
 import th.in.nagi.fecs.view.CatalogView;
 import th.in.nagi.fecs.view.CategoryView;
+import th.in.nagi.fecs.view.ProductDescriptionView;
+import th.in.nagi.fecs.view.TypeView;
 
 /**
  * Controller for category
@@ -146,5 +151,24 @@ public class CatalogController extends BaseController {
 		}
 		
 		return new ResponseEntity(new Message("Catalog has edited"), HttpStatus.CREATED);
+	}
+	
+	/**
+	 * Return type
+	 * 
+	 * @param product
+	 * @return type
+	 */
+	@JsonView(TypeView.SubCategoryAndCategory.class)
+	@RequestMapping(value = "/{serialNumber}", method = RequestMethod.GET)
+	public ResponseEntity getDetail(@PathVariable String serialNumber) {
+		ProductDescription productDescription = productDescriptionService.findBySerialNumber(serialNumber);
+		List<Type> type = catalogService.findTypeByProduct(productDescription);
+		
+		if (type != null) {
+			return new ResponseEntity(type, HttpStatus.OK);
+		}
+		return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
+
 	}
 }
