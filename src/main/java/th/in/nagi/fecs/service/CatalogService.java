@@ -111,5 +111,10 @@ public class CatalogService {
 		}
 		return type;
 	}
+	
+	public List<Catalog> findCatalogByProduct(ProductDescription product){
+		List<Catalog> catalog = catalogRepository.findByProduct(product);
+		return catalog;
+	}
 
 }

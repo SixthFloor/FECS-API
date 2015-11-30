@@ -159,14 +159,15 @@ public class CatalogController extends BaseController {
 	 * @param product
 	 * @return type
 	 */
-	@JsonView(TypeView.SubCategoryAndCategory.class)
+	@JsonView(CatalogView.Summary.class)
 	@RequestMapping(value = "/{serialNumber}", method = RequestMethod.GET)
 	public ResponseEntity getDetail(@PathVariable String serialNumber) {
 		ProductDescription productDescription = productDescriptionService.findBySerialNumber(serialNumber);
-		List<Type> type = catalogService.findTypeByProduct(productDescription);
+		List<Catalog> catalog = catalogService.findCatalogByProduct(productDescription);
+		System.out.println(catalog.size());
 		
-		if (type != null) {
-			return new ResponseEntity(type, HttpStatus.OK);
+		if (catalog != null) {
+			return new ResponseEntity(catalog, HttpStatus.OK);
 		}
 		return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
 
