@@ -144,12 +144,12 @@ public class AuthenticateController extends BaseController {
 	 * @param authentication
 	 * @return message message and email of user ,or not return message fail.
 	 */
-	@JsonView(UserView.Personal.class)
+	@JsonView(AuthenticationView.Summary.class)
 	@RequestMapping(value = "/token", method = RequestMethod.POST)
 	public ResponseEntity checkToken(@RequestBody Authentication authentication) {
 		if (authenticationService.isExpiration(authentication.getToken())) {
 			System.out.println(authentication.getUser());
-			return new ResponseEntity(authenticationService.findByToken(authentication.getToken()).getUser(),
+			return new ResponseEntity(authenticationService.findByToken(authentication.getToken()),
 					HttpStatus.OK);
 		}
 		return new ResponseEntity(new Message("Token is expiration."), HttpStatus.BAD_REQUEST);
