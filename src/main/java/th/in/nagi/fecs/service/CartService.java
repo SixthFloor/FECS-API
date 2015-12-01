@@ -2,11 +2,14 @@ package th.in.nagi.fecs.service;
 
 import java.util.List;
 
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import th.in.nagi.fecs.model.Cart;
+import th.in.nagi.fecs.model.Catalog;
 import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.CartRepository;
@@ -55,7 +58,7 @@ public class CartService {
 	}
 	
 	public boolean createCart(User user, ProductDescription productDescription, int quantity) {
-		if (user == null | productDescription == null | quantity < 1){
+		if (user == null || productDescription == null || quantity < 1){
 			return false;
 		}
 		Cart cart = new Cart();
@@ -64,6 +67,10 @@ public class CartService {
 		cart.setUser(user);
 		cartRepository.store(cart);
 		return true;
+	}
+	
+	public Cart findByProductAndUser(ProductDescription product, User user){
+		return cartRepository.findByProductAndUser(product, user);
 	}
 
 }

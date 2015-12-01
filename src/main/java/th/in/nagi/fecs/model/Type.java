@@ -36,7 +36,7 @@ public class Type {
 	private SubCategory subCategory;
 	
 	@JsonView(TypeView.Catalogs.class)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "type")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "type")
 	private List<Catalog> catalogs;
 
 	public int getId() {

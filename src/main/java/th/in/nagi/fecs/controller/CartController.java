@@ -32,6 +32,7 @@ import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.service.TypeService;
 import th.in.nagi.fecs.service.UserService;
+import th.in.nagi.fecs.view.CartView;
 import th.in.nagi.fecs.view.CatalogView;
 import th.in.nagi.fecs.view.CategoryView;
 import th.in.nagi.fecs.view.ProductDescriptionView;
@@ -126,14 +127,25 @@ public class CartController extends BaseController {
 		
 		ProductDescription product = productDescriptionService.findByKey(cart.getProductDescription().getId());
 		User user = userService.findByKey(cart.getUser().getId());
+		Cart oldCart = cartService.findByProductAndUser(product, user);
 		
-		try{
-			cartService.createCart(user, product, cart.getQuantity());
+		if(oldCart != null){
+			oldCart.setQuantity(oldCart.getQuantity()+cart.getQuantity());
+			try {
+				cartService.update(oldCart);
+			} catch (Exception e) {
+				return new ResponseEntity(new Message("Edited fail"), HttpStatus.BAD_REQUEST);
+			}
+			return new ResponseEntity(new Message("Quantity has added"), HttpStatus.CREATED);
 		}
-		catch(Exception e){
-			return new ResponseEntity(new Message("Created fail"), HttpStatus.BAD_REQUEST);
+		else{
+			try{
+				cartService.createCart(user, product, cart.getQuantity());
+			}
+			catch(Exception e){
+				return new ResponseEntity(new Message("Created fail"), HttpStatus.BAD_REQUEST);
+			}
 		}
-		
 		return new ResponseEntity(new Message("Cart has added"), HttpStatus.CREATED);
 	}
 	
@@ -175,7 +187,7 @@ public class CartController extends BaseController {
 	 * @return message success if not return message fail
 	 */
 	@ResponseBody
-	@RequestMapping(value = "/delete", method = RequestMethod.PUT)
+	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
 	public ResponseEntity deleteCart(@RequestBody Cart cart,
 			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER)) {
@@ -200,6 +212,7 @@ public class CartController extends BaseController {
 	 * @param product
 	 * @return type
 	 */
+	@JsonView(CartView.Summary.class)
 	@RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
 	public ResponseEntity getDetail(@PathVariable String email, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER)) {
@@ -208,8 +221,13 @@ public class CartController extends BaseController {
 		if(!authenticationService.findByToken(token).getUser().getEmail().equals(email)){
 			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
+		System.out.println(email);
 		User user = userService.findByEmail(email);
+		if(user == null){
+			return new ResponseEntity(new Message("This user not found"), HttpStatus.BAD_REQUEST);
+		}
 		List<Cart> carts = cartService.findByUser(user);
+		System.out.println(carts.size());
 		if (!carts.isEmpty()) {
 			return new ResponseEntity(carts, HttpStatus.OK);
 		}

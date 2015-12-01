@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import th.in.nagi.fecs.model.Authentication;
 import th.in.nagi.fecs.model.Cart;
+import th.in.nagi.fecs.model.Catalog;
+import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.model.User;
 
 /**
@@ -69,13 +71,17 @@ public class CartRepository extends AbstractRepository<Cart, Integer> {
 	// return (List<Authentication>) criteria.list();
 	// }
 
-	/**
-	 * {@inheritDoc}
-	 */
 	public List<Cart> findByUser(User user) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("user", user)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
+	}
+	
+	public Cart findByProductAndUser(ProductDescription product,User user) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("productDescription", product));
+		criteria.add(Restrictions.eq("user", user)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return (Cart) criteria.uniqueResult();
 	}
 
 }

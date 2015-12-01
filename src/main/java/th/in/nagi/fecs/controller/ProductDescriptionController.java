@@ -198,7 +198,7 @@ public class ProductDescriptionController extends BaseController {
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-
+		
 		System.out.println("aaaaaaaaaaaaaaaaa"+productDescription.getSerialNumber());
 		try {
 			productDescriptionService.removeBySerialNumber(productDescription.getSerialNumber());

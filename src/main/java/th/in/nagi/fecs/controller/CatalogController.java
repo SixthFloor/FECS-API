@@ -172,4 +172,30 @@ public class CatalogController extends BaseController {
 		return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
 
 	}
+	
+	@ResponseBody
+	@RequestMapping(value = "/deleteByProduct", method = RequestMethod.DELETE)
+	public ResponseEntity deleteCatalogByProduct(@RequestBody ProductDescription productDescription,
+			@RequestHeader(value = "Authorization") String token) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
+		
+		ProductDescription product = productDescriptionService.findByKey(productDescription.getId());
+		List<Catalog> catalogs = catalogService.findCatalogByProduct(product);
+		if(catalogs.isEmpty()){
+			return new ResponseEntity(new Message("Catalog not found"), HttpStatus.BAD_REQUEST);
+		}
+		
+		try {
+			for(Catalog aCatalog:catalogs){
+				catalogService.removeById(aCatalog.getId());
+			}
+		} catch (Exception e) {
+			System.out.println(e);
+			return new ResponseEntity(new Message("Remove catalog failed"), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity(new Message("Catalog has removed"), HttpStatus.OK);
+	}
 }

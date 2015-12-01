@@ -92,10 +92,10 @@ public class User {
 	@Column(name = "card_cvv", nullable = true)
 	private String cardCVV;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Authentication> authentication;
 	
-	@ManyToOne(fetch=FetchType.EAGER)
+	@ManyToOne
 	private Role role;
 
 	public String getEmail() {
