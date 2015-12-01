@@ -196,10 +196,9 @@ public class ProductDescriptionController extends BaseController {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-		System.out.println(productDescription.getSerialNumber());
+		System.out.println("aaaaaaaaaaaaaaaaa"+productDescription.getSerialNumber());
 		try {
 			productDescriptionService.removeBySerialNumber(productDescription.getSerialNumber());
-			;
 		} catch (Exception e) {
 			System.out.println(e);
 			return new ResponseEntity(new Message("Remove product failed"), HttpStatus.BAD_REQUEST);
