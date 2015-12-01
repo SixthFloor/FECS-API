@@ -142,6 +142,11 @@ public class UsersController extends BaseController {
     @RequestMapping(value = { "/new" }, method = RequestMethod.POST)
     public ResponseEntity createUser(@RequestBody User user) {//, @RequestParam(value = "roleId", required = false)int id) {
     	
+    	User oldUser = userService.findByEmail(user.getEmail());
+    	if(oldUser != null){
+    		return new ResponseEntity(new Message("This email has used"), HttpStatus.BAD_REQUEST);
+    	}
+    	
     	Date date = new Date();
     	String passwordHash = user.changeToHash(user.getPassword());
     	user.setPassword(passwordHash);
