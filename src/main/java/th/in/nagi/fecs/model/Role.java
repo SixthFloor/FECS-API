@@ -1,5 +1,6 @@
 package th.in.nagi.fecs.model;
 
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
@@ -15,22 +16,26 @@ import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonView;
+
+import th.in.nagi.fecs.view.RoleView;
 
 @Entity
 @Table(name = "role")
 public class Role {
 
+	@JsonView(RoleView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-
+	
+	@JsonView(RoleView.Personal.class)
 	@NotEmpty
 	@Column(name = "name", nullable = false)
 	private String name;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "role")
-	@JsonIgnore
-	private Set<User> users;
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role")
+	private List<User> users;
 
 	public int getId() {
 		return id;
@@ -48,11 +53,11 @@ public class Role {
 		this.name = name;
 	}
 
-	public Set<User> getUsers() {
+	public List<User> getUsers() {
 		return users;
 	}
 
-	public void setUsers(Set<User> users) {
+	public void setUsers(List<User> users) {
 		this.users = users;
 	}
 

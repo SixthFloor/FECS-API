@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import th.in.nagi.fecs.model.Catalog;
 import th.in.nagi.fecs.model.Category;
+import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.model.Type;
 
@@ -28,6 +29,7 @@ public class CatalogRepository extends AbstractRepository<Catalog, Integer> {
 	@Override
 	public List<Catalog> findAll() {
 		Criteria criteria = createEntityCriteria();
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 
@@ -65,6 +67,12 @@ public class CatalogRepository extends AbstractRepository<Catalog, Integer> {
 	public List<Catalog> findByType(Type type) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("type", type)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		return criteria.list();
+	}
+	
+	public List<Catalog> findByProduct(ProductDescription product) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("productDescription", product)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 }

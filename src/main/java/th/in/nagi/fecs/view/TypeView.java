@@ -24,5 +24,8 @@ public class TypeView {
 	public interface SubCategoryAndCatalogs extends SubCategory, Catalogs{	
 	}
 	
+	public interface SubCategoryAndCategory extends SubCategory, Category{	
+	}
+	
 	
 }
