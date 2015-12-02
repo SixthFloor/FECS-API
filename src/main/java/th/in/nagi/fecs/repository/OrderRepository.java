@@ -52,7 +52,7 @@ public class OrderRepository extends AbstractRepository<Order, Integer> {
 		remove(key);
 	}
 
-	public Order findByOrderNumber(String orderNumber) {
+	public Order findByOrderNumber(int orderNumber) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("order_number", orderNumber));
 		return (Order) criteria.uniqueResult();

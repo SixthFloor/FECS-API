@@ -20,13 +20,11 @@ import th.in.nagi.fecs.view.ProductView;
 @Table(name = "product")
 public class Product {
 
+	@JsonView(ProductView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id", nullable = false)
 	private int id;
-
-	@JsonView(ProductView.Personal.class)
-	@Column(name = "product_number", nullable = false)
-	private String productNumber;
 
 	@JsonView(ProductView.ProductDescription.class)
 	@ManyToOne
@@ -44,16 +42,8 @@ public class Product {
 		return id;
 	}
 
-	public String getProductNumber() {
-		return productNumber;
-	}
-
 	public ProductDescription getProductDescription() {
 		return productDescription;
-	}
-
-	public void setProductNumber(String productNumber) {
-		this.productNumber = productNumber;
 	}
 
 	public void setProductDescription(ProductDescription productDescription) {

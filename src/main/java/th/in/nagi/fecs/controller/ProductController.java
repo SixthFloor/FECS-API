@@ -14,7 +14,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Product;
+import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.service.AuthenticationService;
+import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.view.ProductView;
 
@@ -34,6 +36,12 @@ public class ProductController extends BaseController {
 	@Autowired
 	private ProductService productService;
 
+	/**
+	 * service of product description
+	 */
+	@Autowired
+	private ProductDescriptionService productDescriptionService;
+	
 	/**
 	 * service of authenticate
 	 */
@@ -64,22 +72,24 @@ public class ProductController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
-	public ResponseEntity createNewProduct(@RequestBody Product product,
+	public ResponseEntity createNewProduct(@RequestBody ProductDescription pd,
 			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
+		ProductDescription productDescription = productDescriptionService.findByKey(pd.getId());
+
 		Product newProduct = new Product();
-		newProduct.setProductDescription(product.getProductDescription());
+		newProduct.setProductDescription(productDescription);
 
 		try {
 			productService.store(newProduct);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("Created fail"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Added fail"), HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity(new Message("Type has created"), HttpStatus.CREATED);
+		return new ResponseEntity(new Message("Product has added"), HttpStatus.CREATED);
 	}
 }

@@ -38,7 +38,7 @@ public class OrderService {
 		return orderRepository.findAll();
 	}
 
-	public Order findByOrderNumber(String orderNumber) {
+	public Order findByOrderNumber(int orderNumber) {
 		return orderRepository.findByOrderNumber(orderNumber);
 	}
 }

@@ -96,7 +96,7 @@ public class OrderController extends BaseController {
 	@JsonView(OrderView.Personal.class)
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
 	public ResponseEntity getOrder(@RequestHeader(value = "Authorization") String token,
-			@PathVariable String orderNumber) {
+			@PathVariable int orderNumber) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
@@ -117,7 +117,12 @@ public class OrderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
-	public ResponseEntity createOrder(@RequestBody WebOrder webOrder) {//, @RequestParam(value = "roleId", required = false)int id) {
+	public ResponseEntity createOrder(@RequestBody WebOrder webOrder,
+			@RequestHeader(value = "Authorization") String token) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
 
 		Date date = new Date();
 		User user = userService.findByKey(webOrder.getUserId());
@@ -129,7 +134,8 @@ public class OrderController extends BaseController {
 		List<WebLineProduct> webLineProduct = webCart.getProducts();
 		for (int i = 0; i < webLineProduct.size(); i++) {
 			WebLineProduct wlp = webLineProduct.get(i);
-			List<Product> products = productService.findByProductDescription(wlp.getProductDescription(), wlp.getQuantity());
+			List<Product> products = productService.findByProductDescription(wlp.getProductDescription(),
+					wlp.getQuantity());
 			cart.addProduct(products);
 		}
 
@@ -139,7 +145,7 @@ public class OrderController extends BaseController {
 			System.out.println(e);
 			return new ResponseEntity(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Order order = new Order();
 		order.setOrderDate(date);
 		order.setUser(user);
@@ -154,6 +160,7 @@ public class OrderController extends BaseController {
 			System.out.println(e);
 			return new ResponseEntity(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
 		}
+
 		return new ResponseEntity(new Message("The order has created"), HttpStatus.CREATED);
 	}
 }
