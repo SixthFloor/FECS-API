@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
+import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -28,6 +29,12 @@ public class CartRepository extends AbstractRepository<Cart, Integer> {
 	@Override
 	public List<Cart> findAll() {
 		Criteria criteria = createEntityCriteria();
+		return criteria.list();
+	}
+
+	public List<Cart> findAllDesc() {
+		Criteria criteria = createEntityCriteria();
+		criteria.addOrder(Order.desc("id"));
 		return criteria.list();
 	}
 

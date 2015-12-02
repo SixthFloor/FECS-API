@@ -29,21 +29,8 @@ public class CartService {
 		return cartRepository.findByKey(id);
 	}
 
-//	public void store(Cart cart) {
-//		cartRepository.store(cart);
-//	}
-
-	public void update(Cart cart) {
-		Cart entity = cartRepository.findByKey(cart.getId());
-		if (entity != null) {
-			if (cart.getQuantity() > 0) {
-				entity.setQuantity(cart.getQuantity());
-			}
-		}
-	}
-
-	public void removeById(Integer id) {
-		cartRepository.remove(id);
+	public void store(Cart cart) {
+		cartRepository.store(cart);
 	}
 
 	public List<Cart> findAll() {
@@ -54,16 +41,7 @@ public class CartService {
 		return cartRepository.findByUser(user);
 	}
 	
-	public boolean createCart(User user, ProductDescription productDescription, int quantity) {
-		if (user == null | productDescription == null | quantity < 1){
-			return false;
-		}
-		Cart cart = new Cart();
-		cart.setProductDescription(productDescription);
-		cart.setQuantity(quantity);
-		cart.setUser(user);
-		cartRepository.store(cart);
-		return true;
+	public Cart findLastInserted() {
+		return cartRepository.findAllDesc().get(0);
 	}
-
 }

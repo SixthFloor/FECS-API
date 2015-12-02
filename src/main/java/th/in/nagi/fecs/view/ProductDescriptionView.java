@@ -9,7 +9,7 @@ public class ProductDescriptionView {
 	public interface Personal extends Standardized {
 	}
 
-	public interface ElementalImage extends Personal, th.in.nagi.fecs.view.ProductImageView.Personal {
+	public interface ElementalImage extends Personal, ProductImageView.Personal {
 	}
 
 }

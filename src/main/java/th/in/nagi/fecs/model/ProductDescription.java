@@ -88,6 +88,8 @@ public class ProductDescription {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "productDescription")
 	private List<ProductImage> images;
 	
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "productDescription")
+	private List<Product> products;
 	
 	/**
 	 * Return dimension description

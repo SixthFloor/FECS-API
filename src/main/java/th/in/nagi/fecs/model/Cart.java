@@ -1,12 +1,19 @@
 package th.in.nagi.fecs.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
@@ -19,50 +26,45 @@ public class Cart {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
 	@ManyToOne
+	@JoinColumn(name = "user_id")
 	private User user;
-	
-	@NotEmpty
-	@Min(value=1)
-	@Column(name = "quantity", nullable = false)
-	private Integer quantity;
-	
-	@ManyToOne
-	@JoinColumn(name="product_description_id")
-	private ProductDescription productDescription;
+
+	@ManyToMany(cascade = CascadeType.ALL)
+	@JoinTable(name = "product_in_cart", joinColumns = {
+			@JoinColumn(name = "cart_id", referencedColumnName = "id")}, inverseJoinColumns = {
+					@JoinColumn(name = "product_id", referencedColumnName = "id")})
+	private List<Product> products = new ArrayList<Product>();
+
+	//	@OneToOne(mappedBy = "cart")
+	//	private Order order;
 
 	public Integer getId() {
 		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
 	}
 
 	public User getUser() {
 		return user;
 	}
 
+	public List<Product> getProduct() {
+		return products;
+	}
+
 	public void setUser(User user) {
 		this.user = user;
 	}
 
-	public Integer getQuantity() {
-		return quantity;
+	public void setProduct(List<Product> products) {
+		this.products = products;
 	}
 
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
+	public void addProduct(List<Product> products) {
+		this.products.addAll(products);
 	}
 
-	public ProductDescription getProductDescription() {
-		return productDescription;
+	public void addProduct(Product product) {
+		this.products.add(product);
 	}
-
-	public void setProductDescription(ProductDescription productDescription) {
-		this.productDescription = productDescription;
-	}
-	
-	
 }

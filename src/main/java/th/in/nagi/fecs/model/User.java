@@ -94,9 +94,6 @@ public class User {
 	private String cardCVV;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
-	private List<Order> orders;
-
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
 	private List<Authentication> authentication;
 
 	@ManyToOne(fetch = FetchType.EAGER)
