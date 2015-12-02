@@ -37,51 +37,53 @@ import th.in.nagi.fecs.view.UserView;
 @RequestMapping("/api/user")
 public class UsersController extends BaseController {
 
-    /**
-     * User service.
-     */
-    @Autowired
-    private UserService userService;
-    
-    /**
-     * authenticate service.
-     */
-    @Autowired
-    private AuthenticationService authenticationService;
-    
-    /**
-     * role service
-     */
-    @Autowired
-    private RoleService roleService;
+	/**
+	 * User service.
+	 */
+	@Autowired
+	private UserService userService;
 
-    /**
-     * Gets user service.
-     * @return user service
-     */
-    protected UserService getUserService() {
-        return userService;
-    }
+	/**
+	 * authenticate service.
+	 */
+	@Autowired
+	private AuthenticationService authenticationService;
 
-    /**
-     * Lists all existing users. 
-     * @return list of users
-     */
-    @JsonView(UserView.Personal.class)
-    @RequestMapping(value = "/all", method = RequestMethod.GET)
-    public ResponseEntity getAllUsers(@RequestHeader(value = "Authorization") String token) {
+	/**
+	 * role service
+	 */
+	@Autowired
+	private RoleService roleService;
+
+	/**
+	 * Gets user service.
+	 * 
+	 * @return user service
+	 */
+	protected UserService getUserService() {
+		return userService;
+	}
+
+	/**
+	 * Lists all existing users.
+	 * 
+	 * @return list of users
+	 */
+	@JsonView(UserView.Personal.class)
+	@RequestMapping(value = "/all", method = RequestMethod.GET)
+	public ResponseEntity getAllUsers(@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-        Set<User> users = new HashSet<User>(getUserService().findAll());
-        if(users != null) {
-        	return new ResponseEntity(users, HttpStatus.OK);
+		Set<User> users = new HashSet<User>(getUserService().findAll());
+		if (users != null) {
+			return new ResponseEntity(users, HttpStatus.OK);
 		}
-        return new ResponseEntity(new Message("Not found user"), HttpStatus.BAD_REQUEST);
-    }
-    
-    /**
+		return new ResponseEntity(new Message("Not found user"), HttpStatus.BAD_REQUEST);
+	}
+
+	/**
 	 * list of user with limit size
 	 * 
 	 * @param start
@@ -90,10 +92,11 @@ public class UsersController extends BaseController {
 	 *            size of the list
 	 * @return limit list of user
 	 */
-    @JsonView(UserView.Personal.class)
+	@JsonView(UserView.Personal.class)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ResponseEntity getListUsers(@RequestParam(value = "start", required = false) int start,
-			@RequestParam(value = "size", required = false) int size,@RequestHeader(value = "Authorization") String token) {
+			@RequestParam(value = "size", required = false) int size,
+			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -102,291 +105,326 @@ public class UsersController extends BaseController {
 		if (size > userListSize - start) {
 			size = userListSize - start;
 		}
-//		System.out.println(userListSize);
-//		System.out.println(start+"                                                   "+size);
+		//		System.out.println(userListSize);
+		//		System.out.println(start+"                                                   "+size);
 		List<User> user = (userService.findAndAscByFirstName(start, size));
 		if (user == null) {
 			return new ResponseEntity(new Message("Not found user"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(user, HttpStatus.OK);
 	}
-	
-    
-    /**
-     * get user by email
-     * @param email email of user that want to show
-     * @return user if not return message fail
-     */
-    @JsonView(UserView.Personal.class)
-    @RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
-    public ResponseEntity getUserByEmail(@PathVariable String email, @RequestHeader(value = "Authorization") String token) {
+
+	/**
+	 * get user by email
+	 * 
+	 * @param email
+	 *            email of user that want to show
+	 * @return user if not return message fail
+	 */
+	@JsonView(UserView.Personal.class)
+	@RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
+	public ResponseEntity getUserByEmail(@PathVariable String email,
+			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-        User user = getUserService().findByEmail(email);
-        if(user != null) {
-        	return new ResponseEntity(user, HttpStatus.OK);
+		User user = getUserService().findByEmail(email);
+		if (user != null) {
+			return new ResponseEntity(user, HttpStatus.OK);
 		}
-        return new ResponseEntity(new Message("Not found user"), HttpStatus.BAD_REQUEST);
-    }
+		return new ResponseEntity(new Message("Not found user"), HttpStatus.BAD_REQUEST);
+	}
 
-    /**
-     * Creates new user.
-     * 
-     * @param model
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = { "/new" }, method = RequestMethod.POST)
-    public ResponseEntity createUser(@RequestBody User user) {//, @RequestParam(value = "roleId", required = false)int id) {
-    	
-    	Date date = new Date();
-    	String passwordHash = user.changeToHash(user.getPassword());
-    	user.setPassword(passwordHash);
-    	user.setJoiningDate(date);
-    	user.setRole(roleService.findByName(roleService.MEMBER));
-//    	System.out.println(user);
-    	try {
+	/**
+	 * Creates new user.
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
+	public ResponseEntity createUser(@RequestBody User user) {//, @RequestParam(value = "roleId", required = false)int id) {
+
+		Date date = new Date();
+		String passwordHash = user.changeToHash(user.getPassword());
+		user.setPassword(passwordHash);
+		user.setJoiningDate(date);
+		user.setRole(roleService.findByName(roleService.MEMBER));
+		//    	System.out.println(user);
+		try {
 			getUserService().store(user);
 		} catch (Exception e) {
-//			System.out.println(e);
+			//			System.out.println(e);
 			return new ResponseEntity(new Message("Create user failed"), HttpStatus.BAD_REQUEST);
 		}
-    	return new ResponseEntity(new Message("The user has created"), HttpStatus.CREATED);
-    }
-    
-    /**
-     * Creates new user.
-     * 
-     * @param model
-     * @return
-     */
-    @ResponseBody
-    @RequestMapping(value = { "/newByOwner" }, method = RequestMethod.POST)
-    public ResponseEntity createUserByOwner(@RequestBody User user,  @RequestHeader(value = "Authorization") String token
-    		, @RequestParam(value = "roleId", required = false)int id) {
-    	if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
+		return new ResponseEntity(new Message("The user has created"), HttpStatus.CREATED);
+	}
+
+	/**
+	 * Creates new user.
+	 * 
+	 * @param model
+	 * @return
+	 */
+	@ResponseBody
+	@RequestMapping(value = {"/newByOwner"}, method = RequestMethod.POST)
+	public ResponseEntity createUserByOwner(@RequestBody User user,
+			@RequestHeader(value = "Authorization") String token,
+			@RequestParam(value = "roleId", required = false) int id) {
+		if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-    	Date date = new Date();
-    	String passwordHash = user.changeToHash(user.getPassword());
-    	user.setPassword(passwordHash);
-    	user.setJoiningDate(date);
-    	user.setRole(roleService.findByKey(id));
-//    	System.out.println(user);
-    	try {
+		Date date = new Date();
+		String passwordHash = user.changeToHash(user.getPassword());
+		user.setPassword(passwordHash);
+		user.setJoiningDate(date);
+		user.setRole(roleService.findByKey(id));
+		//    	System.out.println(user);
+		try {
 			getUserService().store(user);
 		} catch (Exception e) {
-//			System.out.println(e);
+			//			System.out.println(e);
 			return new ResponseEntity(new Message("Create user failed"), HttpStatus.BAD_REQUEST);
 		}
-    	return new ResponseEntity(new Message("The user has created"), HttpStatus.CREATED);
-    }
+		return new ResponseEntity(new Message("The user has created"), HttpStatus.CREATED);
+	}
 
-    /**
-     * edit user by member
-     * @param newUser put user information that want to change, it is not required all parameter of user. 
-     * @return message message and email of user or not return message fail and string "not found"
-     */
-    @ResponseBody
-    @RequestMapping(value = {"/edit" }, method = RequestMethod.PUT)
-    public ResponseEntity editUserByMember(@RequestBody User newUser, @RequestHeader(value = "Authorization") String token) {
-		if (!authenticationService.checkPermission(token, authenticationService.MEMBER
-				, authenticationService.STAFF, authenticationService.MANAGER, authenticationService.OWNER)) {
+	/**
+	 * edit user by member
+	 * 
+	 * @param newUser
+	 *            put user information that want to change, it is not required
+	 *            all parameter of user.
+	 * @return message message and email of user or not return message fail and
+	 *         string "not found"
+	 */
+	@ResponseBody
+	@RequestMapping(value = {"/edit"}, method = RequestMethod.PUT)
+	public ResponseEntity editUserByMember(@RequestBody User newUser,
+			@RequestHeader(value = "Authorization") String token) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+				authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		if(authenticationService.findByToken(token).getUser().getId() != newUser.getId()){
+		if (authenticationService.findByToken(token).getUser().getId() != newUser.getId()) {
 			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
-//        User user = getUserService().findByUsername(newUser.getUsername());
+		//        User user = getUserService().findByUsername(newUser.getUsername());
 		newUser.setRole(null);
-    	try {
-    		getUserService().update(newUser);
+		try {
+			getUserService().update(newUser);
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
-    	return new ResponseEntity(getUserService().findByEmail(newUser.getEmail()).getEmail(), HttpStatus.OK);
-    }
-    
-    /**
-     * edit user by admin
-     * @param newUser put user information that want to change, it is not required all parameter of user. 
-     * @return message message and email of user or not return message fail and string "not found"
-     */
-    @ResponseBody
-    @RequestMapping(value = {"/editByOwner" }, method = RequestMethod.PUT)
-    public ResponseEntity editUserByAdmin(@RequestBody User newUser, @RequestHeader(value = "Authorization") String token) {
+		return new ResponseEntity(getUserService().findByEmail(newUser.getEmail()).getEmail(), HttpStatus.OK);
+	}
+
+	/**
+	 * edit user by admin
+	 * 
+	 * @param newUser
+	 *            put user information that want to change, it is not required
+	 *            all parameter of user.
+	 * @return message message and email of user or not return message fail and
+	 *         string "not found"
+	 */
+	@ResponseBody
+	@RequestMapping(value = {"/editByOwner"}, method = RequestMethod.PUT)
+	public ResponseEntity editUserByAdmin(@RequestBody User newUser,
+			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-//		if(!authenticationService.getRole(token).getName().equals(authenticationService.OWNER)){
-//			newUser.setRole(null);
-//		}
-//        User user = getUserService().findByUsername(newUser.getUsername());
-    	try {
-    		getUserService().update(newUser);
+		//		if(!authenticationService.getRole(token).getName().equals(authenticationService.OWNER)){
+		//			newUser.setRole(null);
+		//		}
+		//        User user = getUserService().findByUsername(newUser.getUsername());
+		try {
+			getUserService().update(newUser);
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
-    	return new ResponseEntity(new Message("getUserService().findByEmail(newUser.getEmail()).getEmail()"), HttpStatus.OK);
-    }
-    /*
-     * This method will delete an user by it's Username value.
-     */
-    /**
-     * delete a user by id
-     * @param tempUser username and password
-     * @return message message success if not return message fail
-     */
-    @ResponseBody
-    @RequestMapping(value = {"/delete" }, method = RequestMethod.DELETE)
-    public ResponseEntity deleteUser(@RequestBody User tempUser, @RequestHeader(value = "Authorization") String token) {
+		return new ResponseEntity(new Message("getUserService().findByEmail(newUser.getEmail()).getEmail()"),
+				HttpStatus.OK);
+	}
+
+	/*
+	 * This method will delete an user by it's Username value.
+	 */
+	/**
+	 * delete a user by id
+	 * 
+	 * @param tempUser
+	 *            username and password
+	 * @return message message success if not return message fail
+	 */
+	@ResponseBody
+	@RequestMapping(value = {"/delete"}, method = RequestMethod.DELETE)
+	public ResponseEntity deleteUser(@RequestBody User tempUser, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-    	User user = getUserService().findByEmail(tempUser.getEmail());
-    	String passwordHash = user.changeToHash(tempUser.getPassword());
-    	
-    	if(!user.getPassword().equals(passwordHash)){
-    		return new ResponseEntity(new Message("Incorrect password"), HttpStatus.BAD_REQUEST);
-    	}
-       
-        try {
-        	getUserService().removeByEmail(user.getEmail());
+		User user = getUserService().findByEmail(tempUser.getEmail());
+		String passwordHash = user.changeToHash(tempUser.getPassword());
+
+		if (!user.getPassword().equals(passwordHash)) {
+			return new ResponseEntity(new Message("Incorrect password"), HttpStatus.BAD_REQUEST);
+		}
+
+		try {
+			getUserService().removeByEmail(user.getEmail());
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
-        return new ResponseEntity(new Message("User has removed"), HttpStatus.OK);
-    }
-    
-    /**
-     * Get location
-     * @param email email
-     * @param password password
-     * @param token token
-     * @return location of user
-     */
-    @JsonView(UserView.Location.class)
-    @RequestMapping(value = {"/location" }, method = RequestMethod.GET)
-    public ResponseEntity getLocation(@RequestHeader(value = "email") String email
-    		, @RequestHeader(value = "password") String password, @RequestHeader(value = "Authorization") String token) {
+		return new ResponseEntity(new Message("User has removed"), HttpStatus.OK);
+	}
+
+	/**
+	 * Get location
+	 * 
+	 * @param email
+	 *            email
+	 * @param password
+	 *            password
+	 * @param token
+	 *            token
+	 * @return location of user
+	 */
+	@JsonView(UserView.Location.class)
+	@RequestMapping(value = {"/location"}, method = RequestMethod.GET)
+	public ResponseEntity getLocation(@RequestHeader(value = "email") String email,
+			@RequestHeader(value = "password") String password, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaa");
-		if(!authenticationService.findByToken(token).getUser().getEmail().equals(email)){
+		if (!authenticationService.findByToken(token).getUser().getEmail().equals(email)) {
 			return new ResponseEntity(new Message("This user cannot get location"), HttpStatus.FORBIDDEN);
 		}
 		System.out.println("bbbbbbbbbbbbbbbbbbbbbbbb");
 		User user = userService.findByEmail(email);
 		String passwordHash = user.changeToHash(password);
-		if(!passwordHash.equals(user.getPassword())){
+		if (!passwordHash.equals(user.getPassword())) {
 			return new ResponseEntity(new Message("This user cannot get location"), HttpStatus.FORBIDDEN);
 		}
 		System.out.println(user.getAddress1());
-    	return new ResponseEntity(user, HttpStatus.OK);
-    }
-    
-    /**
-     * Get payment
-     * @param email email
-     * @param password password
-     * @param token token
-     * @return payment of user
-     */
-    @JsonView(UserView.PaymentInformation.class)
-    @RequestMapping(value = {"/payment" }, method = RequestMethod.GET)
-    public ResponseEntity getPayment(@RequestHeader(value = "email") String email
-    		, @RequestHeader(value = "password") String password, @RequestHeader(value = "Authorization") String token) {
+		return new ResponseEntity(user, HttpStatus.OK);
+	}
+
+	/**
+	 * Get payment
+	 * 
+	 * @param email
+	 *            email
+	 * @param password
+	 *            password
+	 * @param token
+	 *            token
+	 * @return payment of user
+	 */
+	@JsonView(UserView.PaymentInformation.class)
+	@RequestMapping(value = {"/payment"}, method = RequestMethod.GET)
+	public ResponseEntity getPayment(@RequestHeader(value = "email") String email,
+			@RequestHeader(value = "password") String password, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		if(!authenticationService.findByToken(token).getUser().getEmail().equals(email)){
+		if (!authenticationService.findByToken(token).getUser().getEmail().equals(email)) {
 			return new ResponseEntity(new Message("This user cannot get payment"), HttpStatus.FORBIDDEN);
 		}
 		User user = userService.findByEmail(email);
 		String passwordHash = user.changeToHash(password);
-		if(!passwordHash.equals(user.getPassword())){
+		if (!passwordHash.equals(user.getPassword())) {
 			return new ResponseEntity(new Message("This user cannot get payment"), HttpStatus.FORBIDDEN);
 		}
-		
-    	return new ResponseEntity(user, HttpStatus.OK);
-    }
-    
-    /**
-     * Edit location
-     * @param email email
-     * @param password password
-     * @param token token
-     * @param user location of user
-     * @return location of user
-     */
-    @ResponseBody
-    @RequestMapping(value = {"/location" }, method = RequestMethod.PUT)
-    public ResponseEntity editLocation(@RequestHeader(value = "email") String email
-    		, @RequestHeader(value = "password") String password, @RequestHeader(value = "Authorization") String token
-    		, @RequestBody User newUser) {
+
+		return new ResponseEntity(user, HttpStatus.OK);
+	}
+
+	/**
+	 * Edit location
+	 * 
+	 * @param email
+	 *            email
+	 * @param password
+	 *            password
+	 * @param token
+	 *            token
+	 * @param user
+	 *            location of user
+	 * @return location of user
+	 */
+	@ResponseBody
+	@RequestMapping(value = {"/location"}, method = RequestMethod.PUT)
+	public ResponseEntity editLocation(@RequestHeader(value = "email") String email,
+			@RequestHeader(value = "password") String password, @RequestHeader(value = "Authorization") String token,
+			@RequestBody User newUser) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		if(!authenticationService.findByToken(token).getUser().getEmail().equals(email)){
+		if (!authenticationService.findByToken(token).getUser().getEmail().equals(email)) {
 			return new ResponseEntity(new Message("This user cannot get location"), HttpStatus.FORBIDDEN);
 		}
 		User user = userService.findByEmail(email);
 		String passwordHash = user.changeToHash(password);
-		if(!passwordHash.equals(user.getPassword())){
+		if (!passwordHash.equals(user.getPassword())) {
 			return new ResponseEntity(new Message("This user cannot get location"), HttpStatus.FORBIDDEN);
 		}
-		
+
 		user.setAddress1(newUser.getAddress1());
 		user.setAddress2(newUser.getAddress2());
 		user.setProvince(newUser.getProvince());
 		user.setZipcode(newUser.getZipcode());
 		user.setTelephone_number(newUser.getTelephone_number());
-    	try {
-    		getUserService().update(user);
+		try {
+			getUserService().update(user);
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
-    	return new ResponseEntity(new Message("Edited"), HttpStatus.OK);
-    }
-    
-    /**
-     * Edit payment
-     * @param email email
-     * @param password password
-     * @param token token
-     * @param user payment of user
-     * @return payment of user
-     */
-    @ResponseBody
-    @RequestMapping(value = {"/payment" }, method = RequestMethod.PUT)
-    public ResponseEntity editPayment(@RequestHeader(value = "email") String email
-    		, @RequestHeader(value = "password") String password, @RequestHeader(value = "Authorization") String token
-    		, @RequestBody User newUser) {
+		return new ResponseEntity(new Message("Edited"), HttpStatus.OK);
+	}
+
+	/**
+	 * Edit payment
+	 * 
+	 * @param email
+	 *            email
+	 * @param password
+	 *            password
+	 * @param token
+	 *            token
+	 * @param user
+	 *            payment of user
+	 * @return payment of user
+	 */
+	@ResponseBody
+	@RequestMapping(value = {"/payment"}, method = RequestMethod.PUT)
+	public ResponseEntity editPayment(@RequestHeader(value = "email") String email,
+			@RequestHeader(value = "password") String password, @RequestHeader(value = "Authorization") String token,
+			@RequestBody User newUser) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		if(!authenticationService.findByToken(token).getUser().getEmail().equals(email)){
+		if (!authenticationService.findByToken(token).getUser().getEmail().equals(email)) {
 			return new ResponseEntity(new Message("This user cannot get payment"), HttpStatus.FORBIDDEN);
 		}
 		User user = userService.findByEmail(email);
 		String passwordHash = user.changeToHash(password);
-		if(!passwordHash.equals(user.getPassword())){
+		if (!passwordHash.equals(user.getPassword())) {
 			return new ResponseEntity(new Message("This user cannot get payment"), HttpStatus.FORBIDDEN);
 		}
-		
+
 		user.setCard_name(newUser.getCard_name());
 		user.setCardCVV(newUser.getCardCVV());
 		user.setExpirationDate(newUser.getExpirationDate());
-    	try {
-    		getUserService().update(user);
+		try {
+			getUserService().update(user);
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
-    	return new ResponseEntity(new Message("Edited"), HttpStatus.OK);
-    }
-    
- }
+		return new ResponseEntity(new Message("Edited"), HttpStatus.OK);
+	}
+
+}

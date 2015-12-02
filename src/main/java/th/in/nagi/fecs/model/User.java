@@ -12,6 +12,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -93,9 +94,12 @@ public class User {
 	private String cardCVV;
 
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+	private List<Order> orders;
+
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
 	private List<Authentication> authentication;
-	
-	@ManyToOne(fetch=FetchType.EAGER)
+
+	@ManyToOne(fetch = FetchType.EAGER)
 	private Role role;
 
 	public String getEmail() {
