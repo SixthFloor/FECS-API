@@ -1,5 +1,6 @@
 package th.in.nagi.fecs.controller;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -79,10 +80,13 @@ public class OrderController extends BaseController {
 //			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
 //		}
 
-		List<Order> orders = orderService.findAll();
+		List<WebOrder> webOrders = new ArrayList<WebOrder>();
+		for (Order order: orderService.findAll()) {
+			webOrders.add(WebOrder.create(order));
+		}
 		
-		if (orders != null) {
-			return new ResponseEntity(orders, HttpStatus.OK);
+		if (webOrders != null) {
+			return new ResponseEntity(webOrders, HttpStatus.OK);
 		}
 		return new ResponseEntity(new Message("Not found order"), HttpStatus.BAD_REQUEST);
 	}
