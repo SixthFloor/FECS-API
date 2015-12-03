@@ -142,6 +142,12 @@ public class OrderController extends BaseController {
 		for (WebLineProduct wlp : webOrder.getProductList()) {
 			List<Product> products = productService.findByProductDescription(wlp.getProductDescription(),
 					wlp.getQuantity());
+			if (products.isEmpty()) {
+				return new ResponseEntity(
+						new Message(
+								"Create order failed: [" + wlp.getProductDescription().getId() + "] id out of stock"),
+						HttpStatus.BAD_REQUEST);
+			}
 			cart.addProducts(products);
 		}
 

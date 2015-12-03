@@ -74,7 +74,6 @@ public class ProductDescriptionController extends BaseController {
 			return new ResponseEntity(productDescription, HttpStatus.OK);
 		}
 		return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
-
 	}
 
 	/**
