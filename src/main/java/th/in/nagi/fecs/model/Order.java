@@ -32,12 +32,12 @@ public class Order {
 	@Column(name = "serial_number", unique = true)
 	private int orderNumber;
 
-	@JsonView(OrderView.User.class)
+	@JsonView({OrderView.Personal.class, OrderView.User.class})
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@JsonView(OrderView.Cart.class)
+	@JsonView({OrderView.Personal.class, OrderView.Cart.class})
 	@OneToOne
 	@JoinColumn(name = "cart_id")
 	private Cart cart;

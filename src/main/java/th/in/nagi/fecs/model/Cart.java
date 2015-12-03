@@ -19,10 +19,13 @@ import javax.validation.constraints.Min;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import th.in.nagi.fecs.view.CartView;
 import th.in.nagi.fecs.view.OrderView;
+import th.in.nagi.fecs.view.ProductView;
 
 @Entity
 @Table(name = "cart")
@@ -41,7 +44,7 @@ public class Cart {
 	@JoinTable(name = "product_in_cart", joinColumns = {
 			@JoinColumn(name = "cart_id", referencedColumnName = "id")}, inverseJoinColumns = {
 					@JoinColumn(name = "product_id", referencedColumnName = "id")})
-	@JsonView(CartView.Product.class)
+	@JsonProperty("list")
 	private List<Product> products = new ArrayList<Product>();
 
 	//	@OneToOne(mappedBy = "cart")
