@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -72,19 +73,17 @@ public class OrderController extends BaseController {
 	 */
 	@JsonView(WebOrderView.Personal.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
-	public ResponseEntity getAllOrders(
-//			@RequestHeader(value = "Authorization") String token
-			) {
-//		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
-//				authenticationService.OWNER)) {
-//			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
-//		}
+	public ResponseEntity getAllOrders(@RequestHeader(value = "Authorization") String token) {
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
+			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+		}
 
 		List<WebOrder> webOrders = new ArrayList<WebOrder>();
-		for (Order order: orderService.findAll()) {
+		for (Order order : orderService.findAll()) {
 			webOrders.add(WebOrder.create(order));
 		}
-		
+
 		if (webOrders != null) {
 			return new ResponseEntity(webOrders, HttpStatus.OK);
 		}
@@ -98,13 +97,12 @@ public class OrderController extends BaseController {
 	 */
 	@JsonView(WebOrderView.Personal.class)
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
-	public ResponseEntity getOrder(
-			//			@RequestHeader(value = "Authorization") String token,
+	public ResponseEntity getOrder(@RequestHeader(value = "Authorization") String token,
 			@PathVariable Integer orderNumber) {
-		//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-		//				authenticationService.MANAGER, authenticationService.OWNER)) {
-		//			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
-		//		}
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+				authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+		}
 
 		Order order = orderService.findByKey(orderNumber);
 		WebOrder webOrder = WebOrder.create(order);
@@ -123,14 +121,12 @@ public class OrderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
-	public ResponseEntity createOrder(@RequestBody WebOrder webOrder
-//			,
-//			@RequestHeader(value = "Authorization") String token
-			) {
-//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-//				authenticationService.MANAGER, authenticationService.OWNER)) {
-//			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
-//		}
+	public ResponseEntity createOrder(@RequestBody WebOrder webOrder,
+			@RequestHeader(value = "Authorization") String token) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+				authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
 
 		Date date = new Date();
 		User user = userService.findByKey(webOrder.getUser().getId());
