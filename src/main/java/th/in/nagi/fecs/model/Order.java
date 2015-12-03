@@ -29,15 +29,15 @@ public class Order {
 	@JsonView(OrderView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "order_number", unique = true)
+	@Column(name = "serial_number", unique = true)
 	private int orderNumber;
 
-	@JsonView(OrderView.Personal.class)
+	@JsonView(OrderView.User.class)
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@JsonView(OrderView.Personal.class)
+	@JsonView(OrderView.Cart.class)
 	@OneToOne
 	@JoinColumn(name = "cart_id")
 	private Cart cart;

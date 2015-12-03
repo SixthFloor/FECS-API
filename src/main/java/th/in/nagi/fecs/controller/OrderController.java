@@ -95,14 +95,15 @@ public class OrderController extends BaseController {
 	 */
 	@JsonView(OrderView.Personal.class)
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
-	public ResponseEntity getOrder(@RequestHeader(value = "Authorization") String token,
-			@PathVariable int orderNumber) {
-		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
-		}
+	public ResponseEntity getOrder(
+//			@RequestHeader(value = "Authorization") String token,
+			@PathVariable Integer orderNumber) {
+//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+//				authenticationService.MANAGER, authenticationService.OWNER)) {
+//			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+//		}
 
-		Order order = orderService.findByOrderNumber(orderNumber);
+		Order order = orderService.findByKey(orderNumber);
 		if (order != null) {
 			return new ResponseEntity(order, HttpStatus.OK);
 		}

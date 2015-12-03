@@ -19,12 +19,18 @@ import javax.validation.constraints.Min;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import th.in.nagi.fecs.view.CartView;
+import th.in.nagi.fecs.view.OrderView;
+
 @Entity
 @Table(name = "cart")
 public class Cart {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@JsonView(CartView.Personal.class)
 	private Integer id;
 
 	@ManyToOne
@@ -35,6 +41,7 @@ public class Cart {
 	@JoinTable(name = "product_in_cart", joinColumns = {
 			@JoinColumn(name = "cart_id", referencedColumnName = "id")}, inverseJoinColumns = {
 					@JoinColumn(name = "product_id", referencedColumnName = "id")})
+	@JsonView(CartView.Product.class)
 	private List<Product> products = new ArrayList<Product>();
 
 	//	@OneToOne(mappedBy = "cart")
