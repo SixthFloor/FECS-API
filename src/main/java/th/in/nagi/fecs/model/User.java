@@ -82,15 +82,18 @@ public class User {
 	@JsonView(UserView.PaymentInformation.class)
 	@Column(name = "card_name", nullable = true)
 	private String card_name;
+	
+	@JsonView(UserView.PaymentInformation.class)
+	@Column(name = "card_number", nullable = true)
+	private String card_number;
 
 	@JsonView(UserView.PaymentInformation.class)
 	@Column(name = "expiration_date", nullable = true)
 	private Date expirationDate;
 
-	@JsonView(UserView.PaymentInformation.class)
-	@Size(min = 3, max = 3)
-	@Column(name = "card_cvv", nullable = true)
-	private String cardCVV;
+//	@Size(min = 3, max = 3)
+//	@Column(name = "card_cvv", nullable = true)
+//	private String cardCVV;
 
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
 	private List<Authentication> authentication;
@@ -162,13 +165,13 @@ public class User {
 		this.expirationDate = expirationDate;
 	}
 
-	public String getCardCVV() {
-		return cardCVV;
-	}
-
-	public void setCardCVV(String cardCVV) {
-		this.cardCVV = cardCVV;
-	}
+//	public String getCardCVV() {
+//		return cardCVV;
+//	}
+//
+//	public void setCardCVV(String cardCVV) {
+//		this.cardCVV = cardCVV;
+//	}
 
 	public Role getRole() {
 		return role;
@@ -275,6 +278,14 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getCard_number() {
+		return card_number;
+	}
+
+	public void setCard_number(String card_number) {
+		this.card_number = card_number;
 	}
 
 }

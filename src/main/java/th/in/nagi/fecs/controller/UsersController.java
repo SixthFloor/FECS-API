@@ -117,15 +117,41 @@ public class UsersController extends BaseController {
      * @param email email of user that want to show
      * @return user if not return message fail
      */
-    @JsonView(UserView.Personal.class)
-    @RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
-    public ResponseEntity getUserByEmail(@PathVariable String email, @RequestHeader(value = "Authorization") String token) {
+    @JsonView(UserView.AllInformation.class)
+    @RequestMapping(value = "/admin/{email:.+}", method = RequestMethod.GET)
+    public ResponseEntity getUserByEmailByAdmin(@PathVariable String email, @RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
         User user = getUserService().findByEmail(email);
+        if(user != null) {
+        	return new ResponseEntity(user, HttpStatus.OK);
+		}
+        return new ResponseEntity(new Message("Not found user"), HttpStatus.BAD_REQUEST);
+    }
+    
+    /**
+     * get user by email
+     * @param email email of user that want to show
+     * @return user if not return message fail
+     */
+    @JsonView(UserView.AllInformation.class)
+    @RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
+    public ResponseEntity getUserByEmail(@PathVariable String email, @RequestHeader(value = "Authorization") String token) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER)) {
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
+		
+		User user = userService.findByEmail(email);
+		System.out.println(user.getId());
+		System.out.println(authenticationService.findByToken(token).getUser().getId());
+		
+		if(!authenticationService.findByToken(token).getUser().getId().equals(user.getId())){
+			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
+		}
+
         if(user != null) {
         	return new ResponseEntity(user, HttpStatus.OK);
 		}
@@ -384,7 +410,7 @@ public class UsersController extends BaseController {
 		}
 		
 		user.setCard_name(newUser.getCard_name());
-		user.setCardCVV(newUser.getCardCVV());
+		user.setCard_number(newUser.getCard_number());
 		user.setExpirationDate(newUser.getExpirationDate());
     	try {
     		getUserService().update(user);
