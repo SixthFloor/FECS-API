@@ -1,9 +1,7 @@
 package th.in.nagi.fecs.controller;
 
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -31,7 +28,7 @@ import th.in.nagi.fecs.service.OrderService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.service.UserService;
-import th.in.nagi.fecs.view.OrderView;
+import th.in.nagi.fecs.view.WebOrderView;
 
 /**
  * Controller for checking out cart, select shipping date and payment.
@@ -72,15 +69,18 @@ public class OrderController extends BaseController {
 	 * 
 	 * @return list of orders
 	 */
-	@JsonView(OrderView.Personal.class)
+	@JsonView(WebOrderView.Personal.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
-	public ResponseEntity getAllOrders(@RequestHeader(value = "Authorization") String token) {
-		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
-				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
-		}
+	public ResponseEntity getAllOrders(
+//			@RequestHeader(value = "Authorization") String token
+			) {
+//		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+//				authenticationService.OWNER)) {
+//			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+//		}
 
-		Set<Order> orders = new HashSet<Order>(orderService.findAll());
+		List<Order> orders = orderService.findAll();
+		
 		if (orders != null) {
 			return new ResponseEntity(orders, HttpStatus.OK);
 		}
@@ -92,7 +92,7 @@ public class OrderController extends BaseController {
 	 * 
 	 * @return list of orders
 	 */
-	@JsonView(OrderView.Personal.class)
+	@JsonView(WebOrderView.Personal.class)
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
 	public ResponseEntity getOrder(
 			//			@RequestHeader(value = "Authorization") String token,
@@ -103,15 +103,7 @@ public class OrderController extends BaseController {
 		//		}
 
 		Order order = orderService.findByKey(orderNumber);
-		Cart cart = order.getCart();
-
-		for (Product product : cart.getProducts()) {
-
-		}
-
-		WebOrder webOrder = new WebOrder();
-		webOrder.setOrderNumber(order.getOrderNumber());
-		webOrder.setUser(order.getUser());
+		WebOrder webOrder = WebOrder.create(order);
 
 		if (order != null) {
 			return new ResponseEntity(webOrder, HttpStatus.OK);
@@ -127,12 +119,14 @@ public class OrderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
-	public ResponseEntity createOrder(@RequestBody WebOrder webOrder,
-			@RequestHeader(value = "Authorization") String token) {
-		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
-		}
+	public ResponseEntity createOrder(@RequestBody WebOrder webOrder
+//			,
+//			@RequestHeader(value = "Authorization") String token
+			) {
+//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+//				authenticationService.MANAGER, authenticationService.OWNER)) {
+//			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+//		}
 
 		Date date = new Date();
 		User user = userService.findByKey(webOrder.getUser().getId());

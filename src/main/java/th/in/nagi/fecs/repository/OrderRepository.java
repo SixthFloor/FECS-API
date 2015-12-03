@@ -25,7 +25,7 @@ public class OrderRepository extends AbstractRepository<Order, Integer> {
 	@Override
 	public List<Order> findAll() {
 		Criteria criteria = createEntityCriteria();
-		return criteria.setFetchMode("authenticate", FetchMode.LAZY).list();
+		return criteria.list();
 	}
 
 	/**

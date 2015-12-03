@@ -42,6 +42,7 @@ public class CartService {
 	}
 	
 	public Cart findLastInserted() {
-		return cartRepository.findAllDesc().get(0);
+		List<Cart> carts = cartRepository.findAll();
+		return carts.get(carts.size() - 1);
 	}
 }

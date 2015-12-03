@@ -57,4 +57,15 @@ public class WebOrder {
 		
 		this.webLineProduct.add(webLineProduct);
 	}
+	
+	public static WebOrder create(Order order) {
+		WebOrder webOrder = new WebOrder();
+		
+		webOrder.setOrderNumber(order.getOrderNumber());
+		webOrder.setUser(order.getUser());
+		
+		webOrder.setWebProductList(WebLineProduct.create(order.getCart()));
+		
+		return webOrder;
+	}
 }

@@ -19,12 +19,16 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.view.CartView;
 import th.in.nagi.fecs.view.OrderView;
 import th.in.nagi.fecs.view.ProductView;
@@ -43,6 +47,7 @@ public class Cart {
 	private User user;
 
 	@ManyToMany(cascade = CascadeType.MERGE)
+	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinTable(name = "product_in_cart", joinColumns = {
 			@JoinColumn(name = "cart_id", referencedColumnName = "id")}, inverseJoinColumns = {
 					@JoinColumn(name = "product_id", referencedColumnName = "id")})
