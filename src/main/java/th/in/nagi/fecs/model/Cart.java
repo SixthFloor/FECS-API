@@ -6,6 +6,7 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -13,6 +14,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Min;
@@ -40,15 +42,12 @@ public class Cart {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@ManyToMany(cascade = CascadeType.ALL)
+	@ManyToMany(cascade = CascadeType.MERGE)
 	@JoinTable(name = "product_in_cart", joinColumns = {
 			@JoinColumn(name = "cart_id", referencedColumnName = "id")}, inverseJoinColumns = {
 					@JoinColumn(name = "product_id", referencedColumnName = "id")})
-	@JsonProperty("list")
+	@JsonView({CartView.Personal.class, CartView.Product.class})
 	private List<Product> products = new ArrayList<Product>();
-
-	//	@OneToOne(mappedBy = "cart")
-	//	private Order order;
 
 	public Integer getId() {
 		return id;
@@ -58,7 +57,7 @@ public class Cart {
 		return user;
 	}
 
-	public List<Product> getProduct() {
+	public List<Product> getProducts() {
 		return products;
 	}
 
@@ -70,7 +69,7 @@ public class Cart {
 		this.products = products;
 	}
 
-	public void addProduct(List<Product> products) {
+	public void addProducts(List<Product> products) {
 		this.products.addAll(products);
 	}
 

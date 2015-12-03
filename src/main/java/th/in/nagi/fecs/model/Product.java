@@ -20,22 +20,22 @@ import th.in.nagi.fecs.view.ProductView;
 @Table(name = "product")
 public class Product {
 
-	@JsonView(ProductView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id", nullable = false)
+	@JsonView(ProductView.Personal.class)
 	private int id;
 
-	@JsonView(ProductView.ProductDescription.class)
 	@ManyToOne
-	@JoinColumn(name="product_description_id")
+	@JoinColumn(name = "product_description_id")
+	@JsonView({ProductView.Personal.class, ProductView.ProductDescription.class})
 	private ProductDescription productDescription;
-	
+
 	@ManyToMany(mappedBy = "products")
 	private List<Cart> carts;
-	
-	@JsonView(ProductView.Personal.class)
+
 	@Column(nullable = false)
+	@JsonView(ProductView.Personal.class)
 	private int status;
 
 	public int getId() {

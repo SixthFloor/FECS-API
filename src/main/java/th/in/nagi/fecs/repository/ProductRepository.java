@@ -61,7 +61,7 @@ public class ProductRepository extends AbstractRepository<Product, Integer> {
 	
 	public List<Product> findByProductDescription(ProductDescription pd) {
 		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("product_description_id", pd.getId()));
+		criteria.add(Restrictions.eq("productDescription", pd));
 		criteria.add(Restrictions.eq("status", 0));
 		return criteria.setFetchMode("authenticate", FetchMode.LAZY).list();
 	}

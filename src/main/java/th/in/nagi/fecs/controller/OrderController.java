@@ -23,9 +23,8 @@ import th.in.nagi.fecs.model.Cart;
 import th.in.nagi.fecs.model.Order;
 import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.model.User;
-import th.in.nagi.fecs.model.WebCart;
-import th.in.nagi.fecs.model.WebOrder;
 import th.in.nagi.fecs.model.WebLineProduct;
+import th.in.nagi.fecs.model.WebOrder;
 import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.CartService;
 import th.in.nagi.fecs.service.OrderService;
@@ -96,16 +95,26 @@ public class OrderController extends BaseController {
 	@JsonView(OrderView.Personal.class)
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
 	public ResponseEntity getOrder(
-//			@RequestHeader(value = "Authorization") String token,
+			//			@RequestHeader(value = "Authorization") String token,
 			@PathVariable Integer orderNumber) {
-//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-//				authenticationService.MANAGER, authenticationService.OWNER)) {
-//			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
-//		}
+		//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+		//				authenticationService.MANAGER, authenticationService.OWNER)) {
+		//			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+		//		}
 
 		Order order = orderService.findByKey(orderNumber);
+		Cart cart = order.getCart();
+
+		for (Product product : cart.getProducts()) {
+
+		}
+
+		WebOrder webOrder = new WebOrder();
+		webOrder.setOrderNumber(order.getOrderNumber());
+		webOrder.setUser(order.getUser());
+
 		if (order != null) {
-			return new ResponseEntity(order, HttpStatus.OK);
+			return new ResponseEntity(webOrder, HttpStatus.OK);
 		}
 		return new ResponseEntity(new Message("Not found order"), HttpStatus.BAD_REQUEST);
 	}
@@ -120,24 +129,26 @@ public class OrderController extends BaseController {
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
 	public ResponseEntity createOrder(@RequestBody WebOrder webOrder,
 			@RequestHeader(value = "Authorization") String token) {
-		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF, authenticationService.MANAGER,
-				authenticationService.OWNER)) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+				authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		Date date = new Date();
-		User user = userService.findByKey(webOrder.getUserId());
+		User user = userService.findByKey(webOrder.getUser().getId());
+
+		if (user == null) {
+			return new ResponseEntity(new Message("Create order failed: invalid user"), HttpStatus.BAD_REQUEST);
+		}
 
 		Cart cart = new Cart();
 		cart.setUser(user);
 
-		WebCart webCart = webOrder.getWebCart();
-		List<WebLineProduct> webLineProduct = webCart.getProducts();
-		for (int i = 0; i < webLineProduct.size(); i++) {
-			WebLineProduct wlp = webLineProduct.get(i);
+		System.out.println(webOrder.getProductList().size());
+		for (WebLineProduct wlp : webOrder.getProductList()) {
 			List<Product> products = productService.findByProductDescription(wlp.getProductDescription(),
 					wlp.getQuantity());
-			cart.addProduct(products);
+			cart.addProducts(products);
 		}
 
 		try {

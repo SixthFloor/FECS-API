@@ -1,5 +1,6 @@
 package th.in.nagi.fecs.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +45,10 @@ public class ProductService {
 	}
 	
 	public List<Product> findByProductDescription(ProductDescription pd, int quantity) {
-		return productRepository.findByProductDescription(pd).subList(0, quantity);
+		List<Product> productList = productRepository.findByProductDescription(pd);
+		if (productList.size() > quantity) {
+			return productRepository.findByProductDescription(pd).subList(0, quantity);
+		}
+		return new ArrayList<Product>();
 	}
 }
