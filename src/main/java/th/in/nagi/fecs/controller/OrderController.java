@@ -121,7 +121,8 @@ public class OrderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
-	public ResponseEntity createOrder(@RequestBody WebOrder webOrder,
+	public ResponseEntity createOrder(@RequestBody WebOrder webOrder
+,
 			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
@@ -143,10 +144,7 @@ public class OrderController extends BaseController {
 			List<Product> products = productService.findByProductDescription(wlp.getProductDescription(),
 					wlp.getQuantity());
 			if (products.isEmpty()) {
-				return new ResponseEntity(
-						new Message(
-								"Create order failed: [" + wlp.getProductDescription().getId() + "] id out of stock"),
-						HttpStatus.BAD_REQUEST);
+				return new ResponseEntity(new Message("Create order failed: [" + wlp.getProductDescription().getId() + "] id out of stock"), HttpStatus.BAD_REQUEST);
 			}
 			cart.addProducts(products);
 		}
