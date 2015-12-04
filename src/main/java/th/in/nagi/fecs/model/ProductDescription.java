@@ -18,6 +18,9 @@ import javax.persistence.Table;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -36,6 +39,9 @@ import th.in.nagi.fecs.view.ProductDescriptionView;
 //@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "product_description")
 public class ProductDescription {
+	
+	public static final int SELL = 0;
+	public static final int HIDE = 1;
 
 	/**
 	 * id of product
@@ -85,11 +91,16 @@ public class ProductDescription {
 	private String dimensionDescription;
 
 	@JsonView(ProductDescriptionView.ElementalImage.class)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "productDescription")
+	@OneToMany(mappedBy = "productDescription")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<ProductImage> images;
 	
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "productDescription")
+	@OneToMany(mappedBy = "productDescription")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Product> products;
+	
+	@JsonView(ProductDescriptionView.Personal.class)
+	private int status;
 	
 	/**
 	 * Return dimension description
