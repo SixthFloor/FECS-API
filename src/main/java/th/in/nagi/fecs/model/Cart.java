@@ -81,4 +81,11 @@ public class Cart {
 	public void addProduct(Product product) {
 		this.products.add(product);
 	}
+	
+	public static Cart create(User user) {
+		Cart cart = new Cart();
+		cart.setUser(user);
+		
+		return cart;
+	}
 }

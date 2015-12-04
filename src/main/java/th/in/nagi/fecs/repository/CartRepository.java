@@ -3,41 +3,37 @@ package th.in.nagi.fecs.repository;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
-import org.hibernate.Query;
-import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
-import th.in.nagi.fecs.model.Authentication;
 import th.in.nagi.fecs.model.Cart;
 import th.in.nagi.fecs.model.User;
 
 /**
- * Tool for managing authentication in database.
+ * Implemented cart repository.
  * 
- * @author Nara Surawit
+ * @author Chonnipa Kittisiriprasert
  *
  */
 @Repository("cartRepository")
 public class CartRepository extends AbstractRepository<Cart, Integer> {
 
 	/**
-	 * Query all authentication in database.
+	 * Query all cart in database.
 	 * 
-	 * @return List<Authentication>
+	 * @return List<Cart>
 	 */
 	@Override
 	public List<Cart> findAll() {
 		Criteria criteria = createEntityCriteria();
-		return criteria.setFetchMode("authenticate", FetchMode.LAZY).list();
+		return criteria.list();
 	}
 
 	/**
-	 * Query authentication by key.
+	 * Query cart by key.
 	 * 
 	 * @param key
-	 * @return Authentication
+	 * @return Cart
 	 */
 	@Override
 	public Cart findByKey(Integer key) {
@@ -45,7 +41,7 @@ public class CartRepository extends AbstractRepository<Cart, Integer> {
 	}
 
 	/**
-	 * Save authentication to database.
+	 * Save cart to database.
 	 * 
 	 * @param entity
 	 */
@@ -53,9 +49,9 @@ public class CartRepository extends AbstractRepository<Cart, Integer> {
 	public void store(Cart entity) {
 		persist(entity);
 	}
-
+	
 	/**
-	 * Remove authentication by key.
+	 * Remove cart by key.
 	 * 
 	 * @param key
 	 */
@@ -64,19 +60,12 @@ public class CartRepository extends AbstractRepository<Cart, Integer> {
 		remove(getByKey(key));
 	}
 
-	// @Override
-	// public List<Authentication> findByUser(User user) {
-	// Criteria criteria = createEntityCriteria();
-	// criteria.add(Restrictions.eq("user", user));
-	// return (List<Authentication>) criteria.list();
-	// }
-
 	/**
 	 * {@inheritDoc}
 	 */
 	public List<Cart> findByUser(User user) {
 		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("user", user)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		criteria.add(Restrictions.eq("user", user));
 		return criteria.list();
 	}
 

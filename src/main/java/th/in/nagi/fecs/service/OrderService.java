@@ -30,7 +30,11 @@ public class OrderService {
 	public void store(Order order) {
 		orderRepository.store(order);
 	}
-
+	
+	public Integer save(Order order) {
+		return orderRepository.save(order);
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

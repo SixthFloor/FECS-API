@@ -1,7 +1,6 @@
 package th.in.nagi.fecs.controller;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -73,10 +72,10 @@ public class OrderController extends BaseController {
 	 */
 	@JsonView(WebOrderView.Personal.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
-	public ResponseEntity getAllOrders(@RequestHeader(value = "Authorization") String token) {
+	public ResponseEntity<?> getAllOrders(@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		List<WebOrder> webOrders = new ArrayList<WebOrder>();
@@ -84,10 +83,11 @@ public class OrderController extends BaseController {
 			webOrders.add(WebOrder.create(order));
 		}
 
-		if (webOrders != null) {
-			return new ResponseEntity(webOrders, HttpStatus.OK);
+		if (!webOrders.isEmpty()) {
+			return new ResponseEntity<List<WebOrder>>(webOrders, HttpStatus.OK);
 		}
-		return new ResponseEntity(new Message("Not found order"), HttpStatus.BAD_REQUEST);
+
+		return new ResponseEntity<Message>(new Message("Not found order"), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -97,20 +97,20 @@ public class OrderController extends BaseController {
 	 */
 	@JsonView(WebOrderView.Personal.class)
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
-	public ResponseEntity getOrder(@RequestHeader(value = "Authorization") String token,
+	public ResponseEntity<?> getOrder(@RequestHeader(value = "Authorization") String token,
 			@PathVariable Integer orderNumber) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		Order order = orderService.findByKey(orderNumber);
 		WebOrder webOrder = WebOrder.create(order);
 
 		if (order != null) {
-			return new ResponseEntity(webOrder, HttpStatus.OK);
+			return new ResponseEntity<WebOrder>(webOrder, HttpStatus.OK);
 		}
-		return new ResponseEntity(new Message("Not found order"), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<Message>(new Message("Not found order"), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -121,29 +121,27 @@ public class OrderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
-	public ResponseEntity createOrder(@RequestBody WebOrder webOrder,
-			@RequestHeader(value = "Authorization") String token) {
+	public ResponseEntity<?> createOrder(@RequestHeader(value = "Authorization") String token,
+			@RequestBody WebOrder webOrder) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-		Date date = new Date();
 		User user = userService.findByKey(webOrder.getUser().getId());
 
 		if (user == null) {
-			return new ResponseEntity(new Message("Create order failed: invalid user"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Create order failed: invalid user"),
+					HttpStatus.BAD_REQUEST);
 		}
 
-		Cart cart = new Cart();
-		cart.setUser(user);
+		Cart cart = Cart.create(user);
 
-		System.out.println(webOrder.getProductList().size());
 		for (WebLineProduct wlp : webOrder.getProductList()) {
 			List<Product> products = productService.findByProductDescription(wlp.getProductDescription(),
 					wlp.getQuantity());
 			if (products.isEmpty()) {
-				return new ResponseEntity(
+				return new ResponseEntity<Message>(
 						new Message(
 								"Create order failed: [" + wlp.getProductDescription().getId() + "] id out of stock"),
 						HttpStatus.BAD_REQUEST);
@@ -151,28 +149,22 @@ public class OrderController extends BaseController {
 			cart.addProducts(products);
 		}
 
+		Integer cartId = null;
 		try {
-			cartService.store(cart);
+			cartId = cartService.save(cart);
 		} catch (Exception e) {
 			System.out.println(e);
-			return new ResponseEntity(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
 		}
 
-		Order order = new Order();
-		order.setOrderDate(date);
-		order.setUser(user);
-		order.setStatus(0);
-
-		cart = cartService.findLastInserted();
-		order.setCart(cart);
+		cart = cartService.findByKey(cartId);
+		Order order = Order.create(user, cart);
 
 		try {
-			orderService.store(order);
+			return new ResponseEntity<Integer>(orderService.save(order), HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
 			System.out.println(e);
-			return new ResponseEntity(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
 		}
-
-		return new ResponseEntity(new Message("The order has created"), HttpStatus.CREATED);
 	}
 }

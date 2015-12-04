@@ -32,6 +32,10 @@ public class CartService {
 	public void store(Cart cart) {
 		cartRepository.store(cart);
 	}
+	
+	public Integer save(Cart cart) {
+		return cartRepository.save(cart);
+	}
 
 	public List<Cart> findAll() {
 		return cartRepository.findAll();

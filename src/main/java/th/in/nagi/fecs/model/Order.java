@@ -97,4 +97,14 @@ public class Order {
 	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
+	
+	public static Order create(User user, Cart cart) {
+		Order order = new Order();
+		order.setUser(user);
+		order.setCart(cart);
+		order.setOrderDate(new Date());
+		order.setStatus(NOTPAY);
+		
+		return order;
+	}
 }
