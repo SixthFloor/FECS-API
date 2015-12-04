@@ -91,9 +91,9 @@ public class OrderController extends BaseController {
 	}
 
 	/**
-	 * Lists all existing orders.
+	 * Get order by order number.
 	 * 
-	 * @return list of orders
+	 * @return order
 	 */
 	@JsonView(WebOrderView.Personal.class)
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
@@ -114,10 +114,41 @@ public class OrderController extends BaseController {
 	}
 
 	/**
+	 * Get orders by user id.
+	 * 
+	 * @return list of orders
+	 */
+	@JsonView(WebOrderView.Personal.class)
+	@RequestMapping(value = "/user/{id}", method = RequestMethod.GET)
+	public ResponseEntity<?> getOrderByEmail(@RequestHeader(value = "Authorization") String token,
+			@PathVariable Integer id) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+				authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity<Message>(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+		}
+
+		User user = userService.findByKey(id);
+
+		if (user == null) {
+			return new ResponseEntity<Message>(new Message("User [" + id + "] not found"), HttpStatus.BAD_REQUEST);
+		}
+
+		List<Order> orders = orderService.findByUser(user);
+		List<WebOrder> webOrders = new ArrayList<WebOrder>();
+
+		for (Order order : orders) {
+			webOrders.add(WebOrder.create(order));
+		}
+
+		return new ResponseEntity<List<WebOrder>>(webOrders, HttpStatus.OK);
+	}
+
+	/**
 	 * Creates new order.
 	 * 
-	 * @param model
-	 * @return
+	 * @param web
+	 *            order model
+	 * @return order number
 	 */
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)

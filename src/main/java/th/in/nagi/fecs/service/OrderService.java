@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import th.in.nagi.fecs.model.Order;
+import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.OrderRepository;
 
 /**
@@ -44,5 +45,9 @@ public class OrderService {
 
 	public Order findByOrderNumber(Integer orderNumber) {
 		return orderRepository.findByOrderNumber(orderNumber);
+	}
+	
+	public List<Order> findByUser(User user) {
+		return orderRepository.findByUser(user);
 	}
 }
