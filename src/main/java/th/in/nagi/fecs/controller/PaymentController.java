@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.in.nagi.fecs.message.Message;
@@ -55,7 +56,7 @@ public class PaymentController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/pay", method = RequestMethod.POST)
 	public ResponseEntity<?> pay(@RequestHeader(value = "Authorization") String token,
-			@RequestBody WebPayment webPayment) {
+			@RequestParam(value = "orderNumber", required = true) int orderNumber, @RequestBody WebPayment webPayment) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity<Message>(new Message("This payment does not allow"), HttpStatus.FORBIDDEN);
