@@ -182,13 +182,12 @@ public class OrderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
-	public ResponseEntity<?> createOrder(
-			//			@RequestHeader(value = "Authorization") String token,
+	public ResponseEntity<?> createOrder(@RequestHeader(value = "Authorization") String token,
 			@RequestBody WebOrder webOrder) {
-		//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-		//				authenticationService.MANAGER, authenticationService.OWNER)) {
-		//			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
-		//		}
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+				authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
 
 		User user = userService.findByKey(webOrder.getUser().getId());
 
@@ -248,10 +247,14 @@ public class OrderController extends BaseController {
 
 		Order order = orderService.findByOrderNumber(webOrder.getOrderNumber());
 
-		if (order != null) {
+		if (order != null && order.getStatus() == 0) {
 			order.setStatus(Order.CANCELED);
 			orderService.update(order);
 			return new ResponseEntity<Message>(new Message("Order is canceled"), HttpStatus.OK);
+		} else if (order != null && order.getStatus() == 1) {
+			return new ResponseEntity<Message>(new Message("Order is already canceled"), HttpStatus.BAD_REQUEST);
+		} else if (order != null && order.getStatus() > 1) {
+			return new ResponseEntity<Message>(new Message("Order is already paid"), HttpStatus.BAD_REQUEST);
 		}
 
 		return new ResponseEntity<Message>(new Message("Order not found"), HttpStatus.BAD_REQUEST);
