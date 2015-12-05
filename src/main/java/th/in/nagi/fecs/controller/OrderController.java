@@ -144,6 +144,36 @@ public class OrderController extends BaseController {
 	}
 
 	/**
+	 * Get orders by user id.
+	 * 
+	 * @return list of orders
+	 */
+	@JsonView(WebOrderView.Personal.class)
+	@RequestMapping(value = "/email/{email:.+}", method = RequestMethod.GET)
+	public ResponseEntity<?> getOrderByEmail(@RequestHeader(value = "Authorization") String token,
+			@PathVariable String email) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+				authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity<Message>(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+		}
+
+		User user = userService.findByEmail(email);
+
+		if (user == null) {
+			return new ResponseEntity<Message>(new Message("User [" + email + "] not found"), HttpStatus.BAD_REQUEST);
+		}
+
+		List<Order> orders = orderService.findByUser(user);
+		List<WebOrder> webOrders = new ArrayList<WebOrder>();
+
+		for (Order order : orders) {
+			webOrders.add(WebOrder.create(order));
+		}
+
+		return new ResponseEntity<List<WebOrder>>(webOrders, HttpStatus.OK);
+	}
+
+	/**
 	 * Creates new order.
 	 * 
 	 * @param web
@@ -152,12 +182,13 @@ public class OrderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
-	public ResponseEntity<?> createOrder(@RequestHeader(value = "Authorization") String token,
+	public ResponseEntity<?> createOrder(
+//			@RequestHeader(value = "Authorization") String token,
 			@RequestBody WebOrder webOrder) {
-		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
-		}
+//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+//				authenticationService.MANAGER, authenticationService.OWNER)) {
+//			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+//		}
 
 		User user = userService.findByKey(webOrder.getUser().getId());
 
@@ -198,4 +229,33 @@ public class OrderController extends BaseController {
 			return new ResponseEntity<Message>(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
 		}
 	}
+	
+	/**
+	 * Cancels order.
+	 * 
+	 * @param web
+	 *            order model
+	 * @return message
+	 */
+	@ResponseBody
+	@RequestMapping(value = {"/cc"}, method = RequestMethod.POST)
+	public ResponseEntity<?> cancelOrder(
+//			@RequestHeader(value = "Authorization") String token,
+			@RequestBody WebOrder webOrder) {
+//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+//				authenticationService.MANAGER, authenticationService.OWNER)) {
+//			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+//		}
+
+		Order order = orderService.findByOrderNumber(webOrder.getOrderNumber());
+
+		if (order != null) {
+			order.setStatus(Order.CANCELED);
+			orderService.update(order);
+			return new ResponseEntity<Message>(new Message("Order is canceled"), HttpStatus.OK);
+		}
+
+		return new ResponseEntity<Message>(new Message("Order not found"), HttpStatus.BAD_REQUEST);
+	}
+
 }

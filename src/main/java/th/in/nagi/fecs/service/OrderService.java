@@ -36,6 +36,16 @@ public class OrderService {
 		return orderRepository.save(order);
 	}
 	
+	public void update(Order order) {
+		Order o = orderRepository.findByKey(order.getOrderNumber());
+		if (o != null) {
+			if (order.getCart() != null) {
+				o.setCart(order.getCart());				
+			}
+			o.setStatus(order.getStatus());
+		}
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */
