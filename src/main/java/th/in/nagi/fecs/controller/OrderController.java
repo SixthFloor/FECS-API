@@ -183,12 +183,12 @@ public class OrderController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
 	public ResponseEntity<?> createOrder(
-//			@RequestHeader(value = "Authorization") String token,
+			//			@RequestHeader(value = "Authorization") String token,
 			@RequestBody WebOrder webOrder) {
-//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-//				authenticationService.MANAGER, authenticationService.OWNER)) {
-//			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
-//		}
+		//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+		//				authenticationService.MANAGER, authenticationService.OWNER)) {
+		//			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		//		}
 
 		User user = userService.findByKey(webOrder.getUser().getId());
 
@@ -229,7 +229,7 @@ public class OrderController extends BaseController {
 			return new ResponseEntity<Message>(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
 		}
 	}
-	
+
 	/**
 	 * Cancels order.
 	 * 
@@ -239,13 +239,12 @@ public class OrderController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = {"/cc"}, method = RequestMethod.POST)
-	public ResponseEntity<?> cancelOrder(
-//			@RequestHeader(value = "Authorization") String token,
+	public ResponseEntity<?> cancelOrder(@RequestHeader(value = "Authorization") String token,
 			@RequestBody WebOrder webOrder) {
-//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-//				authenticationService.MANAGER, authenticationService.OWNER)) {
-//			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
-//		}
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+				authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
 
 		Order order = orderService.findByOrderNumber(webOrder.getOrderNumber());
 
