@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -107,6 +108,15 @@ public class ProductDescriptionRepository extends AbstractRepository<ProductDesc
 		List<ProductDescription> furnitureDescriptions = createEntityCriteria()
 				.addOrder(org.hibernate.criterion.Order.desc("price")).setFirstResult(start).setMaxResults(size).list();
 		return furnitureDescriptions;
+	}
+	
+	public List<ProductDescription> search(String searchName) {
+		Criteria criteria = createEntityCriteria();
+//		criteria.add(Restrictions.like("name", "%"+searchName+"%"));
+		criteria.add(Restrictions.or(
+				Restrictions.like("serialNumber", "%"+searchName+"%"),
+				Restrictions.like("name", "%"+searchName+"%")));
+		return criteria.list();
 	}
 
 }

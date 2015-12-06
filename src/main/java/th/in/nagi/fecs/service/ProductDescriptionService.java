@@ -142,4 +142,8 @@ public class ProductDescriptionService {
 	public List<ProductDescription> findAndDescByPrice(int start, int size) {
 		return productDescriptionRepository.findAndDescByPrice(start, size);
 	}
+	
+	public List<ProductDescription> search(String searchName) {
+		return productDescriptionRepository.search(searchName);
+	}
 }
