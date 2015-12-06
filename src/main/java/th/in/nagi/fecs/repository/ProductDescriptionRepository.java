@@ -114,8 +114,9 @@ public class ProductDescriptionRepository extends AbstractRepository<ProductDesc
 		Criteria criteria = createEntityCriteria();
 //		criteria.add(Restrictions.like("name", "%"+searchName+"%"));
 		criteria.add(Restrictions.or(
-				Restrictions.like("serialNumber", "%"+searchName+"%"),
-				Restrictions.like("name", "%"+searchName+"%")));
+				Restrictions.like("serialNumber", "%"+searchName+"%").ignoreCase(),
+				Restrictions.like("name", "%"+searchName+"%").ignoreCase()));
+		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 
