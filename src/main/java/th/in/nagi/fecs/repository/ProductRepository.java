@@ -55,14 +55,14 @@ public class ProductRepository extends AbstractRepository<Product, Integer> {
 
 	public Product findByProductNumber(String productNumber) {
 		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("product_number", productNumber));
+		criteria.add(Restrictions.eq("productNumber", productNumber));
 		return (Product) criteria.uniqueResult();
 	}
 	
-	public List<Product> findByProductDescription(ProductDescription pd) {
+	public List<Product> findAvailableByProductDescription(ProductDescription pd) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("productDescription", pd));
 		criteria.add(Restrictions.eq("status", 0));
-		return criteria.setFetchMode("authenticate", FetchMode.LAZY).list();
+		return criteria.list();
 	}
 }

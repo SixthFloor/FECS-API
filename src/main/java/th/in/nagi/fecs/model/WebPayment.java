@@ -16,4 +16,7 @@ public class WebPayment {
 	
 	@JsonView(WebPaymentView.Personal.class)
 	private Integer price;
+	
+	@JsonView({WebPaymentView.Personal.class, WebPaymentView.Shipping.class})
+	private Shipping shipping;
 }

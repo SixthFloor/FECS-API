@@ -44,11 +44,15 @@ public class ProductService {
 		return productRepository.findByProductNumber(productNumber);
 	}
 	
-	public List<Product> findByProductDescription(ProductDescription pd, int quantity) {
-		List<Product> productList = productRepository.findByProductDescription(pd);
-		if (productList.size() > quantity) {
-			return productRepository.findByProductDescription(pd).subList(0, quantity);
+	public List<Product> findAvailableByProductDescription(ProductDescription pd, int quantity) {
+		List<Product> productList = productRepository.findAvailableByProductDescription(pd);
+		if (productList.size() >= quantity) {
+			return productList.subList(0, quantity);
 		}
 		return new ArrayList<Product>();
+	}
+	
+	public int findAvailableQuantityByProductDescription(ProductDescription pd) {
+		return productRepository.findAvailableByProductDescription(pd).size();
 	}
 }

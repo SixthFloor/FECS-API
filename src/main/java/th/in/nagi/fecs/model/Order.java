@@ -12,6 +12,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.OrderView;
@@ -35,6 +38,7 @@ public class Order {
 	@JsonView({OrderView.Personal.class, OrderView.User.class})
 	@ManyToOne
 	@JoinColumn(name = "user_id")
+	@Fetch(FetchMode.SELECT)
 	private User user;
 
 	@JsonView({OrderView.Personal.class, OrderView.Cart.class})
@@ -42,10 +46,10 @@ public class Order {
 	@JoinColumn(name = "cart_id")
 	private Cart cart;
 
-	//	@JsonView(OrderView.Personal.class)
-	//	@OneToOne
-	//	@JoinColumn(name="shipping_id")
-	//	private Shipping shipping;
+	@JsonView({OrderView.Personal.class, OrderView.Shipping.class})
+	@OneToOne
+	@JoinColumn(name = "shipping_id")
+	private Shipping shipping;
 
 	@JsonView(OrderView.Personal.class)
 	private int status;
@@ -97,14 +101,14 @@ public class Order {
 	public void setOrderDate(Date orderDate) {
 		this.orderDate = orderDate;
 	}
-	
+
 	public static Order create(User user, Cart cart) {
 		Order order = new Order();
 		order.setUser(user);
 		order.setCart(cart);
 		order.setOrderDate(new Date());
 		order.setStatus(NOTPAY);
-		
+
 		return order;
 	}
 }

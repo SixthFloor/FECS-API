@@ -21,7 +21,7 @@ import th.in.nagi.fecs.model.Cart;
 import th.in.nagi.fecs.model.Order;
 import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.model.User;
-import th.in.nagi.fecs.model.WebLineProduct;
+import th.in.nagi.fecs.model.WebLineItem;
 import th.in.nagi.fecs.model.WebOrder;
 import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.CartService;
@@ -29,6 +29,8 @@ import th.in.nagi.fecs.service.OrderService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.service.UserService;
+import th.in.nagi.fecs.view.OrderView;
+import th.in.nagi.fecs.view.UserView;
 import th.in.nagi.fecs.view.WebOrderView;
 
 /**
@@ -198,8 +200,8 @@ public class OrderController extends BaseController {
 
 		Cart cart = Cart.create(user);
 
-		for (WebLineProduct wlp : webOrder.getProductList()) {
-			List<Product> products = productService.findByProductDescription(wlp.getProductDescription(),
+		for (WebLineItem wlp : webOrder.getWebProductList()) {
+			List<Product> products = productService.findAvailableByProductDescription(wlp.getProductDescription(),
 					wlp.getQuantity());
 			if (products.isEmpty()) {
 				return new ResponseEntity<Message>(
@@ -222,7 +224,7 @@ public class OrderController extends BaseController {
 		Order order = Order.create(user, cart);
 
 		try {
-			return new ResponseEntity<Integer>(orderService.save(order), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Integer>(orderService.save(order), HttpStatus.CREATED);
 		} catch (Exception e) {
 			System.out.println(e);
 			return new ResponseEntity<Message>(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
@@ -259,5 +261,4 @@ public class OrderController extends BaseController {
 
 		return new ResponseEntity<Message>(new Message("Order not found"), HttpStatus.BAD_REQUEST);
 	}
-
 }

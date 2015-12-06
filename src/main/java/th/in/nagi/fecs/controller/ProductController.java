@@ -1,5 +1,7 @@
 package th.in.nagi.fecs.controller;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +43,7 @@ public class ProductController extends BaseController {
 	 */
 	@Autowired
 	private ProductDescriptionService productDescriptionService;
-	
+
 	/**
 	 * service of authenticate
 	 */
@@ -55,8 +57,15 @@ public class ProductController extends BaseController {
 	 */
 	@JsonView(ProductView.Personal.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
-	public ResponseEntity showAllProduct() {
-		return new ResponseEntity(productService.findAll(), HttpStatus.OK);
+	public ResponseEntity<?> showAllProduct(
+//			@RequestHeader(value = "Authorization") String token
+			) {
+//		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+//				authenticationService.OWNER)) {
+//			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+//		}
+		
+		return new ResponseEntity<List<Product>>(productService.findAll(), HttpStatus.OK);
 	}
 
 	/**
@@ -72,24 +81,26 @@ public class ProductController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
-	public ResponseEntity createNewProduct(@RequestBody ProductDescription pd,
-			@RequestHeader(value = "Authorization") String token) {
+	public ResponseEntity<?> createNewProduct(@RequestHeader(value = "Authorization") String token,
+			@RequestBody List<ProductDescription> productDescriptions) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-		ProductDescription productDescription = productDescriptionService.findByKey(pd.getId());
+		for (ProductDescription pd : productDescriptions) {
+			ProductDescription productDescription = productDescriptionService.findByKey(pd.getId());
+			Product product = new Product();
+			product.setProductDescription(productDescription);
 
-		Product newProduct = new Product();
-		newProduct.setProductDescription(productDescription);
-
-		try {
-			productService.store(newProduct);
-		} catch (Exception e) {
-			return new ResponseEntity(new Message("Added fail"), HttpStatus.BAD_REQUEST);
+			try {
+				productService.store(product);
+			} catch (Exception e) {
+				return new ResponseEntity<Message>(new Message("Failed add product [" + pd.getId() + "]"),
+						HttpStatus.BAD_REQUEST);
+			}
 		}
 
-		return new ResponseEntity(new Message("Product has added"), HttpStatus.CREATED);
+		return new ResponseEntity<Message>(new Message("Products are added"), HttpStatus.CREATED);
 	}
 }

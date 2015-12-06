@@ -11,18 +11,18 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.service.ProductDescriptionService;
-import th.in.nagi.fecs.view.WebLineProductView;
+import th.in.nagi.fecs.view.WebLineItemView;
 
-public class WebLineProduct {
+public class WebLineItem {
 
 	@Autowired
 	private static ProductDescriptionService productDescriptionService;
 
 	@JsonProperty("product")
-	@JsonView(WebLineProductView.ProductDescription.class)
+	@JsonView(WebLineItemView.ProductDescription.class)
 	private ProductDescription productDescription;
 
-	@JsonView(WebLineProductView.Personal.class)
+	@JsonView(WebLineItemView.Personal.class)
 	private int quantity;
 
 	public ProductDescription getProductDescription() {
@@ -45,8 +45,8 @@ public class WebLineProduct {
 		this.quantity += quantity;
 	}
 
-	public static List<WebLineProduct> create(Cart cart) {
-		List<WebLineProduct> webLineProducts = new ArrayList<WebLineProduct>();
+	public static List<WebLineItem> create(Cart cart) {
+		List<WebLineItem> webLineProducts = new ArrayList<WebLineItem>();
 		List<Product> products = cart.getProducts();
 		Map<ProductDescription, Integer> map = new HashMap<ProductDescription, Integer>();
 
@@ -61,7 +61,7 @@ public class WebLineProduct {
 		}
 
 		for (Map.Entry<ProductDescription, Integer> entry : map.entrySet()) {
-			WebLineProduct wlp = new WebLineProduct();
+			WebLineItem wlp = new WebLineItem();
 			wlp.setProductDescription(entry.getKey());
 			wlp.setQuantity(entry.getValue());
 			webLineProducts.add(wlp);

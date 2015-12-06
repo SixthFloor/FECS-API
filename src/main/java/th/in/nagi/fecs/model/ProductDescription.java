@@ -20,14 +20,20 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.view.ProductDescriptionView;
 
 /**
@@ -216,6 +222,18 @@ public class ProductDescription {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+		
+	@JsonView(ProductDescriptionView.Personal.class)
+	public int getQuantity() {
+		int quantity = 0;
+		for (Product product: products) {
+			if (product.getStatus() == Product.AVAILABLE) {
+				quantity++;
+			}
+		}
+		
+		return quantity;
 	}
 
 	/**

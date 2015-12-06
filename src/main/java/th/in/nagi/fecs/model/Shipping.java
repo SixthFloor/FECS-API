@@ -8,35 +8,42 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import th.in.nagi.fecs.view.ShippingView;
+import th.in.nagi.fecs.view.WebOrderView;
+
 @Entity
 @Table(name = "shipping")
 public class Shipping {
 	
+	public static final int AVAILABLE = 0;
+	public static final int RESERVED = 1;
+	
+	@JsonView(ShippingView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int id;
+	private Integer id;
 	
+	@JsonView(ShippingView.Personal.class)
 	private Date date;
-
-	private String team;
+	
+	@JsonView(ShippingView.Personal.class)
+	private int status;
 
 	public int getId() {
 		return id;
 	}
-
+	
 	public Date getDate() {
 		return date;
 	}
-
-	public String getTeam() {
-		return team;
+	
+	public void resetId() {
+		id = null;
 	}
 
 	public void setDate(Date date) {
 		this.date = date;
-	}
-
-	public void setTeam(String team) {
-		this.team = team;
 	}
 }

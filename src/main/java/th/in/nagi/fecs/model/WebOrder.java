@@ -21,11 +21,14 @@ public class WebOrder {
 
 	@JsonProperty("cart")
 	@JsonView({WebOrderView.Personal.class, WebOrderView.WebLineProduct.class})
-	private List<WebLineProduct> webLineProduct;
+	private List<WebLineItem> webLineProduct;
 	
+	@JsonView({WebOrderView.Personal.class, WebOrderView.Shipping.class})
+	private Shipping shipping;
+
 	@JsonView(WebOrderView.Personal.class)
 	private int status;
-
+	
 	@JsonView(WebOrderView.Personal.class)
 	private Date orderDate;
 
@@ -37,12 +40,20 @@ public class WebOrder {
 		return user;
 	}
 
-	public List<WebLineProduct> getProductList() {
+	public List<WebLineItem> getWebProductList() {
 		return webLineProduct;
 	}
+	
+	public Shipping getShipping() {
+		return shipping;
+	}
+	
+	public int getStatus() {
+		return status;
+	}
 
-	public List<WebLineProduct> getWebProductList() {
-		return webLineProduct;
+	public Date getOrderDate() {
+		return orderDate;
 	}
 
 	public void setOrderNumber(Integer orderNumber) {
@@ -53,28 +64,12 @@ public class WebOrder {
 		this.user = user;
 	}
 
-	public void setWebProductList(List<WebLineProduct> webProductList) {
+	public void setWebProductList(List<WebLineItem> webProductList) {
 		this.webLineProduct = webProductList;
 	}
-
-	public int getStatus() {
-		return status;
-	}
-
-	public Date getOrderDate() {
-		return orderDate;
-	}
-
-	public void setStatus(int status) {
-		this.status = status;
-	}
-
-	public void setOrderDate(Date orderDate) {
-		this.orderDate = orderDate;
-	}
-
-	public void addWebProductList(WebLineProduct webLineProduct) {
-		for (WebLineProduct wlp: this.webLineProduct) {
+	
+	public void addWebProductList(WebLineItem webLineProduct) {
+		for (WebLineItem wlp: this.webLineProduct) {
 			if (wlp.getProductDescription().getId() == webLineProduct.getProductDescription().getId()) {
 				wlp.increaseQuantity(webLineProduct.getQuantity());
 				return;
@@ -82,6 +77,19 @@ public class WebOrder {
 		}
 		
 		this.webLineProduct.add(webLineProduct);
+	}
+
+	public void setShipping(Shipping shipping) {
+		this.shipping = shipping;
+	}
+
+	
+	public void setStatus(int status) {
+		this.status = status;
+	}
+
+	public void setOrderDate(Date orderDate) {
+		this.orderDate = orderDate;
 	}
 	
 	public static WebOrder create(Order order) {
@@ -91,8 +99,9 @@ public class WebOrder {
 		webOrder.setUser(order.getUser());
 		webOrder.setOrderDate(order.getOrderDate());
 		webOrder.setStatus(order.getStatus());
+		webOrder.setShipping(null);
 		
-		webOrder.setWebProductList(WebLineProduct.create(order.getCart()));
+		webOrder.setWebProductList(WebLineItem.create(order.getCart()));
 		
 		return webOrder;
 	}
