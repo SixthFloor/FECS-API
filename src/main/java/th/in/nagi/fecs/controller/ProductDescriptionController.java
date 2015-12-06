@@ -210,6 +210,16 @@ public class ProductDescriptionController extends BaseController {
 		return new ResponseEntity(new Message("FurniturerDescription has removed"), HttpStatus.OK);
 	}
 	
+	@JsonView(ProductDescriptionView.Summary.class)
+	@RequestMapping(value = "/search", method = RequestMethod.GET)
+	public ResponseEntity search(@RequestParam(value = "query", required = false) String searchName) {
+		List<ProductDescription> productDescription = (productDescriptionService.search(searchName));
+		if (productDescription == null) {
+			return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity(productDescription, HttpStatus.OK);
+	}
+	
 	private String getSerial(String productName){
 		productName = productName.toUpperCase();
 		String productCode = ""+productName.charAt(0) + productName.charAt(productName.length()-1);
