@@ -65,8 +65,8 @@ public class UserService {
 			if (user.getCard_name() != null) {
 				entity.setCard_name(user.getCard_name());
 			}
-			if (user.getCardCVV() != null) {
-				entity.setCardCVV(user.getCardCVV());
+			if (user.getCard_number() != null) {
+				entity.setCard_number(user.getCard_number());
 			}
 			if (user.getEmail() != null) {
 				entity.setEmail(user.getEmail());

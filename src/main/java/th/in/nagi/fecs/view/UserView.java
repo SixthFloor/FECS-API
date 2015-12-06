@@ -18,4 +18,8 @@ public class UserView {
 	public interface Role extends RoleView.Summary{
 		
 	}
+	
+	public interface AllInformation extends Personal, Location, PaymentInformation{
+		
+	}
 }

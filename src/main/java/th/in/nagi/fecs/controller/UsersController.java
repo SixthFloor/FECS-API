@@ -120,12 +120,34 @@ public class UsersController extends BaseController {
 	 *            email of user that want to show
 	 * @return user if not return message fail
 	 */
-	@JsonView(UserView.Personal.class)
-	@RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
-	public ResponseEntity getUserByEmail(@PathVariable String email,
+	@JsonView(UserView.AllInformation.class)
+	@RequestMapping(value = "/admin/{email:.+}", method = RequestMethod.GET)
+	public ResponseEntity getUserByAdmin(@PathVariable String email,
 			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
+
+		User user = getUserService().findByEmail(email);
+		if (user != null) {
+			return new ResponseEntity(user, HttpStatus.OK);
+		}
+		return new ResponseEntity(new Message("Not found user"), HttpStatus.BAD_REQUEST);
+	}
+	
+	/**
+	 * get user by email
+	 * 
+	 * @param email
+	 *            email of user that want to show
+	 * @return user if not return message fail
+	 */
+	@JsonView(UserView.AllInformation.class)
+	@RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
+	public ResponseEntity getUserByEmail(@PathVariable String email,
+			@RequestHeader(value = "Authorization") String token) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
@@ -298,11 +320,9 @@ public class UsersController extends BaseController {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaa");
 		if (!authenticationService.findByToken(token).getUser().getEmail().equals(email)) {
 			return new ResponseEntity(new Message("This user cannot get location"), HttpStatus.FORBIDDEN);
 		}
-		System.out.println("bbbbbbbbbbbbbbbbbbbbbbbb");
 		User user = userService.findByEmail(email);
 		String passwordHash = user.changeToHash(password);
 		if (!passwordHash.equals(user.getPassword())) {
@@ -416,7 +436,7 @@ public class UsersController extends BaseController {
 		}
 
 		user.setCard_name(newUser.getCard_name());
-		user.setCardCVV(newUser.getCardCVV());
+		user.setCard_number(newUser.getCard_number());
 		user.setExpirationDate(newUser.getExpirationDate());
 		try {
 			getUserService().update(user);
