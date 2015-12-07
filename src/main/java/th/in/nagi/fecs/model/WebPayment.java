@@ -19,4 +19,20 @@ public class WebPayment {
 	
 	@JsonView({WebPaymentView.Personal.class, WebPaymentView.Shipping.class})
 	private Shipping shipping;
+
+	public WebCreditCard getWebCreditCard() {
+		return webCreditCard;
+	}
+
+	public Integer getCvv() {
+		return cvv;
+	}
+
+	public Integer getPrice() {
+		return price;
+	}
+
+	public Shipping getShipping() {
+		return shipping;
+	}
 }

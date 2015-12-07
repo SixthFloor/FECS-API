@@ -12,11 +12,8 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import com.fasterxml.jackson.annotation.JsonView;
 
-import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.view.ProductView;
 
 @Entity
@@ -38,9 +35,6 @@ public class Product {
 	@JsonView({ProductView.Personal.class, ProductView.ProductDescription.class})
 	private ProductDescription productDescription;
 
-//	@Column(name = "bought_price")
-//	private Integer boughtPrice;
-	
 	@ManyToMany(mappedBy = "products")
 	private List<Cart> carts;
 
@@ -48,6 +42,9 @@ public class Product {
 	@JsonView(ProductView.Personal.class)
 	private int status;
 
+	@Column(name = "bought_price")
+	private Double boughtPrice;
+	
 	public int getId() {
 		return id;
 	}
@@ -59,6 +56,10 @@ public class Product {
 	public int getStatus() {
 		return status;
 	}
+	
+	public Double getBoughtPrice() {
+		return boughtPrice;
+	}
 
 	public void setProductDescription(ProductDescription productDescription) {
 		this.productDescription = productDescription;
@@ -66,5 +67,9 @@ public class Product {
 	
 	public void setStatus(int status) {
 		this.status = status;
+	}
+	
+	public void setBoughtPrice() {
+		this.boughtPrice = this.productDescription.getPrice();
 	}
 }
