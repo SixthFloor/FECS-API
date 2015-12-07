@@ -66,9 +66,9 @@ public class Order {
 		return cart;
 	}
 
-	//	public Shipping getShipping() {
-	//		return shipping;
-	//	}
+	public Shipping getShipping() {
+		return shipping;
+	}
 
 	public int getStatus() {
 		return status;
@@ -90,9 +90,9 @@ public class Order {
 		this.cart = cart;
 	}
 
-	//	public void setShipping(Shipping shipping) {
-	//		this.shipping = shipping;
-	//	}
+	public void setShipping(Shipping shipping) {
+		this.shipping = shipping;
+	}
 
 	public void setStatus(int status) {
 		this.status = status;

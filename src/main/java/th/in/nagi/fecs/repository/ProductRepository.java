@@ -3,7 +3,6 @@ package th.in.nagi.fecs.repository;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -26,7 +25,7 @@ public class ProductRepository extends AbstractRepository<Product, Integer> {
 	@Override
 	public List<Product> findAll() {
 		Criteria criteria = createEntityCriteria();
-		return criteria.setFetchMode("authenticate", FetchMode.LAZY).list();
+		return criteria.list();
 	}
 
 	/**
@@ -58,11 +57,12 @@ public class ProductRepository extends AbstractRepository<Product, Integer> {
 		criteria.add(Restrictions.eq("productNumber", productNumber));
 		return (Product) criteria.uniqueResult();
 	}
-	
+
 	public List<Product> findAvailableByProductDescription(ProductDescription pd) {
-		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("productDescription", pd));
-		criteria.add(Restrictions.eq("status", 0));
+		Criteria criteria = createEntityCriteria()
+				.add(Restrictions.isNull("cart"))
+				.add(Restrictions.eq("productDescription", pd))
+				.add(Restrictions.eq("status", 0));
 		return criteria.list();
 	}
 }

@@ -29,8 +29,6 @@ import th.in.nagi.fecs.service.OrderService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.service.UserService;
-import th.in.nagi.fecs.view.OrderView;
-import th.in.nagi.fecs.view.UserView;
 import th.in.nagi.fecs.view.WebOrderView;
 
 /**

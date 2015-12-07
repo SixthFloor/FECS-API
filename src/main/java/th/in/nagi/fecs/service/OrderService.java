@@ -60,4 +60,8 @@ public class OrderService {
 	public List<Order> findByUser(User user) {
 		return orderRepository.findByUser(user);
 	}
+
+	public Double getTotalPrice(Integer orderNumber) {
+		return orderRepository.getTotalPrice(orderNumber);
+	}
 }

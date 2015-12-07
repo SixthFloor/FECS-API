@@ -1,6 +1,7 @@
 package th.in.nagi.fecs.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 
@@ -24,9 +25,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Order;
+import th.in.nagi.fecs.model.Shipping;
 import th.in.nagi.fecs.model.WebPayment;
 import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.OrderService;
+import th.in.nagi.fecs.service.ShippingService;
 
 /**
  * Controller for validating credit card and make a payment.
@@ -46,6 +49,9 @@ public class PaymentController extends BaseController {
 
 	@Autowired
 	private OrderService orderService;
+	
+	@Autowired
+	private ShippingService shippingService;
 
 	/**
 	 * Validate credit card.
@@ -54,14 +60,24 @@ public class PaymentController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/validate", method = RequestMethod.POST)
-	public ResponseEntity<?> validate(@RequestHeader(value = "Authorization") String token,
+	public ResponseEntity<?> validate(
+//			@RequestHeader(value = "Authorization") String token,
+			@RequestParam(value = "orderNumber", required = true) Integer orderNumber,
 			@RequestBody WebPayment webPayment) {
-		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
-				authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This payment does not allow"), HttpStatus.FORBIDDEN);
-		}
+//		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+//				authenticationService.OWNER)) {
+//			return new ResponseEntity<Message>(new Message("This payment does not allow"), HttpStatus.FORBIDDEN);
+//		}
 
-		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		Order order = orderService.findByKey(orderNumber);
+		if (order == null) {
+			return new ResponseEntity<Message>(new Message("Invalid order number [" + orderNumber + "]"),
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		webPayment.setPrice(orderService.getTotalPrice(orderNumber));
+		
+		return new ResponseEntity<WebPayment>(webPayment, HttpStatus.OK);
 	}
 
 	/**
@@ -85,48 +101,23 @@ public class PaymentController extends BaseController {
 			return new ResponseEntity<Message>(new Message("Invalid order number [" + orderNumber + "]"),
 					HttpStatus.BAD_REQUEST);
 		}
-
-		String bank = "bank1";
-
-//		JSONObject json = new JSONObject();
-//		json.put("someKey", "someValue");  
 		
-		//deal with credit card here
-		CloseableHttpClient httpClient = HttpClientBuilder.create().build(); //Use this instead 
-
+		Shipping slot;
+		
 		try {
-			HttpPost request = new HttpPost("http://yoururl");
-			StringEntity params = new StringEntity("details={"
-					+ "\"card\": {"
-					+ "\"no\":\"" + webPayment.getWebCreditCard().getNumber() + "\","
-					+ "\"exp_date\":\"" + webPayment.getWebCreditCard().getExpirationDate() + "\"},"
-					+ "\"cvv\":\"" + webPayment.getCvv() + "\","
-					+ "\"price\":\"" + webPayment.getPrice() +"\"}"
-					);
-			request.addHeader("content-type", "application/x-www-form-urlencoded");
-			request.setEntity(params);
-			HttpResponse response = httpClient.execute(request);
-
-			//		try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-			//			HttpPost request = new HttpPost("50.112.182.228:3000/" + bank + "/validate");
-			//			
-			//			HttpResponse response = client.execute(request);
-			//			
-			//			response.getEntity().
-			//
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (SocketTimeoutException e) {
-			e.printStackTrace();
-		} catch (ConnectTimeoutException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			slot = shippingService.findByKey(webPayment.getShipping().getId());			
+		} catch(Exception e) {
+			return new ResponseEntity<Message>(new Message("Invalid shipping information"), HttpStatus.BAD_REQUEST);
+		}
+		
+		if (slot != null) {
+			slot.setStatus(Shipping.RESERVED);
+			order.setStatus(Order.PAID);
+			order.setShipping(slot);
+			
+			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 		}
 
-		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+		return new ResponseEntity<Message>(new Message("Invalid shipping information"), HttpStatus.BAD_REQUEST);
 	}
 }
