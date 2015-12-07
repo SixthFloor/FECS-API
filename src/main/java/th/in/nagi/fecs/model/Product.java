@@ -10,6 +10,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.ProductView;
@@ -41,6 +44,7 @@ public class Product {
 	@JoinTable(name = "product_in_cart", joinColumns = {
 			@JoinColumn(name = "product_id", referencedColumnName = "id")}, inverseJoinColumns = {
 					@JoinColumn(name = "cart_id", referencedColumnName = "id")})
+	@Fetch(FetchMode.SELECT)
 	private Cart cart;
 
 	@Column(name = "bought_price")

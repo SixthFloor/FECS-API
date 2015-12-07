@@ -6,6 +6,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 
 import th.in.nagi.fecs.model.Cart;
@@ -82,12 +83,13 @@ public class OrderRepository extends AbstractRepository<Order, Integer> {
 	}
 
 	public Double getTotalPrice(Integer orderNumber) {
-		Criteria criteria = createEntityCriteria().createAlias("cart", "cart").createAlias("cart.products", "product")
-				.createAlias("product.productDescription", "product_description")
-				.setProjection(Projections.sum("product_description.price"))
-				.setProjection(Projections.groupProperty("orderNumber"))
-				.setProjection(Projections.property("product_description.price"))
-				.add(Restrictions.eq("orderNumber", orderNumber));
+		Criteria criteria = createEntityCriteria()
+				.createAlias("cart", "cart", JoinType.INNER_JOIN)
+				.createAlias("cart.products", "product", JoinType.INNER_JOIN)
+				.createAlias("product.productDescription", "product_description", JoinType.INNER_JOIN)
+				.add(Restrictions.eq("orderNumber", orderNumber))
+				.setProjection(Projections.property("price"))
+				.setProjection(Projections.sum("product_description.price"));
 
 		return ((Number) criteria.uniqueResult()).doubleValue();
 	}

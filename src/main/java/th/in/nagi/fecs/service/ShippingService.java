@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import th.in.nagi.fecs.model.Order;
 import th.in.nagi.fecs.model.Shipping;
 import th.in.nagi.fecs.repository.ShippingRepository;
 
@@ -33,5 +34,12 @@ public class ShippingService {
 		
 	public List<Shipping> findAllAvailable() {
 		return shippingRepository.findAllAvailable();
+	}
+
+	public void update(Shipping shipping) {
+		Shipping s = shippingRepository.findByKey(shipping.getId());
+		if (s != null) {
+			s.setStatus(shipping.getStatus());
+		}
 	}
 }

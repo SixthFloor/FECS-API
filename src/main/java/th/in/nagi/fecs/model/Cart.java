@@ -34,7 +34,7 @@ public class Cart {
 	@JoinColumn(name = "user_id")
 	private User user;
 
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.MERGE)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinTable(name = "product_in_cart", joinColumns = {
 			@JoinColumn(name = "cart_id", referencedColumnName = "id")}, inverseJoinColumns = {

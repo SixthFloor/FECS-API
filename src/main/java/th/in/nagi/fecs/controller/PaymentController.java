@@ -49,7 +49,7 @@ public class PaymentController extends BaseController {
 
 	@Autowired
 	private OrderService orderService;
-	
+
 	@Autowired
 	private ShippingService shippingService;
 
@@ -61,22 +61,22 @@ public class PaymentController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/validate", method = RequestMethod.POST)
 	public ResponseEntity<?> validate(
-//			@RequestHeader(value = "Authorization") String token,
+			//			@RequestHeader(value = "Authorization") String token,
 			@RequestParam(value = "orderNumber", required = true) Integer orderNumber,
 			@RequestBody WebPayment webPayment) {
-//		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
-//				authenticationService.OWNER)) {
-//			return new ResponseEntity<Message>(new Message("This payment does not allow"), HttpStatus.FORBIDDEN);
-//		}
+		//		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+		//				authenticationService.OWNER)) {
+		//			return new ResponseEntity<Message>(new Message("This payment does not allow"), HttpStatus.FORBIDDEN);
+		//		}
 
 		Order order = orderService.findByKey(orderNumber);
 		if (order == null) {
 			return new ResponseEntity<Message>(new Message("Invalid order number [" + orderNumber + "]"),
 					HttpStatus.BAD_REQUEST);
 		}
-		
+
 		webPayment.setPrice(orderService.getTotalPrice(orderNumber));
-		
+
 		return new ResponseEntity<WebPayment>(webPayment, HttpStatus.OK);
 	}
 
@@ -88,36 +88,34 @@ public class PaymentController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = "/pay", method = RequestMethod.POST)
 	public ResponseEntity<?> pay(
-//			@RequestHeader(value = "Authorization") String token,
+			//			@RequestHeader(value = "Authorization") String token,
 			@RequestParam(value = "orderNumber", required = true) Integer orderNumber,
 			@RequestBody WebPayment webPayment) {
-//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-//				authenticationService.MANAGER, authenticationService.OWNER)) {
-//			return new ResponseEntity<Message>(new Message("This payment does not allow"), HttpStatus.FORBIDDEN);
-//		}
+		//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+		//				authenticationService.MANAGER, authenticationService.OWNER)) {
+		//			return new ResponseEntity<Message>(new Message("This payment does not allow"), HttpStatus.FORBIDDEN);
+		//		}
 
 		Order order = orderService.findByKey(orderNumber);
 		if (order == null) {
 			return new ResponseEntity<Message>(new Message("Invalid order number [" + orderNumber + "]"),
 					HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Shipping slot;
-		
+
 		try {
-			slot = shippingService.findByKey(webPayment.getShipping().getId());			
-		} catch(Exception e) {
-			return new ResponseEntity<Message>(new Message("Invalid shipping information"), HttpStatus.BAD_REQUEST);
-		}
-		
-		if (slot != null) {
+			slot = shippingService.findByKey(webPayment.getShipping().getId());
 			slot.setStatus(Shipping.RESERVED);
+			shippingService.update(slot);
+
 			order.setStatus(Order.PAID);
 			order.setShipping(slot);
-			
-			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+			orderService.update(order);
+		} catch (Exception e) {
+			return new ResponseEntity<Message>(new Message("Invalid shipping information"), HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity<Message>(new Message("Invalid shipping information"), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 	}
 }

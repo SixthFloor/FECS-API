@@ -41,6 +41,10 @@ public class Shipping {
 		return date;
 	}
 	
+	public int getStatus() {
+		return status;
+	}
+	
 	public void resetId() {
 		id = null;
 	}
