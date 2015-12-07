@@ -19,6 +19,8 @@ public class Shipping {
 	
 	public static final int AVAILABLE = 0;
 	public static final int RESERVED = 1;
+	public static final int INPROGRESS = 2;
+	public static final int DONE = 3;
 	
 	@JsonView(ShippingView.Personal.class)
 	@Id
@@ -39,11 +41,19 @@ public class Shipping {
 		return date;
 	}
 	
+	public int getStatus() {
+		return status;
+	}
+	
 	public void resetId() {
 		id = null;
 	}
 
 	public void setDate(Date date) {
 		this.date = date;
+	}
+	
+	public void setStatus(int status) {
+		this.status = status;
 	}
 }

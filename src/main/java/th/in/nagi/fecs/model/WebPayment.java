@@ -15,8 +15,28 @@ public class WebPayment {
 	private Integer cvv;
 	
 	@JsonView(WebPaymentView.Personal.class)
-	private Integer price;
+	private Double price;
 	
 	@JsonView({WebPaymentView.Personal.class, WebPaymentView.Shipping.class})
 	private Shipping shipping;
+
+	public WebCreditCard getWebCreditCard() {
+		return webCreditCard;
+	}
+
+	public Integer getCvv() {
+		return cvv;
+	}
+
+	public Double getPrice() {
+		return price;
+	}
+
+	public Shipping getShipping() {
+		return shipping;
+	}
+
+	public void setPrice(Double price) {
+		this.price = price;
+	}
 }

@@ -20,4 +20,16 @@ public class WebCreditCard {
 	@JsonProperty("exp_date")
 	@JsonView(WebCreditCardView.Personal.class)
 	private Date expirationDate;
+
+	public String getNumber() {
+		return number;
+	}
+
+	public String getHolderName() {
+		return holderName;
+	}
+
+	public Date getExpirationDate() {
+		return expirationDate;
+	}
 }
