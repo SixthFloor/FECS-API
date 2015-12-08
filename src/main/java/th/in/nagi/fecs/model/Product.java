@@ -61,6 +61,10 @@ public class Product {
 	public int getStatus() {
 		return status;
 	}
+	
+	public Cart getCart() {
+		return cart;
+	}
 
 	public Double getBoughtPrice() {
 		return boughtPrice;
@@ -76,5 +80,9 @@ public class Product {
 
 	public void setBoughtPrice() {
 		this.boughtPrice = this.productDescription.getPrice();
+	}
+
+	public boolean isAvailable() {
+		return (status == Product.AVAILABLE && cart == null);
 	}
 }

@@ -66,7 +66,7 @@ public class ProductDescriptionController extends BaseController {
 	 * @param serialNumber
 	 * @return a product that have the serialNumber
 	 */
-	@JsonView(ProductDescriptionView.Summary.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@RequestMapping(value = "/{serialNumber}", method = RequestMethod.GET)
 	public ResponseEntity getDetail(@PathVariable String serialNumber) {
 		ProductDescription productDescription = productDescriptionService.findBySerialNumber(serialNumber);
@@ -81,7 +81,7 @@ public class ProductDescriptionController extends BaseController {
 	 * 
 	 * @return list of all products
 	 */
-	@JsonView(ProductDescriptionView.Summary.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	public ResponseEntity showAllProduct() {
 		List<ProductDescription> productDescription = productDescriptionService.findAll();
@@ -100,7 +100,7 @@ public class ProductDescriptionController extends BaseController {
 	 *            size of the list
 	 * @return limit list of product
 	 */
-	@JsonView(ProductDescriptionView.Summary.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public ResponseEntity getListProduct(@RequestParam(value = "start", required = false) int start,
 			@RequestParam(value = "size", required = false) int size) {
@@ -209,7 +209,7 @@ public class ProductDescriptionController extends BaseController {
 		return new ResponseEntity(new Message("FurniturerDescription has removed"), HttpStatus.OK);
 	}
 	
-	@JsonView(ProductDescriptionView.Summary.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public ResponseEntity search(@RequestParam(value = "query", required = false) String searchName) {
 		List<ProductDescription> productDescription = (productDescriptionService.search(searchName));
