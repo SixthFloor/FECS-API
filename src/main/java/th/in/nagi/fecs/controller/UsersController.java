@@ -174,10 +174,15 @@ public class UsersController extends BaseController {
 		user.setJoiningDate(date);
 		user.setRole(roleService.findByName(roleService.MEMBER));
 		//    	System.out.println(user);
+		User oldUser = userService.findByEmail(user.getEmail());
+		if(oldUser != null){
+		    return new ResponseEntity(new Message("This email has used"), HttpStatus.BAD_REQUEST);
+		}
+		    	
 		try {
 			getUserService().store(user);
 		} catch (Exception e) {
-			//			System.out.println(e);
+			System.out.println(e);
 			return new ResponseEntity(new Message("Create user failed"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("The user has created"), HttpStatus.CREATED);
@@ -202,6 +207,11 @@ public class UsersController extends BaseController {
 		user.setPassword(passwordHash);
 		user.setJoiningDate(date);
 		user.setRole(roleService.findByKey(id));
+		
+		User oldUser = userService.findByEmail(user.getEmail());
+		if(oldUser != null){
+		    return new ResponseEntity(new Message("This email has used"), HttpStatus.BAD_REQUEST);
+		}
 		//    	System.out.println(user);
 		try {
 			getUserService().store(user);
