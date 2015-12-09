@@ -40,9 +40,12 @@ public class OrderService {
 		Order o = orderRepository.findByKey(order.getOrderNumber());
 		if (o != null) {
 			if (order.getCart() != null) {
-				o.setCart(order.getCart());				
+				o.setCart(order.getCart());
 			}
 			o.setStatus(order.getStatus());
+			if (order.getShipping() != null) {
+				o.setShipping(order.getShipping());
+			}
 		}
 	}
 	

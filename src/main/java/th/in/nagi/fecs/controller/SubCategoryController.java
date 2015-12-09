@@ -112,7 +112,7 @@ public class SubCategoryController extends BaseController {
 	 *            category name that want to show products inside
 	 * @return list of product
 	 */
-	@JsonView(ProductDescriptionView.ElementalImage.class)
+	@JsonView(ProductDescriptionView.Personal.class)
 	@RequestMapping(value = "/{subCategoryName}", method = RequestMethod.GET)
 	public ResponseEntity showProductsBySubCategory(@PathVariable String subCategoryName,
 			@RequestParam(value = "category", required = false) String categoryName) {

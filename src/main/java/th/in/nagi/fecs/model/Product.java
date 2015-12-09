@@ -85,4 +85,8 @@ public class Product {
 	public boolean isAvailable() {
 		return (status == Product.AVAILABLE && cart == null);
 	}
+
+	public void resetBoughtPrice() {
+		this.boughtPrice = 0.0;
+	}
 }

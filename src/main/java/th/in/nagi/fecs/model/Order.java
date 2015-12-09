@@ -111,4 +111,8 @@ public class Order {
 
 		return order;
 	}
+
+	public Double getTotal() {
+		return this.cart.getTotal();
+	}
 }

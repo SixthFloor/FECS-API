@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import th.in.nagi.fecs.model.Order;
 import th.in.nagi.fecs.model.Product;
 import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.repository.ProductRepository;
@@ -54,5 +55,24 @@ public class ProductService {
 	
 	public int findAvailableQuantityByProductDescription(ProductDescription pd) {
 		return productRepository.findAvailableByProductDescription(pd).size();
+	}
+
+	public boolean release(Integer productId) {
+		Product p = productRepository.findByKey(productId);
+		if (p != null) {
+			p.setStatus(Product.AVAILABLE);
+			p.resetBoughtPrice();
+			return true;
+		}
+		return false;
+	}
+
+	public boolean updateBoughtPrice(Integer productId) {
+		Product p = productRepository.findByKey(productId);
+		if (p != null) {
+			p.setBoughtPrice();
+			return true;
+		}
+		return false;
 	}
 }
