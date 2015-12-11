@@ -59,7 +59,7 @@ public class UserService {
 				entity.setAddress1(user.getAddress1());
 			}
 			if (user.getAddress2() != null) {
-				entity.setAddress2(user.getAddress1());
+				entity.setAddress2(user.getAddress2());
 			}
 //			entity.setAddress2(user.getAddress2());
 			if (user.getCard_name() != null) {
@@ -85,6 +85,9 @@ public class UserService {
 			}
 			if (user.getTelephone_number() != null) {
 				entity.setTelephone_number(user.getTelephone_number());
+			}
+			if (user.getRole() != null) {
+				entity.setRole(user.getRole());
 			}
 		}
 	}

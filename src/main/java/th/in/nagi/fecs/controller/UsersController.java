@@ -239,17 +239,52 @@ public class UsersController extends BaseController {
 				authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		if (authenticationService.findByToken(token).getUser().getId() != newUser.getId()) {
+		if (!authenticationService.findByToken(token).getUser().getId().equals(newUser.getId())) {
 			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
 		//        User user = getUserService().findByUsername(newUser.getUsername());
-		newUser.setRole(null);
+		newUser.setRole(roleService.findByName(roleService.MEMBER));
 		try {
 			getUserService().update(newUser);
 		} catch (Exception e) {
 			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(getUserService().findByEmail(newUser.getEmail()).getEmail(), HttpStatus.OK);
+		return new ResponseEntity(new Message("This user has edited"), HttpStatus.OK);
+	}
+	
+	/**
+	 * edit user by member
+	 * 
+	 * @param newUser
+	 *            put user information that want to change, it is not required
+	 *            all parameter of user.
+	 * @return message message and email of user or not return message fail and
+	 *         string "not found"
+	 */
+	@JsonView(UserView.AllInformation.class)
+	@ResponseBody
+	@RequestMapping(value = {"/{email:.+}"}, method = RequestMethod.PUT)
+	public ResponseEntity editUser(@PathVariable String email,
+			@RequestBody User newUser,
+			@RequestHeader(value = "Authorization") String token) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+				authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
+		if (!authenticationService.findByToken(token).getUser().getEmail().equals(email)) {
+			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
+		}
+		if (!authenticationService.findByToken(token).getUser().getId().equals(newUser.getId())) {
+			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
+		}
+		//        User user = getUserService().findByUsername(newUser.getUsername());
+		newUser.setRole(roleService.findByName(roleService.MEMBER));
+		try {
+			getUserService().update(newUser);
+		} catch (Exception e) {
+			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity(userService.findByKey(newUser.getId()), HttpStatus.OK);
 	}
 
 	/**
@@ -264,7 +299,8 @@ public class UsersController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = {"/editByOwner"}, method = RequestMethod.PUT)
 	public ResponseEntity editUserByAdmin(@RequestBody User newUser,
-			@RequestHeader(value = "Authorization") String token) {
+			@RequestHeader(value = "Authorization") String token,
+			@RequestParam(value = "roleId", required = false) int id) {
 		if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
@@ -272,6 +308,7 @@ public class UsersController extends BaseController {
 		//			newUser.setRole(null);
 		//		}
 		//        User user = getUserService().findByUsername(newUser.getUsername());
+		newUser.setRole(roleService.findByKey(id));
 		try {
 			getUserService().update(newUser);
 		} catch (Exception e) {

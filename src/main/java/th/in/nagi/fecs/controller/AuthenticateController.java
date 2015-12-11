@@ -99,8 +99,14 @@ public class AuthenticateController extends BaseController {
 		System.out.println(tempUser.getEmail());
 		System.out.println(tempUser.getPassword());
 		User user = getUserService().findByEmail(tempUser.getEmail());
+		if(tempUser.getPassword() == null){
+			return new ResponseEntity(new Message("Password is empty"), HttpStatus.BAD_REQUEST);
+		}
 		String passwordHash = user.changeToHash(tempUser.getPassword());
-
+		
+		if(user.getEmail() == null){
+			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+		}
 		if (!user.getPassword().equals(passwordHash)) {
 			return new ResponseEntity(new Message("Incorrect password"), HttpStatus.BAD_REQUEST);
 		}
