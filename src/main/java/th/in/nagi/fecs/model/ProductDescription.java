@@ -228,7 +228,7 @@ public class ProductDescription {
 	public int getQuantity() {
 		int quantity = 0;
 		for (Product product: products) {
-			if (product.getStatus() == Product.AVAILABLE) {
+			if (product.isAvailable()) {
 				quantity++;
 			}
 		}

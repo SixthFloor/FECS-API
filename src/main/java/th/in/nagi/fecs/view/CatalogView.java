@@ -16,7 +16,7 @@ public class CatalogView {
 	public interface Type extends Personal, TypeView.SubCategoryAndCategory  {
 	}
 	
-	public interface ProductDescription extends Personal, ProductDescriptionView.Summary{
+	public interface ProductDescription extends Personal, ProductDescriptionView.Personal {
 	}
 	
 	public interface Catalog extends Personal, TypeView.Summary, ProductDescription{

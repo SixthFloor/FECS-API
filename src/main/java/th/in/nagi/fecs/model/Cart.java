@@ -67,6 +67,7 @@ public class Cart {
 	}
 
 	public void addProduct(Product product) {
+		product.setBoughtPrice();
 		this.products.add(product);
 	}
 
@@ -75,5 +76,18 @@ public class Cart {
 		cart.setUser(user);
 
 		return cart;
+	}
+
+	public Double getTotal() {
+		Double total = 0.0;
+		for (Product product: products) {
+			Double bp = product.getBoughtPrice();
+			if (bp != null) {
+				total += product.getBoughtPrice();				
+			} else {
+				return null;
+			}
+		}
+		return total;
 	}
 }

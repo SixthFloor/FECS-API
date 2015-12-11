@@ -213,16 +213,13 @@ public class OrderController extends BaseController {
 		Integer cartId = null;
 		try {
 			cartId = cartService.save(cart);
-		} catch (Exception e) {
-			System.out.println(e);
-			return new ResponseEntity<Message>(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
-		}
 
-		cart = cartService.findByKey(cartId);
-		Order order = Order.create(user, cart);
+			cart = cartService.findByKey(cartId);
+			Order order = Order.create(user, cart);
 
-		try {
-			return new ResponseEntity<Integer>(orderService.save(order), HttpStatus.CREATED);
+			Integer orderId = orderService.save(order);
+			return new ResponseEntity<Integer>(orderId, HttpStatus.CREATED);
+			
 		} catch (Exception e) {
 			System.out.println(e);
 			return new ResponseEntity<Message>(new Message("Create order failed"), HttpStatus.BAD_REQUEST);
