@@ -25,10 +25,10 @@ import th.in.nagi.fecs.repository.RoleRepository;
 @Transactional
 public class AuthenticationService {
 
-	public final String MEMBER = "member";
-	public final String STAFF = "staff";
-	public final String MANAGER = "member";
-	public final String OWNER = "owner";
+	public final String MEMBER = Role.MEMBER;
+	public final String STAFF = Role.STAFF;
+	public final String MANAGER = Role.MANAGER;
+	public final String OWNER = Role.OWNER;
 
 	/**
 	 * Tool for managing authentication table that link to database.

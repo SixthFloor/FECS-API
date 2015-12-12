@@ -13,15 +13,27 @@ import com.fasterxml.jackson.annotation.JsonView;
 import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.view.WebLineItemView;
 
+/**
+ * @author Chonnipa Kittisiriprasert
+ */
 public class WebLineItem {
 
+	/**
+	 * Tool for managing about Product Description
+	 */
 	@Autowired
 	private static ProductDescriptionService productDescriptionService;
 
+	/**
+	 * Product Description
+	 */
 	@JsonProperty("product")
 	@JsonView(WebLineItemView.ProductDescription.class)
 	private ProductDescription productDescription;
 
+	/**
+	 * quantity of Product Description
+	 */
 	@JsonView(WebLineItemView.Personal.class)
 	private int quantity;
 
@@ -41,10 +53,22 @@ public class WebLineItem {
 		this.quantity = quantity;
 	}
 
+	/**
+	 * add more quantity
+	 * 
+	 * @param quantity
+	 */
 	public void increaseQuantity(int quantity) {
 		this.quantity += quantity;
 	}
 
+	/**
+	 * create list of WebLineItems. This method will update product's quantity
+	 * from Cart.
+	 * 
+	 * @param cart
+	 * @return List<WebLineItem>
+	 */
 	public static List<WebLineItem> create(Cart cart) {
 		List<WebLineItem> webLineProducts = new ArrayList<WebLineItem>();
 		List<Product> products = cart.getProducts();

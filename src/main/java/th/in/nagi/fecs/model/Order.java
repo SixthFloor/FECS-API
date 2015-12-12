@@ -19,41 +19,68 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.OrderView;
 
+/**
+ * Order model
+ * 
+ * @author Chonnipa Kittisiriprasert
+ *
+ */
 @Entity
 @Table(name = "[order]")
 public class Order {
 
+	/**
+	 * The possible status of Order
+	 */
 	public static final int NOTPAY = 0;
 	public static final int CANCELED = 1;
 	public static final int PAID = 2;
 	public static final int SHIPPING = 3;
 	public static final int COMPLETED = 4;
 
+	/**
+	 * Order's number
+	 */
 	@JsonView(OrderView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "serial_number", unique = true)
 	private int orderNumber;
 
+	/**
+	 * Order's User
+	 */
 	@JsonView({OrderView.Personal.class, OrderView.User.class})
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	@Fetch(FetchMode.SELECT)
 	private User user;
 
+	/**
+	 * Order's Cart
+	 */
 	@JsonView({OrderView.Personal.class, OrderView.Cart.class})
 	@OneToOne
 	@JoinColumn(name = "cart_id")
 	private Cart cart;
 
+	/**
+	 * Order's Shipping
+	 */
 	@JsonView({OrderView.Personal.class, OrderView.Shipping.class})
 	@OneToOne
 	@JoinColumn(name = "shipping_id")
 	private Shipping shipping;
 
+	/**
+	 * Order's status
+	 */
 	@JsonView(OrderView.Personal.class)
 	private int status;
 
+	/**
+	 * Order Date
+	 */
 	@JsonView(OrderView.Personal.class)
 	@Column(name = "order_date")
 	private Date orderDate;

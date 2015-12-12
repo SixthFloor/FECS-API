@@ -13,26 +13,39 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.ProductImageView;
-import th.in.nagi.fecs.view.ProductDescriptionView;
 
+/**
+ * ProductImage model
+ * 
+ * @author Thanachote Visetsuthimont
+ *
+ */
 @Entity
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "product_image")
 public class ProductImage {
-	
+
+	/**
+	 * id of ProductImage
+	 */
 	@JsonView(ProductImageView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
-	
+
+	/**
+	 * link of ProductImage
+	 */
 	@JsonView(ProductImageView.Personal.class)
 	@Size(min = 1, max = 255)
 	@Column(name = "link", nullable = false)
 	private String link;
-	
+
+	/**
+	 * productDescription of ProductImage
+	 */
 	@JsonView(ProductImageView.Summary.class)
 	@ManyToOne
-	@JoinColumn(name="product_description_id")
+	@JoinColumn(name = "product_description_id")
 	private ProductDescription productDescription;
 
 	public Integer getId() {
@@ -50,8 +63,5 @@ public class ProductImage {
 	public void setLink(String link) {
 		this.link = link;
 	}
-	
-	
-	
 
 }
