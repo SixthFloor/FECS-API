@@ -23,6 +23,9 @@ import th.in.nagi.fecs.repository.ProductRepository;
 @Transactional
 public class ProductService {
 
+	/**
+	 * Tool for managing product in database.
+	 */
 	@Autowired
 	private ProductRepository productRepository;
 
