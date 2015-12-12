@@ -167,7 +167,10 @@ public class UsersController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
 	public ResponseEntity createUser(@RequestBody User user) {//, @RequestParam(value = "roleId", required = false)int id) {
-
+		
+		if(user.getPassword().length() < 8 && user.getPassword().length() >20){
+			return new ResponseEntity(new Message("Password lenght should be between 8 -20"), HttpStatus.BAD_REQUEST);
+		}
 		Date date = new Date();
 		String passwordHash = user.changeToHash(user.getPassword());
 		user.setPassword(passwordHash);
