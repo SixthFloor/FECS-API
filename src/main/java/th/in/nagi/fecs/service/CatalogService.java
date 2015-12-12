@@ -163,9 +163,9 @@ public class CatalogService {
 	 * 
 	 * @return List<ProductDescription>
 	 */
-	public List<Type> findTypeByProduct(ProductDescription productDescription) {
+	public List<Type> findTypeByProductDescription(ProductDescription productDescription) {
 		List<Type> type = new ArrayList<>();
-		for (Catalog catalog : catalogRepository.findByProduct(productDescription)) {
+		for (Catalog catalog : catalogRepository.findByProductDescription(productDescription)) {
 			type.add(catalog.getType());
 		}
 		return type;
@@ -178,8 +178,8 @@ public class CatalogService {
 	 * 
 	 * @return List<Catalog>
 	 */
-	public List<Catalog> findCatalogByProduct(ProductDescription productDescription) {
-		List<Catalog> catalog = catalogRepository.findByProduct(productDescription);
+	public List<Catalog> findCatalogByProductDescription(ProductDescription productDescription) {
+		List<Catalog> catalog = catalogRepository.findByProductDescription(productDescription);
 		return catalog;
 	}
 

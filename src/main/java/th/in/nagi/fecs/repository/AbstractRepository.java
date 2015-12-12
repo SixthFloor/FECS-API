@@ -64,6 +64,11 @@ public abstract class AbstractRepository<E, K extends Serializable> implements R
 		return getSession().createCriteria(persistentClass);
 	}
 
+	/**
+	 * Query all.
+	 * 
+	 * @return List<E>
+	 */
 	@Override
 	public List<E> findAll() {
 		Criteria criteria = createEntityCriteria().setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);

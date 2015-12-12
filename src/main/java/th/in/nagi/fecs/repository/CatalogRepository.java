@@ -64,15 +64,27 @@ public class CatalogRepository extends AbstractRepository<Catalog, Integer> {
 		remove(getByKey(key));
 	}
 
+	/**
+	 * Query list of Catalogs by Type.
+	 * 
+	 * @param type
+	 * @return List<Catalog>
+	 */
 	public List<Catalog> findByType(Type type) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("type", type)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 	
-	public List<Catalog> findByProduct(ProductDescription product) {
+	/**
+	 * Query list of Catalogs by Product Description.
+	 * 
+	 * @param productDescription
+	 * @return List<Catalog>
+	 */
+	public List<Catalog> findByProductDescription(ProductDescription productDescription) {
 		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("productDescription", product)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
+		criteria.add(Restrictions.eq("productDescription", productDescription)).setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 }

@@ -163,7 +163,7 @@ public class CatalogController extends BaseController {
 	@RequestMapping(value = "/{serialNumber}", method = RequestMethod.GET)
 	public ResponseEntity getDetail(@PathVariable String serialNumber) {
 		ProductDescription productDescription = productDescriptionService.findBySerialNumber(serialNumber);
-		List<Catalog> catalog = catalogService.findCatalogByProduct(productDescription);
+		List<Catalog> catalog = catalogService.findCatalogByProductDescription(productDescription);
 		System.out.println(catalog.size());
 		
 		if (catalog != null) {

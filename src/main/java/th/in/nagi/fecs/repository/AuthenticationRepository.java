@@ -32,12 +32,12 @@ public class AuthenticationRepository extends AbstractRepository<Authentication,
 	/**
 	 * Query authentication by key.
 	 * 
-	 * @param key
+	 * @param id
 	 * @return Authentication
 	 */
 	@Override
-	public Authentication findByKey(Integer key) {
-		return getByKey(key);
+	public Authentication findByKey(Integer id) {
+		return getByKey(id);
 	}
 
 	/**
@@ -53,15 +53,18 @@ public class AuthenticationRepository extends AbstractRepository<Authentication,
 	/**
 	 * Remove authentication by key.
 	 * 
-	 * @param key
+	 * @param id
 	 */
 	@Override
-	public void remove(Integer key) {
-		remove(getByKey(key));
+	public void remove(Integer id) {
+		remove(getByKey(id));
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query authentication by token.
+	 * 
+	 * @param token
+	 * @return Authentication
 	 */
 	public Authentication findByToken(String token) {
 		Criteria criteria = createEntityCriteria();
@@ -69,20 +72,14 @@ public class AuthenticationRepository extends AbstractRepository<Authentication,
 		return (Authentication) criteria.uniqueResult();
 	}
 
-	// @Override
-	// public List<Authentication> findByUser(User user) {
-	// Criteria criteria = createEntityCriteria();
-	// criteria.add(Restrictions.eq("user", user));
-	// return (List<Authentication>) criteria.list();
-	// }
-
 	/**
-	 * {@inheritDoc}
+	 * Delete authentication by token.
+	 * 
+	 * @param token
+	 * 
 	 */
 	public void removeByToken(String token) {
-		Query query = getSession().createSQLQuery("delete from authenticate where token = :token");
-		query.setString("token", token);
-		query.executeUpdate();
+		remove(findByToken(token));
 	}
 
 }
