@@ -27,7 +27,7 @@ public class ProductDescriptionService {
 	private ProductDescriptionRepository productDescriptionRepository;
 
 	/**
-	 * Find product description by using index.
+	 * Find product description by using id.
 	 * 
 	 * @param id
 	 * @return ProductDescription
