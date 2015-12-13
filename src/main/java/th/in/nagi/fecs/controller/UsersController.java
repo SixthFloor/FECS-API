@@ -170,9 +170,7 @@ public class UsersController extends BaseController {
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
 	public ResponseEntity createUser(@RequestBody User user) {//, @RequestParam(value = "roleId", required = false)int id) {
 		
-		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
-		Matcher m = p.matcher(user.getPassword());
-		boolean b = m.find();
+		boolean b = checkSpecialCharacter(user.getPassword());
 		if(b){
 			return new ResponseEntity(new Message("Password connot use special character"), HttpStatus.BAD_REQUEST);
 		}
@@ -503,5 +501,10 @@ public class UsersController extends BaseController {
 		}
 		return new ResponseEntity(new Message("Edited"), HttpStatus.OK);
 	}
-
+	
+	private boolean checkSpecialCharacter(String name){
+		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(name);
+		return m.find();
+	}
 }
