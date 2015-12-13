@@ -170,6 +170,7 @@ public class UsersController extends BaseController {
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
 	public ResponseEntity createUser(@RequestBody User user) {//, @RequestParam(value = "roleId", required = false)int id) {
 		
+		user.setEmail(user.getEmail().toLowerCase());
 		if(!isValidEmailAddress(user.getEmail())){
 			return new ResponseEntity(new Message("This email format cannot use"), HttpStatus.BAD_REQUEST);
 		}
