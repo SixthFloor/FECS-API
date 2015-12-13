@@ -214,6 +214,16 @@ public class UsersController extends BaseController {
 		if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
+		user.setEmail(user.getEmail().toLowerCase());
+		if(!isValidEmailAddress(user.getEmail())){
+			return new ResponseEntity(new Message("This email format cannot use"), HttpStatus.BAD_REQUEST);
+		}
+		if(checkSpecialCharacter(user.getPassword())){
+			return new ResponseEntity(new Message("Password connot use special character"), HttpStatus.BAD_REQUEST);
+		}
+		if(user.getPassword().length() < 8 && user.getPassword().length() >20){
+			return new ResponseEntity(new Message("Password lenght should be between 8 -20"), HttpStatus.BAD_REQUEST);
+		}
 		Date date = new Date();
 		String passwordHash = user.changeToHash(user.getPassword());
 		user.setPassword(passwordHash);

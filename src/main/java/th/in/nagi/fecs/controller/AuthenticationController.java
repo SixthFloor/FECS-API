@@ -96,9 +96,11 @@ public class AuthenticationController extends BaseController {
 	@JsonView(AuthenticationView.Summary.class)
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
 	public ResponseEntity login(@RequestBody User tempUser) {
-		System.out.println(tempUser.getEmail());
-		System.out.println(tempUser.getPassword());
-		User user = getUserService().findByEmail(tempUser.getEmail());
+		if(tempUser.getEmail() == null){
+			return new ResponseEntity(new Message("Email is empty"), HttpStatus.BAD_REQUEST);
+		}
+		
+		User user = getUserService().findByEmail(tempUser.getEmail().toLowerCase());
 		if(tempUser.getPassword() == null){
 			return new ResponseEntity(new Message("Password is empty"), HttpStatus.BAD_REQUEST);
 		}
