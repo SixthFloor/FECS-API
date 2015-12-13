@@ -10,7 +10,7 @@ import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.repository.SubCategoryRepository;
 
 /**
- * Provide SubCategory for managing data easier. Ex. add, remove, edit.
+ * Provide SubCategory service for managing data easier. Ex. add, remove, edit.
  * 
  * @author Thanachote Visetsuthimont
  *

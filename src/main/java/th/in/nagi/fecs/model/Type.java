@@ -16,25 +16,43 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.TypeView;
 
+/**
+ * Type model
+ * 
+ * @author Thanachote Visetsuthimont
+ *
+ */
 @Entity
 @Table(name = "type")
 public class Type {
 	
+	/**
+	 * Type's id
+	 */
 	@JsonView(TypeView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	
+	/**
+	 * Type's Category
+	 */
 	@JsonView(TypeView.Category.class)
 	@ManyToOne
 	@JoinColumn(name="category_id")
 	private Category category;
 
+	/**
+	 * Type's subCategory
+	 */
 	@JsonView(TypeView.SubCategory.class)
 	@ManyToOne
 	@JoinColumn(name="sub_category_id")
 	private SubCategory subCategory;
 	
+	/**
+	 * Catalogs list that use this Type
+	 */
 	@JsonView(TypeView.Catalogs.class)
 	@OneToMany(fetch = FetchType.EAGER, mappedBy = "type")
 	private List<Catalog> catalogs;

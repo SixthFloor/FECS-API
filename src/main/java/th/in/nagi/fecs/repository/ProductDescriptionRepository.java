@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
-import org.hibernate.criterion.Expression;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -20,9 +19,9 @@ import th.in.nagi.fecs.model.ProductDescription;
 public class ProductDescriptionRepository extends AbstractRepository<ProductDescription, Integer> {
 
 	/**
-	 * Query all products in database.
+	 * Query all Product Descriptions in database.
 	 * 
-	 * @return List<FurnitureDescription>
+	 * @return List<ProductDescription>
 	 */
 	@Override
 	public List<ProductDescription> findAll() {
@@ -31,9 +30,9 @@ public class ProductDescriptionRepository extends AbstractRepository<ProductDesc
 	}
 
 	/**
-	 * Query product by key.
+	 * Query Product Description by key.
 	 * 
-	 * @return FurnitureDescription
+	 * @return ProductDescription
 	 */
 	@Override
 	public ProductDescription findByKey(Integer key) {
@@ -41,18 +40,18 @@ public class ProductDescriptionRepository extends AbstractRepository<ProductDesc
 	}
 
 	/**
-	 * Save product in database.
+	 * Save Product Description in database.
 	 * 
-	 * @param entity
+	 * @param productDescription
 	 */
 	@Override
-	public void store(ProductDescription entity) {
-		persist(entity);
+	public void store(ProductDescription productDescription) {
+		persist(productDescription);
 
 	}
 
 	/**
-	 * Remove product in database by key.
+	 * Remove Product Description in database by key.
 	 * 
 	 * @param key
 	 */
@@ -62,7 +61,11 @@ public class ProductDescriptionRepository extends AbstractRepository<ProductDesc
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query Product Description by serial number.
+	 * 
+	 * @param serialNumber
+	 * 
+	 * @return ProductDescription
 	 */
 	public ProductDescription findBySerialNumber(String serialNumber) {
 		Criteria criteria = createEntityCriteria();
@@ -71,14 +74,21 @@ public class ProductDescriptionRepository extends AbstractRepository<ProductDesc
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Delete Product Description by serial number.
+	 * 
+	 * @param serialNumber
 	 */
 	public void removeBySerialNumber(String serialNumber) {
 		remove(findBySerialNumber(serialNumber));
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query Product Descriptions with limit size and ascending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * 
+	 * @return List<ProductDescription>
 	 */
 	public List<ProductDescription> findAndAscByName(int start, int size) {
 		List<ProductDescription> furnitureDescriptions = createEntityCriteria().setFetchMode("images", FetchMode.LAZY)
@@ -86,6 +96,14 @@ public class ProductDescriptionRepository extends AbstractRepository<ProductDesc
 		return furnitureDescriptions;
 	}
 
+	/**
+	 * Query Product Descriptions with limit size and descending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * 
+	 * @return List<ProductDescription>
+	 */
 	public List<ProductDescription> findAndDescByName(int start, int size) {
 		List<ProductDescription> furnitureDescriptions = createEntityCriteria().setFetchMode("images", FetchMode.LAZY)
 				.addOrder(org.hibernate.criterion.Order.desc("name")).setFirstResult(start).setMaxResults(size).list();
@@ -93,7 +111,12 @@ public class ProductDescriptionRepository extends AbstractRepository<ProductDesc
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query Product Descriptions with limit size and ascending by price.
+	 * 
+	 * @param start
+	 * @param size
+	 * 
+	 * @return List<ProductDescription>
 	 */
 	public List<ProductDescription> findAndAscByPrice(int start, int size) {
 		List<ProductDescription> furnitureDescriptions = createEntityCriteria()
@@ -102,20 +125,31 @@ public class ProductDescriptionRepository extends AbstractRepository<ProductDesc
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query Product Descriptions with limit size and descending by price.
+	 * 
+	 * @param start
+	 * @param size
+	 * 
+	 * @return List<ProductDescription>
 	 */
 	public List<ProductDescription> findAndDescByPrice(int start, int size) {
 		List<ProductDescription> furnitureDescriptions = createEntityCriteria()
 				.addOrder(org.hibernate.criterion.Order.desc("price")).setFirstResult(start).setMaxResults(size).list();
 		return furnitureDescriptions;
 	}
-	
+
+	/**
+	 * Query Product Descriptions with serial number or name. Return list of
+	 * product descriptions that they may be according.
+	 * 
+	 * @param searchName
+	 * 
+	 * @return List<ProductDescription>
+	 */
 	public List<ProductDescription> search(String searchName) {
 		Criteria criteria = createEntityCriteria();
-//		criteria.add(Restrictions.like("name", "%"+searchName+"%"));
-		criteria.add(Restrictions.or(
-				Restrictions.like("serialNumber", "%"+searchName+"%").ignoreCase(),
-				Restrictions.like("name", "%"+searchName+"%").ignoreCase()));
+		criteria.add(Restrictions.or(Restrictions.like("serialNumber", "%" + searchName + "%").ignoreCase(),
+				Restrictions.like("name", "%" + searchName + "%").ignoreCase()));
 		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}

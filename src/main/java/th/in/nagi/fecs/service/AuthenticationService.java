@@ -25,10 +25,10 @@ import th.in.nagi.fecs.repository.RoleRepository;
 @Transactional
 public class AuthenticationService {
 
-	public final String MEMBER = "member";
-	public final String STAFF = "staff";
-	public final String MANAGER = "member";
-	public final String OWNER = "owner";
+	public final String MEMBER = Role.MEMBER;
+	public final String STAFF = Role.STAFF;
+	public final String MANAGER = Role.MANAGER;
+	public final String OWNER = Role.OWNER;
 
 	/**
 	 * Tool for managing authentication table that link to database.
@@ -74,12 +74,6 @@ public class AuthenticationService {
 	 */
 	public void update(Authentication authentication) {
 		// TODO Auto-generated method stub
-		// Authentication entity =
-		// authenticationRepository.findByKey(authenticate.getId());
-		// if (entity != null) {
-		// entity.setUsername(authenticate.getUsername());
-		// entity.setToken(authenticate.getToken());
-		// }
 	}
 
 	/**
@@ -112,6 +106,9 @@ public class AuthenticationService {
 
 	/**
 	 * Find tokens by using user's email.
+	 * 
+	 * @param email
+	 * @return List<Authentication>
 	 */
 	public List<Authentication> findByEmail(String email) {
 		User user = userService.findByEmail(email);
@@ -119,11 +116,23 @@ public class AuthenticationService {
 
 	}
 
+	/**
+	 * Find role by using token.
+	 * 
+	 * @param token
+	 * @return Role
+	 */
 	public Role getRole(String token) {
 		return findByToken(token).getUser().getRole();
 	}
 
-	public boolean isExpiration(String token) {
+	/**
+	 * check token is expired or not.
+	 * 
+	 * @param token
+	 * @return boolean if true, the token is valid.
+	 */
+	public boolean isExpired(String token) {
 		Date date = new Date();
 		if (date.before(findByToken(token).getExpDate())) {
 			return true;
@@ -132,7 +141,7 @@ public class AuthenticationService {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * check permission, what roles can access.
 	 */
 	public boolean checkPermission(String token, String... roles) {
 		List<Role> list = new ArrayList<Role>();
@@ -140,7 +149,7 @@ public class AuthenticationService {
 			list.add(roleRepository.findByName(role));
 		}
 		Role userRole = findByToken(token).getUser().getRole();
-		if (list.contains(userRole) & isExpiration(token)) {
+		if (list.contains(userRole) & isExpired(token)) {
 			return true;
 		}
 		return false;

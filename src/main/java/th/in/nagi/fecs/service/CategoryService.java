@@ -10,7 +10,7 @@ import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.repository.CategoryRepository;
 
 /**
- * Provide Category service for managing category easier. Ex. add, edit, delete,
+ * Provide Category service for managing easier. Ex. add, edit, delete,
  * find.
  * 
  * @author Thanachote Visetsuthimont

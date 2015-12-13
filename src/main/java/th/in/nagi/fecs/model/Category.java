@@ -37,7 +37,6 @@ import th.in.nagi.fecs.view.ProductDescriptionView;
  *
  */
 @Entity
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "category")
 public class Category {
 
@@ -56,17 +55,6 @@ public class Category {
 	@Size(min = 1, max = 50)
 	@Column(name = "name", nullable = false)
 	private String name;
-	
-//	@OneToMany(fetch = FetchType.EAGER, mappedBy = "catalog")
-//	private List<Catalog> catalogs;
-//	
-//	public List<Category> getSubCategories() {
-//		catalogs.get
-//	}
-
-//	public void setCatalogs(List<Catalog> catalogs) {
-//		this.catalogs = catalogs;
-//	}
 
 	/**
 	 * Set new id of category

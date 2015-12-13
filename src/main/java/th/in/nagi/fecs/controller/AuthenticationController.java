@@ -34,7 +34,7 @@ import th.in.nagi.fecs.view.UserView;
  */
 @Controller
 @RequestMapping("/api/authentication")
-public class AuthenticateController extends BaseController {
+public class AuthenticationController extends BaseController {
 
 	/**
 	 * Authentication service
@@ -153,7 +153,7 @@ public class AuthenticateController extends BaseController {
 	@JsonView(AuthenticationView.Summary.class)
 	@RequestMapping(value = "/token", method = RequestMethod.POST)
 	public ResponseEntity checkToken(@RequestBody Authentication authentication) {
-		if (authenticationService.isExpiration(authentication.getToken())) {
+		if (authenticationService.isExpired(authentication.getToken())) {
 			System.out.println(authentication.getUser());
 			return new ResponseEntity(authenticationService.findByToken(authentication.getToken()),
 					HttpStatus.OK);

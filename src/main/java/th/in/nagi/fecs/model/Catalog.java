@@ -1,36 +1,16 @@
 package th.in.nagi.fecs.model;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.HashSet;
-import java.util.Set;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.validation.constraints.Size;
 
-import org.hibernate.annotations.Cascade;
-import org.springframework.web.servlet.View;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import th.in.nagi.fecs.view.CatalogView;
-import th.in.nagi.fecs.view.CategoryView;
-import th.in.nagi.fecs.view.ProductDescriptionView;
 
 /**
  * Category model
@@ -39,20 +19,28 @@ import th.in.nagi.fecs.view.ProductDescriptionView;
  *
  */
 @Entity
-//@JsonIdentityInfo(generator=ObjectIdGenerators.PropertyGenerator.class, property="id")
 @Table(name = "catalog")
 public class Catalog {
 
+	/**
+	 * Catalog's id
+	 */
 	@JsonView(CatalogView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
+	/**
+	 * Catalog's Type
+	 */
 	@JsonView(CatalogView.Type.class)
 	@ManyToOne
 	@JoinColumn(name="type_id")
 	private Type type;
 
+	/**
+	 * Catalog's Product Description
+	 */
 	@JsonView(CatalogView.ProductDescription.class)
 	@ManyToOne
 	@JoinColumn(name="product_description_id")

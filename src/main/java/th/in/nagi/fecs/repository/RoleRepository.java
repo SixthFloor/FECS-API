@@ -16,7 +16,9 @@ import th.in.nagi.fecs.model.Role;
 public class RoleRepository extends AbstractRepository<Role, Integer> {
 
 	/**
-	 * {@inheritDoc}
+	 * Query Role by name.
+	 * 
+	 * @return List<Role>
 	 */
 	public Role findByName(String name) {
 		Criteria criteria = createEntityCriteria();

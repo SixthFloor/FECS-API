@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.repository.UserRepository;
@@ -25,22 +24,37 @@ public class UserService {
 	@Autowired
 	private UserRepository userRepository;
 
+	/**
+	 * Get list of all users.
+	 * 
+	 * @param id
+	 *            user's id
+	 * @return User
+	 * 
+	 */
 	public User findByKey(Integer id) {
 		return userRepository.findByKey(id);
 	}
 
+	/**
+	 * Save new user in database.
+	 * 
+	 * @param user
+	 *            new user
+	 * 
+	 * @return List<User>
+	 * 
+	 */
 	public void store(User user) {
 		userRepository.store(user);
 	}
 
-	/*
-	 * Since the method is running with Transaction, No need to call hibernate
-	 * update explicitly. Just fetch the entity from db and update it with
-	 * proper values within transaction. It will be updated in db once
-	 * transaction ends.
-	 */
 	/**
-	 * {@inheritDoc}
+	 * Edit user detail.
+	 * 
+	 * @param user
+	 *            old user
+	 * 
 	 */
 	public void update(User user) {
 		User entity = userRepository.findByKey(user.getId());
@@ -54,14 +68,12 @@ public class UserService {
 			if (user.getLastName() != null) {
 				entity.setRole(user.getRole());
 			}
-//			entity.setJoiningDate(user.getJoiningDate());
 			if (user.getAddress1() != null) {
 				entity.setAddress1(user.getAddress1());
 			}
 			if (user.getAddress2() != null) {
 				entity.setAddress2(user.getAddress2());
 			}
-//			entity.setAddress2(user.getAddress2());
 			if (user.getCard_name() != null) {
 				entity.setCard_name(user.getCard_name());
 			}
@@ -93,28 +105,48 @@ public class UserService {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Delete user in database by email.
+	 * 
+	 * @param email
+	 *            email of that user
+	 * 
 	 */
 	public void removeByEmail(String email) {
 		userRepository.removeByEmail(email);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Get list of all users.
+	 * 
+	 * @return List<User>
+	 * 
 	 */
 	public List<User> findAll() {
 		return userRepository.findAll();
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Get user by using email.
+	 * 
+	 * @param email
+	 *            user's email
+	 * 
+	 * @return user
+	 * 
 	 */
 	public User findByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Check email in database to make sure that it is not duplicate.
+	 * 
+	 * @param id
+	 *            user's id
+	 * @param email
+	 *            user's email
+	 * @return List<User>
+	 * 
 	 */
 	public boolean isEmailUnique(Integer id, String email) {
 		User user = findByEmail(email);
