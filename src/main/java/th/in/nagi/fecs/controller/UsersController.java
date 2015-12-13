@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -168,6 +170,12 @@ public class UsersController extends BaseController {
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
 	public ResponseEntity createUser(@RequestBody User user) {//, @RequestParam(value = "roleId", required = false)int id) {
 		
+		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(user.getPassword());
+		boolean b = m.find();
+		if(b){
+			return new ResponseEntity(new Message("Password connot use special character"), HttpStatus.BAD_REQUEST);
+		}
 		if(user.getPassword().length() < 8 && user.getPassword().length() >20){
 			return new ResponseEntity(new Message("Password lenght should be between 8 -20"), HttpStatus.BAD_REQUEST);
 		}
