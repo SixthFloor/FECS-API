@@ -170,8 +170,10 @@ public class UsersController extends BaseController {
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
 	public ResponseEntity createUser(@RequestBody User user) {//, @RequestParam(value = "roleId", required = false)int id) {
 		
-		boolean b = checkSpecialCharacter(user.getPassword());
-		if(b){
+		if(!isValidEmailAddress(user.getEmail())){
+			return new ResponseEntity(new Message("This email format cannot use"), HttpStatus.BAD_REQUEST);
+		}
+		if(checkSpecialCharacter(user.getPassword())){
 			return new ResponseEntity(new Message("Password connot use special character"), HttpStatus.BAD_REQUEST);
 		}
 		if(user.getPassword().length() < 8 && user.getPassword().length() >20){
@@ -506,5 +508,12 @@ public class UsersController extends BaseController {
 		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
 		Matcher m = p.matcher(name);
 		return m.find();
+	}
+	
+	private static boolean isValidEmailAddress(String email) {
+		String ePattern = "^[a-zA-Z0-9._-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        Pattern p = Pattern.compile(ePattern);
+        Matcher m = p.matcher(email);
+        return m.matches();
 	}
 }
