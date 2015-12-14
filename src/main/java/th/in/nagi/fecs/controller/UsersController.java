@@ -269,7 +269,7 @@ public class UsersController extends BaseController {
 		try {
 			getUserService().update(newUser);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("This user has edited"), HttpStatus.OK);
 	}
@@ -304,7 +304,7 @@ public class UsersController extends BaseController {
 		try {
 			getUserService().update(newUser);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(userService.findByKey(newUser.getId()), HttpStatus.OK);
 	}
@@ -333,8 +333,9 @@ public class UsersController extends BaseController {
 		newUser.setRole(roleService.findByKey(id));
 		try {
 			getUserService().update(newUser);
+			userService.updateRole(newUser);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("getUserService().findByEmail(newUser.getEmail()).getEmail()"),
 				HttpStatus.OK);
@@ -366,7 +367,7 @@ public class UsersController extends BaseController {
 		try {
 			getUserService().removeByEmail(user.getEmail());
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Delete fail"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("User has removed"), HttpStatus.OK);
 	}
@@ -469,7 +470,7 @@ public class UsersController extends BaseController {
 		try {
 			getUserService().update(user);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("Edited"), HttpStatus.OK);
 	}
@@ -508,9 +509,9 @@ public class UsersController extends BaseController {
 		user.setCard_number(newUser.getCard_number());
 		user.setExpirationDate(newUser.getExpirationDate());
 		try {
-			getUserService().update(user);
+			getUserService().updatePayment(user);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("Edited"), HttpStatus.OK);
 	}

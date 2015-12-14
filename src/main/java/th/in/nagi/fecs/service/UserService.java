@@ -74,17 +74,8 @@ public class UserService {
 			if (user.getAddress2() != null) {
 				entity.setAddress2(user.getAddress2());
 			}
-			if (user.getCard_name() != null) {
-				entity.setCard_name(user.getCard_name());
-			}
-			if (user.getCard_number() != null) {
-				entity.setCard_number(user.getCard_number());
-			}
 			if (user.getEmail() != null) {
 				entity.setEmail(user.getEmail());
-			}
-			if (user.getExpirationDate() != null) {
-				entity.setExpirationDate(user.getExpirationDate());
 			}
 			if (user.getPassword() != null) {
 				entity.setPassword(user.getPassword());
@@ -98,9 +89,26 @@ public class UserService {
 			if (user.getTelephone_number() != null) {
 				entity.setTelephone_number(user.getTelephone_number());
 			}
-			if (user.getRole() != null) {
-				entity.setRole(user.getRole());
-			}
+		}
+	}
+	
+	public void updatePayment(User user){
+		User entity = userRepository.findByKey(user.getId());
+		if (user.getCard_name() != null) {
+			entity.setCard_name(user.getCard_name());
+		}
+		if (user.getCard_number() != null) {
+			entity.setCard_number(user.getCard_number());
+		}
+		if (user.getExpirationDate() != null) {
+			entity.setExpirationDate(user.getExpirationDate());
+		}
+	}
+	
+	public void updateRole(User user){
+		User entity = userRepository.findByKey(user.getId());
+		if (user.getRole() != null) {
+			entity.setRole(user.getRole());
 		}
 	}
 
