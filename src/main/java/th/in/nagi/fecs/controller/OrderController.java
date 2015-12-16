@@ -99,7 +99,7 @@ public class OrderController extends BaseController {
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
 	public ResponseEntity<?> getOrder(@RequestHeader(value = "Authorization") String token,
 			@PathVariable Integer orderNumber) {
-		
+
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -111,8 +111,12 @@ public class OrderController extends BaseController {
 
 		if (order == null) {
 			return new ResponseEntity<Message>(new Message("Not found order"), HttpStatus.BAD_REQUEST);
-		} else if (!Integer.valueOf(userId).equals(Integer.valueOf(order.getUser().getId()))) {
-			return new ResponseEntity<Message>(new Message("Invalid user[" + userId + "], order[" + order.getUser().getId() + "]" ), HttpStatus.BAD_REQUEST);
+		} else if (!Integer.valueOf(userId).equals(Integer.valueOf(order.getUser().getId()))
+				&& !authenticationService.checkPermission(token, authenticationService.STAFF,
+						authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity<Message>(
+					new Message("This user does not allow"),
+					HttpStatus.BAD_REQUEST);
 		}
 
 		WebOrder webOrder = WebOrder.create(order);
@@ -132,17 +136,21 @@ public class OrderController extends BaseController {
 				authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		
-		Integer userId = authenticationService.findByToken(token).getUser().getId();
-
-		if (!Integer.valueOf(userId).equals(Integer.valueOf(id))) {
-			return new ResponseEntity<Message>(new Message("Invalid user[" + userId + "]"), HttpStatus.BAD_REQUEST);
-		}
 
 		User user = userService.findByKey(id);
 
 		if (user == null) {
 			return new ResponseEntity<Message>(new Message("User [" + id + "] not found"), HttpStatus.BAD_REQUEST);
+		}
+		
+		Integer userId = authenticationService.findByToken(token).getUser().getId();
+
+		if (!Integer.valueOf(userId).equals(Integer.valueOf(id))
+				&& !authenticationService.checkPermission(token, authenticationService.STAFF,
+						authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity<Message>(
+					new Message("This user does not allow"),
+					HttpStatus.BAD_REQUEST);
 		}
 
 		List<Order> orders = orderService.findByUser(user);
