@@ -18,7 +18,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Shipping;
 import th.in.nagi.fecs.service.AuthenticationService;
-import th.in.nagi.fecs.service.OrderService;
 import th.in.nagi.fecs.service.ShippingService;
 import th.in.nagi.fecs.view.ShippingView;
 
@@ -74,7 +73,7 @@ public class ShippingController extends BaseController {
 	 * @return shipping number
 	 */
 	@ResponseBody
-	@RequestMapping(value = { "/new" }, method = RequestMethod.POST)
+	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
 	public ResponseEntity<?> createShipping(@RequestHeader(value = "Authorization") String token,
 			@RequestBody Shipping shipping) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
@@ -87,10 +86,10 @@ public class ShippingController extends BaseController {
 		try {
 			shippingService.store(shipping);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("Create shipping slot failed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Create shipping slot failed"), HttpStatus.BAD_REQUEST);
 		}
 
-		return new ResponseEntity(new Message("The shipping slot has created"), HttpStatus.CREATED);
+		return new ResponseEntity<Message>(new Message("The shipping slot has created"), HttpStatus.CREATED);
 	}
 
 	/**
@@ -108,7 +107,7 @@ public class ShippingController extends BaseController {
 				authenticationService.OWNER)) {
 			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		
+
 		List<Shipping> shippings = shippingService.findByStatusByDate(Shipping.INPROGRESS, year, month, day);
 		if (shippings != null && !shippings.isEmpty()) {
 			return new ResponseEntity<List<Shipping>>(shippings, HttpStatus.OK);

@@ -16,7 +16,6 @@ import com.fasterxml.jackson.annotation.JsonView;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.service.AuthenticationService;
-import th.in.nagi.fecs.service.RoleService;
 import th.in.nagi.fecs.service.UserService;
 import th.in.nagi.fecs.view.UserView;
 
@@ -41,12 +40,6 @@ public class AdminUsersController extends BaseController {
 	 */
 	@Autowired
 	private AuthenticationService authenticationService;
-
-	/**
-	 * role service
-	 */
-	@Autowired
-	private RoleService roleService;
 
 	/**
 	 * Gets user service.

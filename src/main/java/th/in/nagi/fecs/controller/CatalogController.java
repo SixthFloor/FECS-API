@@ -29,9 +29,6 @@ import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.service.TypeService;
 import th.in.nagi.fecs.view.CatalogView;
-import th.in.nagi.fecs.view.CategoryView;
-import th.in.nagi.fecs.view.ProductDescriptionView;
-import th.in.nagi.fecs.view.TypeView;
 
 /**
  * Controller for category
@@ -42,43 +39,43 @@ import th.in.nagi.fecs.view.TypeView;
 @RestController
 @RequestMapping("/api/catalog")
 public class CatalogController extends BaseController {
-	
+
 	/**
 	 * service of catalog
 	 */
 	@Autowired
 	private CatalogService catalogService;
-	
+
 	/**
 	 * service of authenticate
 	 */
 	@Autowired
 	private AuthenticationService authenticationService;
-	
+
 	/**
 	 * service of type
 	 */
 	@Autowired
 	private TypeService typeService;
-	
+
 	/**
 	 * service of category
 	 */
 	@Autowired
 	private CategoryService categoryService;
-	
+
 	/**
 	 * service of subCategory
 	 */
 	@Autowired
 	private SubCategoryService subCategoryService;
-	
+
 	/**
 	 * service of product
 	 */
 	@Autowired
 	private ProductDescriptionService productDescriptionService;
-	
+
 	/**
 	 * Return list of catalog
 	 * 
@@ -86,10 +83,10 @@ public class CatalogController extends BaseController {
 	 */
 	@JsonView(CatalogView.Summary.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
-	public ResponseEntity showAllCatalog() {
-		return new ResponseEntity(catalogService.findAll(), HttpStatus.OK);
+	public ResponseEntity<?> showAllCatalog() {
+		return new ResponseEntity<List<Catalog>>(catalogService.findAll(), HttpStatus.OK);
 	}
-	
+
 	/**
 	 * create and add new Catalog to database
 	 * 
@@ -103,27 +100,29 @@ public class CatalogController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
-	public ResponseEntity createNewCatalog(@RequestBody ProductDescription productDescription,
+	public ResponseEntity<?> createNewCatalog(@RequestBody ProductDescription productDescription,
 			@RequestParam(value = "subCategory", required = false) String subCategoryName,
 			@RequestParam(value = "category", required = false) String categoryName,
 			@RequestHeader(value = "Authorization") String token) {
+
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
+
 		ProductDescription product = productDescriptionService.findByKey(productDescription.getId());
 		SubCategory subCategory = subCategoryService.findByName(subCategoryName);
 		Category category = categoryService.findByName(categoryName);
-		try{
+
+		try {
 			catalogService.createCatalog(category, subCategory, product);
+		} catch (Exception e) {
+			return new ResponseEntity<Message>(new Message("Created fail"), HttpStatus.BAD_REQUEST);
 		}
-		catch(Exception e){
-			return new ResponseEntity(new Message("Created fail"), HttpStatus.BAD_REQUEST);
-		}
-		
-		return new ResponseEntity(new Message("Catalog has added"), HttpStatus.CREATED);
+
+		return new ResponseEntity<Message>(new Message("Catalog has added"), HttpStatus.CREATED);
 	}
-	
+
 	/**
 	 * Edit Catalog to database
 	 * 
@@ -133,26 +132,28 @@ public class CatalogController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
-	public ResponseEntity editCatalog(@RequestBody Catalog catalog,
+	public ResponseEntity<?> editCatalog(@RequestBody Catalog catalog,
 			@RequestHeader(value = "Authorization") String token) {
+
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		
+
 		Type type = typeService.findByKey(catalog.getType().getId());
 		ProductDescription product = productDescriptionService.findByKey(catalog.getProductDescription().getId());
 		catalog.setType(type);
 		catalog.setProductDescription(product);
+
 		try {
 			catalogService.update(catalog);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("Edited fail"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Edited fail"), HttpStatus.BAD_REQUEST);
 		}
-		
-		return new ResponseEntity(new Message("Catalog has edited"), HttpStatus.CREATED);
+
+		return new ResponseEntity<Message>(new Message("Catalog has edited"), HttpStatus.CREATED);
 	}
-	
+
 	/**
 	 * Return type
 	 * 
@@ -161,15 +162,11 @@ public class CatalogController extends BaseController {
 	 */
 	@JsonView(CatalogView.Summary.class)
 	@RequestMapping(value = "/{serialNumber}", method = RequestMethod.GET)
-	public ResponseEntity getDetail(@PathVariable String serialNumber) {
-		ProductDescription productDescription = productDescriptionService.findBySerialNumber(serialNumber);
-		List<Catalog> catalog = catalogService.findCatalogByProductDescription(productDescription);
-		System.out.println(catalog.size());
-		
-		if (catalog != null) {
-			return new ResponseEntity(catalog, HttpStatus.OK);
-		}
-		return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
+	public ResponseEntity<?> getDetail(@PathVariable String serialNumber) {
 
+		ProductDescription productDescription = productDescriptionService.findBySerialNumber(serialNumber);
+		List<Catalog> catalogs = catalogService.findCatalogByProductDescription(productDescription);
+
+		return new ResponseEntity<List<Catalog>>(catalogs, HttpStatus.OK);
 	}
 }

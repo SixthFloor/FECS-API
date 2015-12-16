@@ -18,16 +18,14 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Category;
+import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.CategoryService;
-import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.service.TypeService;
-import th.in.nagi.fecs.view.CategoryView;
 import th.in.nagi.fecs.view.ProductDescriptionView;
 import th.in.nagi.fecs.view.SubCategoryView;
-import th.in.nagi.fecs.view.TypeView;
 
 /**
  * Controller for category
@@ -38,12 +36,6 @@ import th.in.nagi.fecs.view.TypeView;
 @RestController
 @RequestMapping("/api/subCategory")
 public class SubCategoryController extends BaseController {
-
-	/**
-	 * Service of product
-	 */
-	@Autowired
-	private ProductDescriptionService productDescriptionService;
 
 	/**
 	 * Service of category
@@ -62,7 +54,7 @@ public class SubCategoryController extends BaseController {
 	 */
 	@Autowired
 	private AuthenticationService authenticationService;
-	
+
 	/**
 	 * type service.
 	 */
@@ -77,8 +69,8 @@ public class SubCategoryController extends BaseController {
 	 */
 	@JsonView(SubCategoryView.Personal.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
-	public ResponseEntity showAllSubCategory() {
-		return new ResponseEntity(subCategoryService.findAll(), HttpStatus.OK);
+	public ResponseEntity<?> showAllSubCategory() {
+		return new ResponseEntity<List<SubCategory>>(subCategoryService.findAll(), HttpStatus.OK);
 	}
 
 	/**
@@ -92,17 +84,22 @@ public class SubCategoryController extends BaseController {
 	 */
 	@JsonView(SubCategoryView.Personal.class)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ResponseEntity getListsubCategorys(@RequestParam(value = "start", required = false) int start,
+	public ResponseEntity<?> getListsubCategorys(@RequestParam(value = "start", required = false) int start,
 			@RequestParam(value = "size", required = false) int size) {
+
 		int subCategoryListSize = subCategoryService.findAll().size();
+
 		if (size > subCategoryListSize - start) {
 			size = subCategoryListSize - start;
 		}
-		List<SubCategory> subCategory = (subCategoryService.findAndAscByName(start, size));
-		if (subCategory == null) {
-			return new ResponseEntity(new Message("Not found subCategory"), HttpStatus.BAD_REQUEST);
+
+		List<SubCategory> subCategories = (subCategoryService.findAndAscByName(start, size));
+
+		if (subCategories == null) {
+			return new ResponseEntity<Message>(new Message("Not found subCategory"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(subCategory, HttpStatus.OK);
+
+		return new ResponseEntity<List<SubCategory>>(subCategories, HttpStatus.OK);
 	}
 
 	/**
@@ -114,15 +111,19 @@ public class SubCategoryController extends BaseController {
 	 */
 	@JsonView(ProductDescriptionView.Personal.class)
 	@RequestMapping(value = "/{subCategoryName}", method = RequestMethod.GET)
-	public ResponseEntity showProductsBySubCategory(@PathVariable String subCategoryName,
+	public ResponseEntity<?> showProductsBySubCategory(@PathVariable String subCategoryName,
 			@RequestParam(value = "category", required = false) String categoryName) {
+
 		Category category = categoryService.findByName(categoryName);
 		SubCategory subCategory = subCategoryService.findByName(subCategoryName);
+
 		if (subCategory == null) {
-			return new ResponseEntity(new Message("This subCategory name is not existed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("This subCategory name is not existed"),
+					HttpStatus.BAD_REQUEST);
 		}
-		
-		return new ResponseEntity(typeService.findProductByCategoryAndSubCategory(category, subCategory), HttpStatus.OK);
+
+		return new ResponseEntity<List<ProductDescription>>(
+				typeService.findProductByCategoryAndSubCategory(category, subCategory), HttpStatus.OK);
 	}
 
 	/**
@@ -136,23 +137,26 @@ public class SubCategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
-	public ResponseEntity addSubCategory(@RequestBody SubCategory subCategory, //@RequestParam String categoryName,
+	public ResponseEntity<?> addSubCategory(@RequestBody SubCategory subCategory, //@RequestParam String categoryName,
 			@RequestHeader(value = "Authorization") String token) {
+
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
+
 		if (subCategoryService.findByName(subCategory.getName()) != null) {
-			return new ResponseEntity(new Message("This subCategory name is not existed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("This subCategory name is not existed"),
+					HttpStatus.BAD_REQUEST);
 		}
-//		Category category = categoryService.findByName(categoryName);
-//		subCategory.setCategory(category);
+
 		try {
 			subCategoryService.store(subCategory);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("Create subCategory failed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Create subCategory failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(new Message("subCategory has created"), HttpStatus.CREATED);
+
+		return new ResponseEntity<Message>(new Message("subCategory has created"), HttpStatus.CREATED);
 	}
 
 	/**
@@ -166,31 +170,27 @@ public class SubCategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
-	public ResponseEntity editSubCategory(@RequestBody SubCategory subCategory,
-//			@RequestParam(value = "newCategoryName", required = false) String categoryName,
+	public ResponseEntity<?> editSubCategory(@RequestBody SubCategory subCategory,
 			@RequestHeader(value = "Authorization") String token) {
+
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-//		Category category = categoryService.findByName(categoryName);
 		SubCategory oldSubCategory = subCategoryService.findByKey(subCategory.getId());
+
 		if (oldSubCategory == null) {
-			return new ResponseEntity(new Message("This subCategory is not exist"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("This subCategory is not exist"), HttpStatus.BAD_REQUEST);
 		}
 
-//		oldSubCategory.setName(subCategory.getName());
-//
-//		if (category != null) {
-//			oldSubCategory.setCategory(category);
-//		}
 		try {
 			subCategoryService.update(oldSubCategory);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("Create subCategory failed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Create subCategory failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(new Message("subCategory has editted"), HttpStatus.OK);
+
+		return new ResponseEntity<Message>(new Message("subCategory has editted"), HttpStatus.OK);
 	}
 
 	/**
@@ -202,18 +202,20 @@ public class SubCategoryController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-	public ResponseEntity deleteSubCategory(@RequestBody SubCategory subCategory,
+	public ResponseEntity<?> deleteSubCategory(@RequestBody SubCategory subCategory,
 			@RequestHeader(value = "Authorization") String token) {
+
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		try {
 			subCategoryService.removeById(subCategory.getId());
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("Remove subCategory failed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Remove subCategory failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(new Message("SubCategory has removed"), HttpStatus.OK);
+
+		return new ResponseEntity<Message>(new Message("SubCategory has removed"), HttpStatus.OK);
 	}
 }

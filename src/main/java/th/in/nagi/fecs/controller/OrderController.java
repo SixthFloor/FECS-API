@@ -26,7 +26,6 @@ import th.in.nagi.fecs.model.WebOrder;
 import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.CartService;
 import th.in.nagi.fecs.service.OrderService;
-import th.in.nagi.fecs.service.ProductDescriptionService;
 import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.service.UserService;
 import th.in.nagi.fecs.view.WebOrderView;
@@ -58,9 +57,6 @@ public class OrderController extends BaseController {
 
 	@Autowired
 	private CartService cartService;
-
-	@Autowired
-	private ProductDescriptionService productDescriptionService;
 
 	@Autowired
 	private ProductService productService;
@@ -114,9 +110,7 @@ public class OrderController extends BaseController {
 		} else if (!Integer.valueOf(userId).equals(Integer.valueOf(order.getUser().getId()))
 				&& !authenticationService.checkPermission(token, authenticationService.STAFF,
 						authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(
-					new Message("This user does not allow"),
-					HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.BAD_REQUEST);
 		}
 
 		WebOrder webOrder = WebOrder.create(order);
@@ -142,15 +136,12 @@ public class OrderController extends BaseController {
 		if (user == null) {
 			return new ResponseEntity<Message>(new Message("User [" + id + "] not found"), HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Integer userId = authenticationService.findByToken(token).getUser().getId();
 
-		if (!Integer.valueOf(userId).equals(Integer.valueOf(id))
-				&& !authenticationService.checkPermission(token, authenticationService.STAFF,
-						authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(
-					new Message("This user does not allow"),
-					HttpStatus.BAD_REQUEST);
+		if (!Integer.valueOf(userId).equals(Integer.valueOf(id)) && !authenticationService.checkPermission(token,
+				authenticationService.STAFF, authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.BAD_REQUEST);
 		}
 
 		List<Order> orders = orderService.findByUser(user);
