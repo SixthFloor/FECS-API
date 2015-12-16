@@ -57,7 +57,7 @@ public class Cart {
 	@JoinTable(name = "product_in_cart", joinColumns = {
 			@JoinColumn(name = "cart_id", referencedColumnName = "id") }, inverseJoinColumns = {
 					@JoinColumn(name = "product_id", referencedColumnName = "id") })
-	@JsonView({ CartView.Personal.class, CartView.Product.class })
+	@JsonView(CartView.Personal.class)
 	private List<Product> products = new ArrayList<Product>();
 
 	public Integer getId() {
@@ -99,7 +99,6 @@ public class Cart {
 	public Double getTotal() {
 		Double total = 0.0;
 		for (Product product : products) {
-//			Double bp = product.getBoughtPrice();
 			total += product.getProductDescription().getPrice();
 		}
 		

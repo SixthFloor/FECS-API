@@ -50,7 +50,7 @@ public class Product {
 	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "product_description_id")
-	@JsonView({ProductView.Personal.class, ProductView.ProductDescription.class})
+	@JsonView(ProductView.Personal.class)
 	private ProductDescription productDescription;
 
 	/**

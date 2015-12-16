@@ -22,20 +22,20 @@ public class WebOrder {
 	/**
 	 * User
 	 */
-	@JsonView({ WebOrderView.Personal.class, WebOrderView.User.class })
+	@JsonView(WebOrderView.Personal.class)
 	private User user;
 
 	/**
 	 * List of Product Description and quality (WebLineItem)
 	 */
 	@JsonProperty("cart")
-	@JsonView({ WebOrderView.Personal.class, WebOrderView.WebLineProduct.class })
+	@JsonView(WebOrderView.Personal.class)
 	private List<WebLineItem> webLineProduct;
 
 	/**
 	 * Shipping of this Order
 	 */
-	@JsonView({ WebOrderView.Personal.class, WebOrderView.Shipping.class })
+	@JsonView(WebOrderView.Personal.class)
 	private Shipping shipping;
 
 	/**

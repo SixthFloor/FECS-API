@@ -68,6 +68,16 @@ public class ShippingService {
 		}
 	}
 	
+	/**
+	 * find Shipping with year or month or day and status by descending
+	 * 
+	 * @param status
+	 * @param year
+	 * @param month
+	 * @param day
+	 * 
+	 * @return List<Shipping>
+	 */
 	public List<Shipping> findByStatusByDate(Integer status, Integer year, Integer month, Integer day) {
 		if(day != null & month != null & year != null & status != null){
 			return shippingRepository.findByStatusByDate(status, year, month, day);

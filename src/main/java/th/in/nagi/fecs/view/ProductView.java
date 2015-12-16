@@ -4,11 +4,7 @@ import th.in.nagi.fecs.view.BaseView.Standardized;
 
 public class ProductView {
 
-	public interface Personal extends Standardized, ProductDescription {
-	
-	}
-
-	public interface ProductDescription extends ProductDescriptionView.Personal {
+	public interface Personal extends Standardized, ProductDescriptionView.Personal {
 	
 	}
 }

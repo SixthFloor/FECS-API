@@ -1,6 +1,5 @@
 package th.in.nagi.fecs.model;
 
-import java.util.Collection;
 import java.util.Date;
 
 import org.json.JSONException;

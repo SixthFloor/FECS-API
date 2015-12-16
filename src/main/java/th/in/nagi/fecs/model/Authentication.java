@@ -1,7 +1,5 @@
 package th.in.nagi.fecs.model;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.util.Date;
 
 import javax.persistence.Column;

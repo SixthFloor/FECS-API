@@ -4,12 +4,7 @@ import th.in.nagi.fecs.view.BaseView.Standardized;
 
 public class WebLineItemView {
 
-	public interface Personal extends Standardized, ProductDescription {
+	public interface Personal extends Standardized, ProductDescriptionView.Personal {
 	
 	}
-	
-	public interface ProductDescription extends ProductDescriptionView.Personal {
-		
-	}
-
 }

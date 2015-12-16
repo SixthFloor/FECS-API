@@ -1,10 +1,8 @@
 package th.in.nagi.fecs.repository;
 
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Repository;
@@ -45,7 +43,17 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 	public void store(Shipping shipping) {
 		persist(shipping);
 	}
-	
+
+	/**
+	 * Query Shipping with Date(year, month, day) and status by descending
+	 * 
+	 * @param status
+	 * @param year
+	 * @param month
+	 * @param day
+	 * 
+	 * @return List<Shipping>
+	 */
 	public List<Shipping> findByStatusByDate(int status, int year, int month, int day) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("status", status));
@@ -55,7 +63,16 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 		criteria.addOrder(org.hibernate.criterion.Order.desc("date"));
 		return criteria.list();
 	}
-	
+
+	/**
+	 * Query Shipping with year, month and status by descending
+	 * 
+	 * @param status
+	 * @param year
+	 * @param month
+	 * 
+	 * @return List<Shipping>
+	 */
 	public List<Shipping> findByStatusByDate(int status, int year, int month) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("status", status));
@@ -64,7 +81,15 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 		criteria.addOrder(org.hibernate.criterion.Order.desc("date"));
 		return criteria.list();
 	}
-	
+
+	/**
+	 * Query Shipping with year and status by descending
+	 * 
+	 * @param status
+	 * @param year
+	 * 
+	 * @return List<Shipping>
+	 */
 	public List<Shipping> findByStatusByDate(int status, int year) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("status", status));

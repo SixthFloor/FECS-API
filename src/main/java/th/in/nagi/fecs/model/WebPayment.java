@@ -17,7 +17,7 @@ public class WebPayment {
 	 * WebCreditCard (credit card information)
 	 */
 	@JsonProperty("card")
-	@JsonView({WebPaymentView.Personal.class, WebPaymentView.WebCreditCard.class})
+	@JsonView(WebPaymentView.Personal.class)
 	private WebCreditCard webCreditCard;
 
 	/**
@@ -35,7 +35,7 @@ public class WebPayment {
 	/**
 	 * Shipping (shipping information)
 	 */
-	@JsonView({WebPaymentView.Personal.class, WebPaymentView.Shipping.class})
+	@JsonView(WebPaymentView.Personal.class)
 	private Shipping shipping;
 
 	public WebCreditCard getWebCreditCard() {

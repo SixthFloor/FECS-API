@@ -50,7 +50,7 @@ public class Order {
 	/**
 	 * Order's User
 	 */
-	@JsonView({OrderView.Personal.class, OrderView.User.class})
+	@JsonView(OrderView.Personal.class)
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	@Fetch(FetchMode.SELECT)
@@ -59,7 +59,7 @@ public class Order {
 	/**
 	 * Order's Cart
 	 */
-	@JsonView({OrderView.Personal.class, OrderView.Cart.class})
+	@JsonView(OrderView.Personal.class)
 	@OneToOne
 	@JoinColumn(name = "cart_id")
 	private Cart cart;
@@ -80,7 +80,7 @@ public class Order {
 	/**
 	 * Order's Shipping
 	 */
-	@JsonView({OrderView.Personal.class, OrderView.Shipping.class})
+	@JsonView(OrderView.Personal.class)
 	@OneToOne
 	@JoinColumn(name = "shipping_id")
 	private Shipping shipping;

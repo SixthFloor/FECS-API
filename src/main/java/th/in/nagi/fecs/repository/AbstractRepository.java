@@ -35,6 +35,7 @@ public abstract class AbstractRepository<E, K extends Serializable> implements R
 		getSession().persist(entity);
 	}
 
+	@SuppressWarnings("unchecked")
 	public K save(E entity) {
 
 		K key = null;
@@ -69,6 +70,7 @@ public abstract class AbstractRepository<E, K extends Serializable> implements R
 	 * 
 	 * @return List<E>
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public List<E> findAll() {
 		Criteria criteria = createEntityCriteria().setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
