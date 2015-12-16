@@ -107,9 +107,10 @@ public class OrderController extends BaseController {
 		Order order = orderService.findByKey(orderNumber);
 		WebOrder webOrder = WebOrder.create(order);
 
-		if (order != null) {
+		if (order != null && authenticationService.findByToken(token).getUser().getId() == order.getUser().getId()) {
 			return new ResponseEntity<WebOrder>(webOrder, HttpStatus.OK);
 		}
+		
 		return new ResponseEntity<Message>(new Message("Not found order"), HttpStatus.BAD_REQUEST);
 	}
 
@@ -197,7 +198,7 @@ public class OrderController extends BaseController {
 		}
 
 		Cart cart = Cart.create(user);
-
+		
 		for (WebLineItem wlp : webOrder.getWebProductList()) {
 			List<Product> products = productService.findAvailableByProductDescription(wlp.getProductDescription(),
 					wlp.getQuantity());
@@ -216,10 +217,9 @@ public class OrderController extends BaseController {
 
 			cart = cartService.findByKey(cartId);
 			Order order = Order.create(user, cart);
-
+			
 			Integer orderId = orderService.save(order);
 			return new ResponseEntity<Integer>(orderId, HttpStatus.CREATED);
-			
 		} catch (Exception e) {
 			System.out.println(e);
 			return new ResponseEntity<Message>(new Message("Create order failed"), HttpStatus.BAD_REQUEST);

@@ -32,7 +32,8 @@ public class Product {
 	 */
 	public static final int AVAILABLE = 0;
 	public static final int CRACKED = 1;
-	public static final int SOLD = 2;
+	public static final int RESERVED = 2;
+	public static final int SOLD = 3;
 
 	/**
 	 * Product's id
@@ -86,7 +87,7 @@ public class Product {
 	public int getStatus() {
 		return status;
 	}
-	
+
 	public Cart getCart() {
 		return cart;
 	}

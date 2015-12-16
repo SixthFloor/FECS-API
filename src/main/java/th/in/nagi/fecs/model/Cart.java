@@ -99,12 +99,8 @@ public class Cart {
 	public Double getTotal() {
 		Double total = 0.0;
 		for (Product product : products) {
-			Double bp = product.getBoughtPrice();
-			if (bp != null) {
-				total += product.getBoughtPrice();
-			} else {
-				return null;
-			}
+//			Double bp = product.getBoughtPrice();
+			total += product.getProductDescription().getPrice();
 		}
 		
 		return total;
