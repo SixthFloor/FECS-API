@@ -28,7 +28,7 @@ public class WebLineItem {
 	 * Product Description
 	 */
 	@JsonProperty("product")
-	@JsonView(WebLineItemView.ProductDescription.class)
+	@JsonView(WebLineItemView.Personal.class)
 	private ProductDescription productDescription;
 
 	/**

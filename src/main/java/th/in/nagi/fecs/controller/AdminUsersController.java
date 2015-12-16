@@ -57,7 +57,7 @@ public class AdminUsersController extends BaseController {
 	 *            email of user that want to show
 	 * @return user if not return message fail
 	 */
-	@JsonView(UserView.AllInformation.class)
+	@JsonView(UserView.All.class)
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
 	public ResponseEntity<?> search(@RequestHeader(value = "Authorization") String token,
 			@RequestParam(value = "keyword", required = true) String keyword) {

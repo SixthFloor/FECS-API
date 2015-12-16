@@ -125,7 +125,7 @@ public class UsersController extends BaseController {
 	 *            email of user that want to show
 	 * @return user if not return message fail
 	 */
-	@JsonView(UserView.AllInformation.class)
+	@JsonView(UserView.All.class)
 	@RequestMapping(value = "/admin/{email:.+}", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserByAdmin(@PathVariable String email,
 			@RequestHeader(value = "Authorization") String token) {
@@ -148,7 +148,7 @@ public class UsersController extends BaseController {
 	 *            email of user that want to show
 	 * @return user if not return message fail
 	 */
-	@JsonView(UserView.AllInformation.class)
+	@JsonView(UserView.All.class)
 	@RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
 	public ResponseEntity<?> getUserByEmail(@PathVariable String email,
 			@RequestHeader(value = "Authorization") String token) {
@@ -299,7 +299,7 @@ public class UsersController extends BaseController {
 	 * @return message message and email of user or not return message fail and
 	 *         string "not found"
 	 */
-	@JsonView(UserView.AllInformation.class)
+	@JsonView(UserView.All.class)
 	@ResponseBody
 	@RequestMapping(value = {"/{email:.+}"}, method = RequestMethod.PUT)
 	public ResponseEntity<?> editUser(@PathVariable String email, @RequestBody User newUser,
