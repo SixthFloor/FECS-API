@@ -300,6 +300,7 @@ public class UsersController extends BaseController {
 			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
 		//        User user = getUserService().findByUsername(newUser.getUsername());
+		newUser.setPassword(newUser.changeToHash(newUser.getPassword()));
 		newUser.setRole(roleService.findByName(roleService.MEMBER));
 		try {
 			getUserService().update(newUser);
