@@ -127,8 +127,7 @@ public class ProductDescriptionController extends BaseController {
 			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		productDescription.setName(productDescription.getName().toUpperCase());
-		ProductDescription product = productDescriptionService
-				.findByName(productDescription.getName());
+		ProductDescription product = productDescriptionService.findByName(productDescription.getName());
 		if(product != null){
 			return new ResponseEntity<Message>(new Message("This name has used"), HttpStatus.BAD_REQUEST);
 		}

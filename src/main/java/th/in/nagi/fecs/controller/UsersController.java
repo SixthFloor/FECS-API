@@ -184,7 +184,7 @@ public class UsersController extends BaseController {
 					HttpStatus.BAD_REQUEST);
 		}
 
-		if (user.getPassword().length() < 8 && user.getPassword().length() > 20) {
+		if (user.getPassword().length() < 8 || user.getPassword().length() > 20) {
 			return new ResponseEntity<Message>(new Message("Password lenght should be between 8 -20"),
 					HttpStatus.BAD_REQUEST);
 		}
@@ -236,7 +236,7 @@ public class UsersController extends BaseController {
 					HttpStatus.BAD_REQUEST);
 		}
 
-		if (user.getPassword().length() < 8 && user.getPassword().length() > 20) {
+		if (user.getPassword().length() < 8 || user.getPassword().length() > 20) {
 			return new ResponseEntity<Message>(new Message("Password lenght should be between 8 -20"),
 					HttpStatus.BAD_REQUEST);
 		}
