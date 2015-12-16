@@ -61,7 +61,10 @@ public class CartRepository extends AbstractRepository<Cart, Integer> {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query list of carts by User.
+	 * 
+	 * @param user
+	 * @return List<Cart>
 	 */
 	public List<Cart> findByUser(User user) {
 		Criteria criteria = createEntityCriteria();

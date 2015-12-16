@@ -10,7 +10,8 @@ import th.in.nagi.fecs.model.ProductDescription;
 import th.in.nagi.fecs.repository.ProductDescriptionRepository;
 
 /**
- * Provide product service for managing easier. Ex. add, remove, edit.
+ * Provide product description service for managing easier. Ex. add, remove,
+ * edit.
  * 
  * @author Thanachote Visetsuthimont
  *
@@ -20,32 +21,35 @@ import th.in.nagi.fecs.repository.ProductDescriptionRepository;
 public class ProductDescriptionService {
 
 	/**
-	 * Tool for managing product in database.
+	 * Tool for managing product description in database.
 	 */
 	@Autowired
 	private ProductDescriptionRepository productDescriptionRepository;
 
 	/**
-	 * Find product by using index.
+	 * Find product description by using id.
 	 * 
 	 * @param id
-	 * @return FurnitureDescription
+	 * @return ProductDescription
 	 */
 	public ProductDescription findByKey(Integer id) {
 		return productDescriptionRepository.findByKey(id);
 	}
 
 	/**
-	 * Save product in database.
+	 * Save product description in database.
 	 * 
-	 * @param furnitureDescription
+	 * @param productDescription
+	 *            new product description
 	 */
-	public void store(ProductDescription furnitureDescription) {
-		productDescriptionRepository.store(furnitureDescription);
+	public void store(ProductDescription productDescription) {
+		productDescriptionRepository.store(productDescription);
 	}
 
 	/**
-	 * Update product's detail in database.
+	 * Update product description's detail in database.
+	 * 
+	 * @param productDescription
 	 */
 	public void update(ProductDescription productDescription) {
 		ProductDescription entity = productDescriptionRepository.findByKey(productDescription.getId());
@@ -72,25 +76,25 @@ public class ProductDescriptionService {
 	}
 
 	/**
-	 * Find all products in database.
+	 * Find all product descriptions in database.
 	 * 
-	 * @return List<FurnitureDescription>
+	 * @return List<ProductDescription>
 	 */
 	public List<ProductDescription> findAll() {
 		return productDescriptionRepository.findAll();
 	}
 
 	/**
-	 * Find products by using serial number.
+	 * Find product descriptions by using serial number.
 	 * 
-	 * @return FurnitureDescription
+	 * @return ProductDescription
 	 */
 	public ProductDescription findBySerialNumber(String serialNumber) {
 		return productDescriptionRepository.findBySerialNumber(serialNumber);
 	}
 
 	/**
-	 * Remove products by using serial number.
+	 * Remove product descriptions by using serial number.
 	 * 
 	 * @param serialNumber
 	 */
@@ -100,49 +104,55 @@ public class ProductDescriptionService {
 	}
 
 	/**
-	 * Find products with limit size and ascending by name.
+	 * Find product descriptions with limit size and ascending by name.
 	 * 
 	 * @param start
 	 * @param size
-	 * @return List<FurnitureDescription>
+	 * @return List<ProductDescription>
 	 */
 	public List<ProductDescription> findAndAscByName(int start, int size) {
 		return productDescriptionRepository.findAndAscByName(start, size);
 	}
 
 	/**
-	 * Find products with limit size and descending by name.
+	 * Find product descriptions with limit size and descending by name.
 	 * 
 	 * @param start
 	 * @param size
-	 * @return List<FurnitureDescription>
+	 * @return List<ProductDescription>
 	 */
 	public List<ProductDescription> findAndDescByName(int start, int size) {
 		return productDescriptionRepository.findAndDescByName(start, size);
 	}
 
 	/**
-	 * Find products with limit size and ascending by price.
+	 * Find product descriptions with limit size and ascending by price.
 	 * 
 	 * @param start
 	 * @param size
-	 * @return List<FurnitureDescription>
+	 * @return List<ProductDescription>
 	 */
 	public List<ProductDescription> findAndAscByPrice(int start, int size) {
 		return productDescriptionRepository.findAndAscByPrice(start, size);
 	}
 
 	/**
-	 * Find products with limit size and descending by price.
+	 * Find product descriptions with limit size and descending by price.
 	 * 
 	 * @param start
 	 * @param size
-	 * @return List<FurnitureDescription>
+	 * @return List<ProductDescription>
 	 */
 	public List<ProductDescription> findAndDescByPrice(int start, int size) {
 		return productDescriptionRepository.findAndDescByPrice(start, size);
 	}
-	
+
+	/**
+	 * Search product descriptions by name and serial number.
+	 * 
+	 * @param searchName
+	 * @return List<ProductDescription>
+	 */
 	public List<ProductDescription> search(String searchName) {
 		return productDescriptionRepository.search(searchName);
 	}

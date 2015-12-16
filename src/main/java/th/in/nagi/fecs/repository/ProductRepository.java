@@ -52,17 +52,27 @@ public class ProductRepository extends AbstractRepository<Product, Integer> {
 		remove(key);
 	}
 
+	/**
+	 * Find product by using product number.
+	 * 
+	 * @param productNumber
+	 * @return Product
+	 */
 	public Product findByProductNumber(String productNumber) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("productNumber", productNumber));
 		return (Product) criteria.uniqueResult();
 	}
 
-	public List<Product> findAvailableByProductDescription(ProductDescription pd) {
-		Criteria criteria = createEntityCriteria()
-				.add(Restrictions.isNull("cart"))
-				.add(Restrictions.eq("productDescription", pd))
-				.add(Restrictions.eq("status", 0));
+	/**
+	 * Find available products by product description.
+	 * 
+	 * @param productDescription
+	 * @return List<Product>
+	 */
+	public List<Product> findAvailableByProductDescription(ProductDescription productDescription) {
+		Criteria criteria = createEntityCriteria().add(Restrictions.isNull("cart"))
+				.add(Restrictions.eq("productDescription", productDescription)).add(Restrictions.eq("status", 0));
 		return criteria.list();
 	}
 }

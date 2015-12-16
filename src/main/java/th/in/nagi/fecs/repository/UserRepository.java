@@ -63,14 +63,21 @@ public class UserRepository extends AbstractRepository<User, Integer> {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Delete User by email.
+	 * 
+	 * @param email
 	 */
 	public void removeByEmail(String email) {
 		remove(findByEmail(email));
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query category with limit size and ascending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * 
+	 * @return List<User>
 	 */
 	public List<User> findAndAscByFirstName(int start, int size) {
 		List<User> list = createEntityCriteria().setFetchMode("authenticate", FetchMode.LAZY)
@@ -80,7 +87,12 @@ public class UserRepository extends AbstractRepository<User, Integer> {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query category with limit size and descending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * 
+	 * @return List<User>
 	 */
 	public List<User> findAndDescByFirstName(int start, int size) {
 		List<User> list = createEntityCriteria().setFetchMode("authenticate", FetchMode.LAZY)

@@ -4,6 +4,8 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -167,17 +169,32 @@ public class UsersController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
 	public ResponseEntity createUser(@RequestBody User user) {//, @RequestParam(value = "roleId", required = false)int id) {
-
+		
+		user.setEmail(user.getEmail().toLowerCase());
+		if(!isValidEmailAddress(user.getEmail())){
+			return new ResponseEntity(new Message("This email format cannot use"), HttpStatus.BAD_REQUEST);
+		}
+		if(checkSpecialCharacter(user.getPassword())){
+			return new ResponseEntity(new Message("Password connot use special character"), HttpStatus.BAD_REQUEST);
+		}
+		if(user.getPassword().length() < 8 && user.getPassword().length() >20){
+			return new ResponseEntity(new Message("Password lenght should be between 8 -20"), HttpStatus.BAD_REQUEST);
+		}
 		Date date = new Date();
 		String passwordHash = user.changeToHash(user.getPassword());
 		user.setPassword(passwordHash);
 		user.setJoiningDate(date);
 		user.setRole(roleService.findByName(roleService.MEMBER));
 		//    	System.out.println(user);
+		User oldUser = userService.findByEmail(user.getEmail());
+		if(oldUser != null){
+		    return new ResponseEntity(new Message("This email has used"), HttpStatus.BAD_REQUEST);
+		}
+		    	
 		try {
 			getUserService().store(user);
 		} catch (Exception e) {
-			//			System.out.println(e);
+			System.out.println(e);
 			return new ResponseEntity(new Message("Create user failed"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("The user has created"), HttpStatus.CREATED);
@@ -197,11 +214,26 @@ public class UsersController extends BaseController {
 		if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
+		user.setEmail(user.getEmail().toLowerCase());
+		if(!isValidEmailAddress(user.getEmail())){
+			return new ResponseEntity(new Message("This email format cannot use"), HttpStatus.BAD_REQUEST);
+		}
+		if(checkSpecialCharacter(user.getPassword())){
+			return new ResponseEntity(new Message("Password connot use special character"), HttpStatus.BAD_REQUEST);
+		}
+		if(user.getPassword().length() < 8 && user.getPassword().length() >20){
+			return new ResponseEntity(new Message("Password lenght should be between 8 -20"), HttpStatus.BAD_REQUEST);
+		}
 		Date date = new Date();
 		String passwordHash = user.changeToHash(user.getPassword());
 		user.setPassword(passwordHash);
 		user.setJoiningDate(date);
 		user.setRole(roleService.findByKey(id));
+		
+		User oldUser = userService.findByEmail(user.getEmail());
+		if(oldUser != null){
+		    return new ResponseEntity(new Message("This email has used"), HttpStatus.BAD_REQUEST);
+		}
 		//    	System.out.println(user);
 		try {
 			getUserService().store(user);
@@ -229,17 +261,52 @@ public class UsersController extends BaseController {
 				authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		if (authenticationService.findByToken(token).getUser().getId() != newUser.getId()) {
+		if (!authenticationService.findByToken(token).getUser().getId().equals(newUser.getId())) {
 			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
 		//        User user = getUserService().findByUsername(newUser.getUsername());
-		newUser.setRole(null);
+		newUser.setRole(roleService.findByName(roleService.MEMBER));
 		try {
 			getUserService().update(newUser);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(getUserService().findByEmail(newUser.getEmail()).getEmail(), HttpStatus.OK);
+		return new ResponseEntity(new Message("This user has edited"), HttpStatus.OK);
+	}
+	
+	/**
+	 * edit user by member
+	 * 
+	 * @param newUser
+	 *            put user information that want to change, it is not required
+	 *            all parameter of user.
+	 * @return message message and email of user or not return message fail and
+	 *         string "not found"
+	 */
+	@JsonView(UserView.AllInformation.class)
+	@ResponseBody
+	@RequestMapping(value = {"/{email:.+}"}, method = RequestMethod.PUT)
+	public ResponseEntity editUser(@PathVariable String email,
+			@RequestBody User newUser,
+			@RequestHeader(value = "Authorization") String token) {
+		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+				authenticationService.MANAGER, authenticationService.OWNER)) {
+			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
+		if (!authenticationService.findByToken(token).getUser().getEmail().equals(email)) {
+			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
+		}
+		if (!authenticationService.findByToken(token).getUser().getId().equals(newUser.getId())) {
+			return new ResponseEntity(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
+		}
+		//        User user = getUserService().findByUsername(newUser.getUsername());
+		newUser.setRole(roleService.findByName(roleService.MEMBER));
+		try {
+			getUserService().update(newUser);
+		} catch (Exception e) {
+			return new ResponseEntity(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
+		}
+		return new ResponseEntity(userService.findByKey(newUser.getId()), HttpStatus.OK);
 	}
 
 	/**
@@ -254,7 +321,8 @@ public class UsersController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = {"/editByOwner"}, method = RequestMethod.PUT)
 	public ResponseEntity editUserByAdmin(@RequestBody User newUser,
-			@RequestHeader(value = "Authorization") String token) {
+			@RequestHeader(value = "Authorization") String token,
+			@RequestParam(value = "roleId", required = false) int id) {
 		if (!authenticationService.checkPermission(token, authenticationService.OWNER)) {
 			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
@@ -262,10 +330,12 @@ public class UsersController extends BaseController {
 		//			newUser.setRole(null);
 		//		}
 		//        User user = getUserService().findByUsername(newUser.getUsername());
+		newUser.setRole(roleService.findByKey(id));
 		try {
 			getUserService().update(newUser);
+			userService.updateRole(newUser);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("getUserService().findByEmail(newUser.getEmail()).getEmail()"),
 				HttpStatus.OK);
@@ -297,7 +367,7 @@ public class UsersController extends BaseController {
 		try {
 			getUserService().removeByEmail(user.getEmail());
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Delete fail"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("User has removed"), HttpStatus.OK);
 	}
@@ -400,7 +470,7 @@ public class UsersController extends BaseController {
 		try {
 			getUserService().update(user);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("Edited"), HttpStatus.OK);
 	}
@@ -439,11 +509,23 @@ public class UsersController extends BaseController {
 		user.setCard_number(newUser.getCard_number());
 		user.setExpirationDate(newUser.getExpirationDate());
 		try {
-			getUserService().update(user);
+			getUserService().updatePayment(user);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity(new Message("Edited"), HttpStatus.OK);
 	}
-
+	
+	private boolean checkSpecialCharacter(String name){
+		Pattern p = Pattern.compile("[^a-z0-9 ]", Pattern.CASE_INSENSITIVE);
+		Matcher m = p.matcher(name);
+		return m.find();
+	}
+	
+	private static boolean isValidEmailAddress(String email) {
+		String ePattern = "^[a-zA-Z0-9._-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        Pattern p = Pattern.compile(ePattern);
+        Matcher m = p.matcher(email);
+        return m.matches();
+	}
 }

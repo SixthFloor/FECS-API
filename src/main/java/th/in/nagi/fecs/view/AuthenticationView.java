@@ -15,7 +15,7 @@ public class AuthenticationView {
 	public interface Role extends RoleView.Personal{
 	}
 	
-	public interface User extends UserView.Summary{
+	public interface User extends UserView.AllInformation{
 		
 	}
 }

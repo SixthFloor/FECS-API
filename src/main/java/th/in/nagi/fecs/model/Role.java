@@ -1,7 +1,6 @@
 package th.in.nagi.fecs.model;
 
 import java.util.List;
-import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -14,26 +13,47 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotEmpty;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.RoleView;
 
+/**
+ * Role model
+ * 
+ * @author Thanachote Visetsuthimont
+ *
+ */
 @Entity
 @Table(name = "role")
 public class Role {
 
+	/**
+	 * The possible roles of Role
+	 */
+	public static final String MEMBER = "member";
+	public static final String STAFF = "staff";
+	public static final String MANAGER = "member";
+	public static final String OWNER = "owner";
+
+	/**
+	 * Role's id
+	 */
 	@JsonView(RoleView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
-	
+
+	/**
+	 * Role's name
+	 */
 	@JsonView(RoleView.Personal.class)
 	@NotEmpty
 	@Column(name = "name", nullable = false)
 	private String name;
 
+	/**
+	 * Users who have this role.
+	 */
 	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role")
 	private List<User> users;
 

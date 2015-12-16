@@ -23,26 +23,41 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.CartView;
 
+/**
+ * Cart model
+ * 
+ * @author Chonnipa Kittisiriprasert
+ *
+ */
 @Entity
 @Table(name = "cart")
 public class Cart {
 
+	/**
+	 * Cart's id
+	 */
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonView(CartView.Personal.class)
 	private Integer id;
 
+	/**
+	 * User's Cart
+	 */
 	@ManyToOne
 	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "user_id")
 	private User user;
 
+	/**
+	 * list of products in Cart of this User
+	 */
 	@OneToMany(cascade = CascadeType.MERGE)
 	@LazyCollection(LazyCollectionOption.FALSE)
 	@JoinTable(name = "product_in_cart", joinColumns = {
-			@JoinColumn(name = "cart_id", referencedColumnName = "id")}, inverseJoinColumns = {
-					@JoinColumn(name = "product_id", referencedColumnName = "id")})
-	@JsonView({CartView.Personal.class, CartView.Product.class})
+			@JoinColumn(name = "cart_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "product_id", referencedColumnName = "id") })
+	@JsonView({ CartView.Personal.class, CartView.Product.class })
 	private List<Product> products = new ArrayList<Product>();
 
 	public Integer getId() {
@@ -83,10 +98,10 @@ public class Cart {
 
 	public Double getTotal() {
 		Double total = 0.0;
-		for (Product product: products) {
+		for (Product product : products) {
 			Double bp = product.getBoughtPrice();
 			if (bp != null) {
-				total += product.getBoughtPrice();				
+				total += product.getBoughtPrice();
 			} else {
 				return null;
 			}

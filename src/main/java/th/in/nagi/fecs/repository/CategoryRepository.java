@@ -59,7 +59,12 @@ public class CategoryRepository extends AbstractRepository<Category, Integer> {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query category with limit size and ascending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * 
+	 * @return List<Category>
 	 */
 	public List<Category> findAndAscByName(int start, int size) {
 		List<Category> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("name"))
@@ -68,7 +73,12 @@ public class CategoryRepository extends AbstractRepository<Category, Integer> {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query category with limit size and descending by name.
+	 * 
+	 * @param start
+	 * @param size
+	 * 
+	 * @return List<Category>
 	 */
 	public List<Category> findAndDescByName(int start, int size) {
 		List<Category> list = createEntityCriteria().addOrder(org.hibernate.criterion.Order.desc("name"))
@@ -77,7 +87,12 @@ public class CategoryRepository extends AbstractRepository<Category, Integer> {
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Query category by name.
+	 * 
+	 * @param name
+	 *            category's name
+	 * 
+	 * @return Category
 	 */
 	public Category findByName(String name) {
 		Criteria criteria = createEntityCriteria();
