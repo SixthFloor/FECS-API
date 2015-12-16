@@ -21,7 +21,7 @@ public class WebPayment {
 	 * the a three digit number of credit card
 	 */
 	@JsonView(WebPaymentView.Personal.class)
-	private Integer cvv;
+	private String cvv;
 	
 	/**
 	 * the total price of the order
@@ -39,7 +39,7 @@ public class WebPayment {
 		return webCreditCard;
 	}
 
-	public Integer getCvv() {
+	public String getCvv() {
 		return cvv;
 	}
 

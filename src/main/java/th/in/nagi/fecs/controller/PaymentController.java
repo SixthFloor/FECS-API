@@ -96,7 +96,7 @@ public class PaymentController extends BaseController {
 			card.put("no", String.valueOf(webPayment.getWebCreditCard().getNumber()));
 			card.put("exp_date", String.valueOf(webPayment.getWebCreditCard().getExpirationDate().getTime()));
 			info.put("card", card);
-			info.put("cvv", String.valueOf(webPayment.getCvv()));
+			info.put("cvv", webPayment.getCvv());
 			info.put("price", String.valueOf(total));
 			info.put("owner_account", "54260012");
 
