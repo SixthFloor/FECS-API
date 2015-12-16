@@ -93,7 +93,7 @@ public class ShippingController extends BaseController {
 	}
 
 	/**
-	 * Lists all existing shippings.
+	 * Lists all existing shippings which status is inprogress.
 	 * 
 	 * @return list of shippings
 	 */
