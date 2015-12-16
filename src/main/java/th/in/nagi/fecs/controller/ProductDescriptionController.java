@@ -126,8 +126,14 @@ public class ProductDescriptionController extends BaseController {
 				authenticationService.OWNER)) {
 			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-
-		productDescription.setSerialNumber(getSerial(productDescription.getName()));
+		productDescription.setName(productDescription.getName().toUpperCase());
+		ProductDescription product = productDescriptionService
+				.findByName(productDescription.getName());
+		if(product != null){
+			return new ResponseEntity<Message>(new Message("This name has used"), HttpStatus.BAD_REQUEST);
+		}
+		
+		productDescription.setSerialNumber("");
 
 		try {
 			productDescriptionService.store(productDescription);
@@ -135,11 +141,18 @@ public class ProductDescriptionController extends BaseController {
 			return new ResponseEntity<Message>(new Message("Create FurnitureDescription failed"),
 					HttpStatus.BAD_REQUEST);
 		}
+		
+		productDescription.setSerialNumber(getSerial(productDescription.getName(), productDescription.getId()));
+		
+		try {
+			productDescriptionService.update(productDescription);
+		} catch (Exception e) {
+			System.out.println(e);
+			return new ResponseEntity<Message>(new Message("Generate serialNumber fail"), HttpStatus.BAD_REQUEST);
+		}
+		
 
-		ProductDescription newProduct = productDescriptionService
-				.findBySerialNumber(productDescription.getSerialNumber());
-
-		return new ResponseEntity<ProductDescription>(newProduct, HttpStatus.CREATED);
+		return new ResponseEntity<ProductDescription>(productDescription, HttpStatus.CREATED);
 	}
 
 	/**
@@ -207,15 +220,15 @@ public class ProductDescriptionController extends BaseController {
 		return new ResponseEntity<List<ProductDescription>>(productDescriptions, HttpStatus.OK);
 	}
 
-	private String getSerial(String productName) {
+	private String getSerial(String productName,Integer productId) {
 
 		productName = productName.toUpperCase();
 
 		String productCode = "" + productName.charAt(0) + productName.charAt(productName.length() - 1);
-		String id = "" + (int) (Math.ceil(Math.random() * 10) - 1) + "" + (int) (Math.ceil(Math.random() * 10) - 1) + ""
-				+ (int) (Math.ceil(Math.random() * 10) - 1) + (int) (Math.ceil(Math.random() * 10) - 1);
+//		String id = "" + (int) (Math.ceil(Math.random() * 10) - 1) + "" + (int) (Math.ceil(Math.random() * 10) - 1) + ""
+//				+ (int) (Math.ceil(Math.random() * 10) - 1) + (int) (Math.ceil(Math.random() * 10) - 1);
 
-		String serial = String.format("%s%s", productCode, id);
+		String serial = String.format("%s%04d", productCode, productId);
 
 		return serial;
 	}

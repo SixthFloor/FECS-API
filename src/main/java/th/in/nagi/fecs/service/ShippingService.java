@@ -68,6 +68,14 @@ public class ShippingService {
 		}
 	}
 
+	/**
+	 * Find shipment that is ready for shipping by year and month
+	 * 
+	 * @param year
+	 * @param month
+	 * 
+	 * @return List<Shipping>
+	 */
 	public List<Shipping> findByDate(Integer year, Integer month) {
 		return shippingRepository.findByDate(year, month);
 	}
@@ -78,17 +86,17 @@ public class ShippingService {
 			s.setStatus(Shipping.INPROGRESS);
 			return true;
 		}
-		
+
 		return false;
 	}
-	
+
 	public boolean updateToDone(Integer id) {
 		Shipping s = shippingRepository.findByKey(id);
 		if (s != null) {
 			s.setStatus(Shipping.DONE);
 			return true;
 		}
-		
+
 		return false;
 	}
 }

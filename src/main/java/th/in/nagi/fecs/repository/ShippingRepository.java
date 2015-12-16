@@ -33,7 +33,7 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 	public void store(Shipping shipping) {
 		persist(shipping);
 	}
-	
+
 	/**
 	 * Get list of Shippings that they are available and unique.
 	 * 
@@ -45,9 +45,18 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 		criteria.add(Restrictions.eq("status", Shipping.AVAILABLE));
 		return criteria.list();
 	}
-	
+
+	/**
+	 * Find shipment that is ready for shipping with year and month
+	 * 
+	 * @param year
+	 * @param month
+	 * 
+	 * @return List<Shipping>
+	 */
 	@SuppressWarnings("unchecked")
 	public List<Shipping> findByDate(int year, int month) {
+
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.gt("status", Shipping.AVAILABLE));
 		criteria.add(Restrictions.sqlRestriction("MONTH(date) = ?", month, StandardBasicTypes.INTEGER));

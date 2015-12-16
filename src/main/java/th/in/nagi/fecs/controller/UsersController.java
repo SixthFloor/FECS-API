@@ -316,7 +316,8 @@ public class UsersController extends BaseController {
 		if (!authenticationService.findByToken(token).getUser().getId().equals(newUser.getId())) {
 			return new ResponseEntity<Message>(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
-
+		
+		newUser.setPassword(newUser.changeToHash(newUser.getPassword()));
 		newUser.setRole(roleService.findByName(roleService.MEMBER));
 		try {
 			getUserService().update(newUser);
