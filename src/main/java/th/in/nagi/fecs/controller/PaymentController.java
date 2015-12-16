@@ -33,6 +33,7 @@ import th.in.nagi.fecs.model.Shipping;
 import th.in.nagi.fecs.model.WebPayment;
 import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.OrderService;
+import th.in.nagi.fecs.service.PaymentService;
 import th.in.nagi.fecs.service.ShippingService;
 
 /**
@@ -57,6 +58,9 @@ public class PaymentController extends BaseController {
 	@Autowired
 	private ShippingService shippingService;
 
+	@Autowired
+	private PaymentService paymentService;
+
 	/**
 	 * Validate credit card.
 	 * 
@@ -78,59 +82,10 @@ public class PaymentController extends BaseController {
 					HttpStatus.BAD_REQUEST);
 		}
 
-		Double total = order.getTotal();
-		if (total == null) {
-			return new ResponseEntity<Message>(new Message("Invalid order"), HttpStatus.BAD_REQUEST);
-		}
-		webPayment.setPrice(total);
+		String result = paymentService.validate(order, webPayment);
 
-		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-		String result = "";
-		JSONObject json = null;
-
-		try {
-			HttpPost request = new HttpPost("http://50.112.182.228:3000/bank1/validate");
-
-			JSONObject info = new JSONObject();
-			JSONObject card = new JSONObject();
-			card.put("no", String.valueOf(webPayment.getWebCreditCard().getNumber()));
-			card.put("exp_date", String.valueOf(webPayment.getWebCreditCard().getExpirationDate().getTime()));
-			info.put("card", card);
-			info.put("cvv", webPayment.getCvv());
-			info.put("price", String.valueOf(total));
-			info.put("owner_account", "54260012");
-
-			StringEntity params = new StringEntity(info.toString());
-			request.addHeader("content-type", "application/json");
-			request.setEntity(params);
-			HttpResponse response = httpClient.execute(request);
-
-			json = new JSONObject(EntityUtils.toString(response.getEntity()));
-			result = json.getString("result");
-
-			if (result.equals("ready")) {
-				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-			}
-
-			return new ResponseEntity<Message>(new Message(json.getString("message")), HttpStatus.BAD_REQUEST);
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (SocketTimeoutException e) {
-			e.printStackTrace();
-		} catch (ConnectTimeoutException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-		return new ResponseEntity<Message>(new Message("Error"), HttpStatus.BAD_REQUEST);
+		return (result.equals("ready")) ? new ResponseEntity<Boolean>(true, HttpStatus.OK)
+				: new ResponseEntity<Message>(new Message(result), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -154,81 +109,34 @@ public class PaymentController extends BaseController {
 					HttpStatus.BAD_REQUEST);
 		}
 
-		Double total = order.getTotal();
-		if (total == null) {
-			return new ResponseEntity<Message>(new Message("Invalid order"), HttpStatus.BAD_REQUEST);
-		}
+		String result = paymentService.pay(order, webPayment);
 
-		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
-		String result = "";
-		JSONObject json = null;
+		if (result.equals("success")) {
+			Shipping slot;
 
-		try {
-			HttpPost request = new HttpPost("http://50.112.182.228:3000/bank1/pay");
+			try {
+				slot = shippingService.findByKey(webPayment.getShipping().getId());
 
-			JSONObject info = new JSONObject();
-			JSONObject card = new JSONObject();
-			card.put("no", String.valueOf(webPayment.getWebCreditCard().getNumber()));
-			card.put("exp_date", String.valueOf(webPayment.getWebCreditCard().getExpirationDate().getTime()));
-			info.put("card", card);
-			info.put("cvv", String.valueOf(webPayment.getCvv()));
-			info.put("price", String.valueOf(total));
-			info.put("owner_account", "54260012");
-
-			StringEntity params = new StringEntity(info.toString());
-			request.addHeader("content-type", "application/json");
-			request.setEntity(params);
-			HttpResponse response = httpClient.execute(request);
-
-			json = new JSONObject(EntityUtils.toString(response.getEntity()));
-			result = json.getString("result");
-
-			if (result.equals("success")) {
-				Shipping slot;
-
-				try {
-					slot = shippingService.findByKey(webPayment.getShipping().getId());
-
-					if (slot.getStatus() != Shipping.AVAILABLE) {
-						return new ResponseEntity<Message>(new Message("Shipping slot is not available"),
-								HttpStatus.BAD_REQUEST);
-					} else if (order.getStatus() != Order.NOTPAY) {
-						return new ResponseEntity<Message>(new Message("Order is already paid"),
-								HttpStatus.BAD_REQUEST);
-					}
-
-					slot.setStatus(Shipping.RESERVED);
-					shippingService.update(slot);
-
-					order.setStatus(Order.PAID);
-					order.setShipping(slot);
-					orderService.update(order);
-				} catch (Exception e) {
-					return new ResponseEntity<Message>(new Message("Invalid shipping information"),
+				if (slot.getStatus() != Shipping.AVAILABLE) {
+					return new ResponseEntity<Message>(new Message("Shipping slot is not available"),
 							HttpStatus.BAD_REQUEST);
+				} else if (order.getStatus() != Order.NOTPAY) {
+					return new ResponseEntity<Message>(new Message("Order is already paid"), HttpStatus.BAD_REQUEST);
 				}
 
-				return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+				slot.setStatus(Shipping.RESERVED);
+				shippingService.update(slot);
+
+				order.setStatus(Order.PAID);
+				order.setShipping(slot);
+				orderService.update(order);
+			} catch (Exception e) {
+				return new ResponseEntity<Message>(new Message("Invalid shipping information"), HttpStatus.BAD_REQUEST);
 			}
 
-			return new ResponseEntity<Message>(new Message(json.getString("message")), HttpStatus.BAD_REQUEST);
-
-		} catch (UnsupportedEncodingException e) {
-			e.printStackTrace();
-		} catch (ClientProtocolException e) {
-			e.printStackTrace();
-		} catch (SocketTimeoutException e) {
-			e.printStackTrace();
-		} catch (ConnectTimeoutException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
+			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 		}
 
-		return new ResponseEntity<Message>(new Message("Error"), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<Message>(new Message(result), HttpStatus.BAD_REQUEST);
 	}
 }

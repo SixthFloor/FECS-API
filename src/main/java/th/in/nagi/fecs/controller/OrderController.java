@@ -75,7 +75,7 @@ public class OrderController extends BaseController {
 	public ResponseEntity<?> getAllOrders(@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		List<WebOrder> webOrders = new ArrayList<WebOrder>();
@@ -99,19 +99,24 @@ public class OrderController extends BaseController {
 	@RequestMapping(value = "/{orderNumber}", method = RequestMethod.GET)
 	public ResponseEntity<?> getOrder(@RequestHeader(value = "Authorization") String token,
 			@PathVariable Integer orderNumber) {
+		
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		Order order = orderService.findByKey(orderNumber);
-		WebOrder webOrder = WebOrder.create(order);
 
-		if (order != null && authenticationService.findByToken(token).getUser().getId() == order.getUser().getId()) {
-			return new ResponseEntity<WebOrder>(webOrder, HttpStatus.OK);
+		Integer userId = authenticationService.findByToken(token).getUser().getId();
+
+		if (order == null) {
+			return new ResponseEntity<Message>(new Message("Not found order"), HttpStatus.BAD_REQUEST);
+		} else if (!Integer.valueOf(userId).equals(Integer.valueOf(order.getUser().getId()))) {
+			return new ResponseEntity<Message>(new Message("Invalid user[" + userId + "], order[" + order.getUser().getId() + "]" ), HttpStatus.BAD_REQUEST);
 		}
-		
-		return new ResponseEntity<Message>(new Message("Not found order"), HttpStatus.BAD_REQUEST);
+
+		WebOrder webOrder = WebOrder.create(order);
+		return new ResponseEntity<WebOrder>(webOrder, HttpStatus.OK);
 	}
 
 	/**
@@ -125,7 +130,13 @@ public class OrderController extends BaseController {
 			@PathVariable Integer id) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
+		
+		Integer userId = authenticationService.findByToken(token).getUser().getId();
+
+		if (!Integer.valueOf(userId).equals(Integer.valueOf(id))) {
+			return new ResponseEntity<Message>(new Message("Invalid user[" + userId + "]"), HttpStatus.BAD_REQUEST);
 		}
 
 		User user = userService.findByKey(id);
@@ -155,7 +166,7 @@ public class OrderController extends BaseController {
 			@PathVariable String email) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This order does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		User user = userService.findByEmail(email);
@@ -198,7 +209,7 @@ public class OrderController extends BaseController {
 		}
 
 		Cart cart = Cart.create(user);
-		
+
 		for (WebLineItem wlp : webOrder.getWebProductList()) {
 			List<Product> products = productService.findAvailableByProductDescription(wlp.getProductDescription(),
 					wlp.getQuantity());
@@ -217,7 +228,7 @@ public class OrderController extends BaseController {
 
 			cart = cartService.findByKey(cartId);
 			Order order = Order.create(user, cart);
-			
+
 			Integer orderId = orderService.save(order);
 			return new ResponseEntity<Integer>(orderId, HttpStatus.CREATED);
 		} catch (Exception e) {

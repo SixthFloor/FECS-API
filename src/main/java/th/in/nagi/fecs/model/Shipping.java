@@ -6,7 +6,12 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -49,6 +54,11 @@ public class Shipping {
 	 */
 	@JsonView(ShippingView.Personal.class)
 	private int status;
+	
+//	@ManyToOne
+//	@JoinColumn(name = "address_id")
+//	@Fetch(FetchMode.SELECT)
+//	private Address address;
 
 	public int getId() {
 		return id;
