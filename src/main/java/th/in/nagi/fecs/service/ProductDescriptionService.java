@@ -35,7 +35,17 @@ public class ProductDescriptionService {
 	public ProductDescription findByKey(Integer id) {
 		return productDescriptionRepository.findByKey(id);
 	}
-
+	
+	/**
+	 * Find product description by using name.
+	 * 
+	 * @param name
+	 * @return ProductDescription
+	 */
+	public ProductDescription findByName(String name) {
+		return productDescriptionRepository.findByName(name);
+	}
+	
 	/**
 	 * Save product description in database.
 	 * 

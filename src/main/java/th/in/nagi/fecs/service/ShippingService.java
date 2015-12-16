@@ -67,4 +67,17 @@ public class ShippingService {
 			s.setStatus(shipping.getStatus());
 		}
 	}
+	
+	public List<Shipping> findByStatusByDate(Integer status, Integer year, Integer month, Integer day) {
+		if(day != null & month != null & year != null & status != null){
+			return shippingRepository.findByStatusByDate(status, year, month, day);
+		}
+		if(month != null & year != null & status != null){
+			return shippingRepository.findByStatusByDate(status, year, month);
+		}
+		if(year != null & status != null){
+			return shippingRepository.findByStatusByDate(status, year);
+		}
+		return null;
+	}
 }

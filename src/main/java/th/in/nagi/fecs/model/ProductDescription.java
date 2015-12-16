@@ -181,12 +181,13 @@ public class ProductDescription {
 	@JsonView(ProductDescriptionView.Personal.class)
 	public int getQuantity() {
 		int quantity = 0;
-		for (Product product: products) {
-			if (product.isAvailable()) {
-				quantity++;
+		if(products != null){
+			for (Product product: products) {
+				if (product.isAvailable()) {
+					quantity++;
+				}
 			}
 		}
-		
 		return quantity;
 	}
 

@@ -12,6 +12,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.AuthenticationView;
@@ -45,6 +48,7 @@ public class Authentication {
 	 * user's Authentication
 	 */
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	private User user;
 
 	/**

@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -43,6 +45,7 @@ public class Cart {
 	 * User's Cart
 	 */
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "user_id")
 	private User user;
 
@@ -96,13 +99,10 @@ public class Cart {
 	public Double getTotal() {
 		Double total = 0.0;
 		for (Product product : products) {
-			Double bp = product.getBoughtPrice();
-			if (bp != null) {
-				total += product.getBoughtPrice();
-			} else {
-				return null;
-			}
+//			Double bp = product.getBoughtPrice();
+			total += product.getProductDescription().getPrice();
 		}
+		
 		return total;
 	}
 }

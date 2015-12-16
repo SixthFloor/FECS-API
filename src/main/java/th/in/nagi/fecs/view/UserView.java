@@ -6,7 +6,7 @@ public class UserView {
 	public interface Summary extends Personal,Role {
 	}
 
-	public interface Personal extends Standardized{
+	public interface Personal extends Standardized {
 	}
 
 	public interface Location {

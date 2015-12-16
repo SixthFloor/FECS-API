@@ -17,13 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.message.Message;
-import th.in.nagi.fecs.model.Category;
 import th.in.nagi.fecs.model.ProductDescription;
-import th.in.nagi.fecs.model.SubCategory;
 import th.in.nagi.fecs.service.AuthenticationService;
-import th.in.nagi.fecs.service.CategoryService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
-import th.in.nagi.fecs.service.SubCategoryService;
 import th.in.nagi.fecs.view.ProductDescriptionView;
 
 /**
@@ -43,22 +39,10 @@ public class ProductDescriptionController extends BaseController {
 	private ProductDescriptionService productDescriptionService;
 
 	/**
-	 * Service of subcategory
-	 */
-	@Autowired
-	private SubCategoryService subCategoryService;
-
-	/**
 	 * Service of authenticate
 	 */
 	@Autowired
 	private AuthenticationService authenticationService;
-	
-	/**
-	 * Service of category
-	 */
-	@Autowired
-	private CategoryService categoryService;
 
 	/**
 	 * Return a product that have the serialNumber
@@ -68,12 +52,14 @@ public class ProductDescriptionController extends BaseController {
 	 */
 	@JsonView(ProductDescriptionView.Personal.class)
 	@RequestMapping(value = "/{serialNumber}", method = RequestMethod.GET)
-	public ResponseEntity getDetail(@PathVariable String serialNumber) {
+	public ResponseEntity<?> getDetail(@PathVariable String serialNumber) {
 		ProductDescription productDescription = productDescriptionService.findBySerialNumber(serialNumber);
+
 		if (productDescription != null) {
-			return new ResponseEntity(productDescription, HttpStatus.OK);
+			return new ResponseEntity<ProductDescription>(productDescription, HttpStatus.OK);
 		}
-		return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
+
+		return new ResponseEntity<Message>(new Message("Not found product"), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -83,12 +69,14 @@ public class ProductDescriptionController extends BaseController {
 	 */
 	@JsonView(ProductDescriptionView.Personal.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
-	public ResponseEntity showAllProduct() {
-		List<ProductDescription> productDescription = productDescriptionService.findAll();
-		if (productDescription != null) {
-			return new ResponseEntity(productDescription, HttpStatus.OK);
+	public ResponseEntity<?> showAllProduct() {
+		List<ProductDescription> productDescriptions = productDescriptionService.findAll();
+
+		if (productDescriptions != null) {
+			return new ResponseEntity<List<ProductDescription>>(productDescriptions, HttpStatus.OK);
 		}
-		return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
+
+		return new ResponseEntity<Message>(new Message("Not found product"), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -102,17 +90,21 @@ public class ProductDescriptionController extends BaseController {
 	 */
 	@JsonView(ProductDescriptionView.Personal.class)
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
-	public ResponseEntity getListProduct(@RequestParam(value = "start", required = false) int start,
+	public ResponseEntity<?> getListProduct(@RequestParam(value = "start", required = false) int start,
 			@RequestParam(value = "size", required = false) int size) {
 		int productListSize = productDescriptionService.findAll().size();
+
 		if (size > productListSize - start) {
 			size = productListSize - start;
 		}
-		List<ProductDescription> productDescription = (productDescriptionService.findAndAscByName(start, size));
-		if (productDescription == null) {
-			return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
+
+		List<ProductDescription> productDescriptions = (productDescriptionService.findAndAscByName(start, size));
+
+		if (productDescriptions == null) {
+			return new ResponseEntity<Message>(new Message("Not found product"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(productDescription, HttpStatus.OK);
+
+		return new ResponseEntity<List<ProductDescription>>(productDescriptions, HttpStatus.OK);
 	}
 
 	/**
@@ -127,27 +119,40 @@ public class ProductDescriptionController extends BaseController {
 	@JsonView(ProductDescriptionView.Personal.class)
 	@ResponseBody
 	@RequestMapping(value = "/new", method = RequestMethod.POST)
-	public ResponseEntity createNewProduct(@RequestBody ProductDescription productDescription,
-//			@RequestParam(value = "subCategoryId", required = false) int id,
+	public ResponseEntity<?> createNewProduct(@RequestBody ProductDescription productDescription,
 			@RequestHeader(value = "Authorization") String token) {
-		
+
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-		productDescription.setSerialNumber(getSerial(productDescription.getName()));
-//		productDescription.setSubCategory(subCategoryService.findByKey(id));
+		productDescription.setName(productDescription.getName().toUpperCase());
+		ProductDescription product = productDescriptionService
+				.findByName(productDescription.getName());
+		if(product != null){
+			return new ResponseEntity<Message>(new Message("This name has used"), HttpStatus.BAD_REQUEST);
+		}
+		
+		productDescription.setSerialNumber("");
 
-		// System.out.println(furnitureDescription.getSubCategory().getName());
 		try {
 			productDescriptionService.store(productDescription);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("Create FurnitureDescription failed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Create FurnitureDescription failed"),
+					HttpStatus.BAD_REQUEST);
 		}
-
-		ProductDescription newProduct = productDescriptionService.findBySerialNumber(productDescription.getSerialNumber());
 		
-		return new ResponseEntity(newProduct, HttpStatus.CREATED);
+		productDescription.setSerialNumber(getSerial(productDescription.getName(), productDescription.getId()));
+		
+		try {
+			productDescriptionService.update(productDescription);
+		} catch (Exception e) {
+			System.out.println(e);
+			return new ResponseEntity<Message>(new Message("Generate serialNumber fail"), HttpStatus.BAD_REQUEST);
+		}
+		
+
+		return new ResponseEntity<ProductDescription>(productDescription, HttpStatus.CREATED);
 	}
 
 	/**
@@ -161,25 +166,19 @@ public class ProductDescriptionController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/edit", method = RequestMethod.PUT)
-	public ResponseEntity editProduct(@RequestBody ProductDescription productDescription,
+	public ResponseEntity<?> editProduct(@RequestBody ProductDescription productDescription,
 			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-
-//		SubCategory subCategory = subCategoryService.findByKey(id);
-//		if (subCategory != null) {
-//			productDescription.setSubCategory(subCategory);
-//		}
-
 
 		try {
 			productDescriptionService.update(productDescription);
 		} catch (Exception e) {
-			return new ResponseEntity(new Message("Edit product failed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Edit product failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(new Message("FurnitureDescription has editted"), HttpStatus.OK);
+		return new ResponseEntity<Message>(new Message("FurnitureDescription has editted"), HttpStatus.OK);
 	}
 
 	/**
@@ -191,54 +190,46 @@ public class ProductDescriptionController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/delete", method = RequestMethod.DELETE)
-	public ResponseEntity deleteProduct(@RequestBody ProductDescription productDescription,
+	public ResponseEntity<?> deleteProduct(@RequestBody ProductDescription productDescription,
 			@RequestHeader(value = "Authorization") String token) {
+
 		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
 				authenticationService.OWNER)) {
-			return new ResponseEntity(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		System.out.println(productDescription.getSerialNumber());
+
 		try {
 			productDescriptionService.removeBySerialNumber(productDescription.getSerialNumber());
-			;
 		} catch (Exception e) {
 			System.out.println(e);
-			return new ResponseEntity(new Message("Remove product failed"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Remove product failed"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(new Message("FurniturerDescription has removed"), HttpStatus.OK);
+
+		return new ResponseEntity<Message>(new Message("FurniturerDescription has removed"), HttpStatus.OK);
 	}
-	
+
 	@JsonView(ProductDescriptionView.Personal.class)
 	@RequestMapping(value = "/search", method = RequestMethod.GET)
-	public ResponseEntity search(@RequestParam(value = "query", required = false) String searchName) {
-		List<ProductDescription> productDescription = (productDescriptionService.search(searchName));
-		if (productDescription == null) {
-			return new ResponseEntity(new Message("Not found product"), HttpStatus.BAD_REQUEST);
+	public ResponseEntity<?> search(@RequestParam(value = "query", required = false) String searchName) {
+		List<ProductDescription> productDescriptions = (productDescriptionService.search(searchName));
+		if (productDescriptions == null) {
+			return new ResponseEntity<Message>(new Message("Not found product"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity(productDescription, HttpStatus.OK);
+		return new ResponseEntity<List<ProductDescription>>(productDescriptions, HttpStatus.OK);
 	}
-	
-	private String getSerial(String productName){
+
+	private String getSerial(String productName,Integer productId) {
+
 		productName = productName.toUpperCase();
-		String productCode = ""+productName.charAt(0) + productName.charAt(productName.length()-1);
-		String id = ""+(int)(Math.ceil(Math.random()*10)-1)+""+(int)(Math.ceil(Math.random()*10)-1)+""
-				+(int)(Math.ceil(Math.random()*10)-1)+(int)(Math.ceil(Math.random()*10)-1);
-		String serial = String.format("%s%s", productCode, id);
+
+		String productCode = "" + productName.charAt(0) + productName.charAt(productName.length() - 1);
+//		String id = "" + (int) (Math.ceil(Math.random() * 10) - 1) + "" + (int) (Math.ceil(Math.random() * 10) - 1) + ""
+//				+ (int) (Math.ceil(Math.random() * 10) - 1) + (int) (Math.ceil(Math.random() * 10) - 1);
+
+		String serial = String.format("%s%04d", productCode, productId);
+
 		return serial;
-		
-//		(int subCateId, int cateId)
-//		SubCategory subCategory = subCategoryService.findByKey(subCateId);
-//		String subCategoryName = subCategory.getName();
-//		
-//		Category category = categoryService.findByKey(cateId);
-//		String categoryName = category.getName();
-//		
-//		String subCategoryCode = ""+subCategoryName.charAt(0) + subCategoryName.charAt(subCategoryName.length()-1);
-//   		String categoryCode = ""+categoryName.charAt(0) + categoryName.charAt(categoryName.length()-1);
-//   		
-//   		String serial = String.format("%s%s%02d%02d", categoryCode, subCategoryCode, subCateId, cateId);
-//   		
-//   		return serial;
 	}
 }

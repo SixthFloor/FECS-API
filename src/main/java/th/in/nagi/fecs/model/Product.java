@@ -32,7 +32,8 @@ public class Product {
 	 */
 	public static final int AVAILABLE = 0;
 	public static final int CRACKED = 1;
-	public static final int SOLD = 2;
+	public static final int RESERVED = 2;
+	public static final int SOLD = 3;
 
 	/**
 	 * Product's id
@@ -47,6 +48,7 @@ public class Product {
 	 * Product's Product Description
 	 */
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "product_description_id")
 	@JsonView({ProductView.Personal.class, ProductView.ProductDescription.class})
 	private ProductDescription productDescription;
@@ -85,7 +87,7 @@ public class Product {
 	public int getStatus() {
 		return status;
 	}
-	
+
 	public Cart getCart() {
 		return cart;
 	}

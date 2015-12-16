@@ -11,19 +11,19 @@ import org.springframework.context.MessageSource;
  */
 public class BaseController {
 
-    /**
-     *
-     */
-    @Autowired
-    private MessageSource messageSource;
+	/**
+	 *
+	 */
+	@Autowired
+	private MessageSource messageSource;
 
-    /**
-     * Gets message source.
-     *
-     * @return message source
-     */
-    protected MessageSource getMessageSource() {
-        return messageSource;
-    }
+	/**
+	 * Gets message source.
+	 *
+	 * @return message source
+	 */
+	protected MessageSource getMessageSource() {
+		return messageSource;
+	}
 
 }

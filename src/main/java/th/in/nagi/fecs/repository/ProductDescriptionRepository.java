@@ -5,6 +5,7 @@ import java.util.List;
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.stereotype.Repository;
 
 import th.in.nagi.fecs.model.ProductDescription;
@@ -70,6 +71,19 @@ public class ProductDescriptionRepository extends AbstractRepository<ProductDesc
 	public ProductDescription findBySerialNumber(String serialNumber) {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("serialNumber", serialNumber));
+		return (ProductDescription) criteria.uniqueResult();
+	}
+	
+	/**
+	 * Query Product Description by name.
+	 * 
+	 * @param name
+	 * 
+	 * @return ProductDescription
+	 */
+	public ProductDescription findByName(String name) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("name", name));
 		return (ProductDescription) criteria.uniqueResult();
 	}
 

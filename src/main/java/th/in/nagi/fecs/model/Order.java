@@ -65,12 +65,11 @@ public class Order {
 	private Cart cart;
 
 	/**
-	 * Order's Shipping
+	 * Order Date
 	 */
-	@JsonView({OrderView.Personal.class, OrderView.Shipping.class})
-	@OneToOne
-	@JoinColumn(name = "shipping_id")
-	private Shipping shipping;
+	@JsonView(OrderView.Personal.class)
+	@Column(name = "order_date")
+	private Date orderDate;
 
 	/**
 	 * Order's status
@@ -79,11 +78,18 @@ public class Order {
 	private int status;
 
 	/**
-	 * Order Date
+	 * Order's Shipping
+	 */
+	@JsonView({OrderView.Personal.class, OrderView.Shipping.class})
+	@OneToOne
+	@JoinColumn(name = "shipping_id")
+	private Shipping shipping;
+
+	/**
+	 * Order's total price
 	 */
 	@JsonView(OrderView.Personal.class)
-	@Column(name = "order_date")
-	private Date orderDate;
+	private Double total;
 
 	public User getUser() {
 		return user;
@@ -109,6 +115,10 @@ public class Order {
 		return orderDate;
 	}
 
+	public Double getTotal() {
+		return this.cart.getTotal();
+	}
+
 	public void setUser(User user) {
 		this.user = user;
 	}
@@ -129,17 +139,18 @@ public class Order {
 		this.orderDate = orderDate;
 	}
 
+	public void setTotal(Double total) {
+		this.total = total;
+	}
+
 	public static Order create(User user, Cart cart) {
 		Order order = new Order();
 		order.setUser(user);
 		order.setCart(cart);
 		order.setOrderDate(new Date());
 		order.setStatus(NOTPAY);
+		order.setTotal(cart.getTotal());
 
 		return order;
-	}
-
-	public Double getTotal() {
-		return this.cart.getTotal();
 	}
 }

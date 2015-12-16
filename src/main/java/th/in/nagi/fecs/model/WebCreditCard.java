@@ -1,6 +1,10 @@
 package th.in.nagi.fecs.model;
 
+import java.util.Collection;
 import java.util.Date;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
@@ -43,5 +47,17 @@ public class WebCreditCard {
 
 	public Date getExpirationDate() {
 		return expirationDate;
+	}
+
+	public JSONObject getJSONObject() {
+		JSONObject card = new JSONObject();
+		try {
+			card.put("no", String.valueOf(number));
+			card.put("exp_date", String.valueOf(expirationDate.getTime()));
+			return card;
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

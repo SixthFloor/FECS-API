@@ -17,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -140,13 +142,15 @@ public class User {
 	/**
 	 * Authentications list of this User
 	 */
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+	@OneToMany(mappedBy = "user")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Authentication> authentication;
 
 	/**
 	 * Role of this User
 	 */
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	private Role role;
 
 	/**

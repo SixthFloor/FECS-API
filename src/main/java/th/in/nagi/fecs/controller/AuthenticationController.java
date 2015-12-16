@@ -3,6 +3,7 @@ package th.in.nagi.fecs.controller;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -20,11 +21,9 @@ import com.fasterxml.jackson.annotation.JsonView;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Authentication;
 import th.in.nagi.fecs.model.User;
-import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.UserService;
 import th.in.nagi.fecs.view.AuthenticationView;
-import th.in.nagi.fecs.view.UserView;
 
 /**
  * Controller for authenticate.
@@ -76,12 +75,15 @@ public class AuthenticationController extends BaseController {
 	 */
 	@JsonView(AuthenticationView.Personal.class)
 	@RequestMapping(value = "/{email:.+}", method = RequestMethod.GET)
-	public ResponseEntity getAuthenticateByUsername(@PathVariable String email) {
+	public ResponseEntity<?> getAuthenticateByUsername(@PathVariable String email) {
+
 		List<Authentication> authentication = getAuthenticateService().findByEmail(email);
+
 		if (authentication != null) {
-			return new ResponseEntity(authentication, HttpStatus.OK);
+			return new ResponseEntity<List<Authentication>>(authentication, HttpStatus.OK);
 		}
-		return new ResponseEntity(new Message("Not found authenticate"), HttpStatus.BAD_REQUEST);
+
+		return new ResponseEntity<Message>(new Message("Not found authenticate"), HttpStatus.BAD_REQUEST);
 	}
 
 	/**
@@ -95,27 +97,32 @@ public class AuthenticationController extends BaseController {
 	 */
 	@JsonView(AuthenticationView.Summary.class)
 	@RequestMapping(value = "/login", method = RequestMethod.POST)
-	public ResponseEntity login(@RequestBody User tempUser) {
-		if(tempUser.getEmail() == null){
-			return new ResponseEntity(new Message("Email is empty"), HttpStatus.BAD_REQUEST);
+	public ResponseEntity<?> login(@RequestBody User tempUser) {
+
+		if (tempUser.getEmail() == null) {
+			return new ResponseEntity<Message>(new Message("Email is empty"), HttpStatus.BAD_REQUEST);
 		}
-		
+
 		User user = getUserService().findByEmail(tempUser.getEmail().toLowerCase());
-		if(tempUser.getPassword() == null){
-			return new ResponseEntity(new Message("Password is empty"), HttpStatus.BAD_REQUEST);
+
+		if (tempUser.getPassword() == null) {
+			return new ResponseEntity<Message>(new Message("Password is empty"), HttpStatus.BAD_REQUEST);
 		}
+
 		String passwordHash = user.changeToHash(tempUser.getPassword());
-		
-		if(user.getEmail() == null){
-			return new ResponseEntity(new Message("User not found"), HttpStatus.BAD_REQUEST);
+
+		if (user.getEmail() == null) {
+			return new ResponseEntity<Message>(new Message("User not found"), HttpStatus.BAD_REQUEST);
 		}
+
 		if (!user.getPassword().equals(passwordHash)) {
-			return new ResponseEntity(new Message("Incorrect password"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<Message>(new Message("Incorrect password"), HttpStatus.BAD_REQUEST);
 		}
 
 		Date date = new Date();
 		String text = tempUser.getEmail() + date.toString();
 		String textHash = "";
+
 		try {
 			MessageDigest sha256 = MessageDigest.getInstance("SHA-256");
 			MessageDigest md5 = MessageDigest.getInstance("MD5");
@@ -126,8 +133,6 @@ public class AuthenticationController extends BaseController {
 						.digest((String.format("%064x", new java.math.BigInteger(1, hash2))).getBytes("UTF-8"));
 				textHash = "==" + String.format("%64x", new java.math.BigInteger(1, hash3)) + "."
 						+ String.format("%064x", new java.math.BigInteger(1, hash1));
-				// System.out.println(String.format("%064x", new
-				// java.math.BigInteger(1, hash3)));
 
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
@@ -135,15 +140,15 @@ public class AuthenticationController extends BaseController {
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 		}
-		date.setDate((date.getDate() + 1));
+
+		Calendar cal = Calendar.getInstance();
+		cal.add(Calendar.DATE, 1);
+		date = cal.getTime();
+
 		Authentication authentication = new Authentication(textHash, user, date);
 
-		if (authentication != null) {
-			getAuthenticateService().store(authentication);
-			Authentication dataBaseAuthenticate = getAuthenticateService().findByToken(authentication.getToken());
-			return new ResponseEntity(authentication, HttpStatus.CREATED);
-		}
-		return new ResponseEntity(new Message("Not found authenticate"), HttpStatus.BAD_REQUEST);
+		getAuthenticateService().store(authentication);
+		return new ResponseEntity<Authentication>(authentication, HttpStatus.CREATED);
 	}
 
 	/**
@@ -154,12 +159,12 @@ public class AuthenticationController extends BaseController {
 	 */
 	@JsonView(AuthenticationView.Summary.class)
 	@RequestMapping(value = "/token", method = RequestMethod.POST)
-	public ResponseEntity checkToken(@RequestBody Authentication authentication) {
+	public ResponseEntity<?> checkToken(@RequestBody Authentication authentication) {
 		if (authenticationService.isExpired(authentication.getToken())) {
 			System.out.println(authentication.getUser());
-			return new ResponseEntity(authenticationService.findByToken(authentication.getToken()),
+			return new ResponseEntity<Authentication>(authenticationService.findByToken(authentication.getToken()),
 					HttpStatus.OK);
 		}
-		return new ResponseEntity(new Message("Token is expiration."), HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<Message>(new Message("Token is expiration."), HttpStatus.BAD_REQUEST);
 	}
 }

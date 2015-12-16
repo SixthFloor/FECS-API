@@ -8,6 +8,9 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.CatalogView;
@@ -35,6 +38,7 @@ public class Catalog {
 	 */
 	@JsonView(CatalogView.Type.class)
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name="type_id")
 	private Type type;
 
@@ -43,6 +47,7 @@ public class Catalog {
 	 */
 	@JsonView(CatalogView.ProductDescription.class)
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name="product_description_id")
 	private ProductDescription productDescription;
 
