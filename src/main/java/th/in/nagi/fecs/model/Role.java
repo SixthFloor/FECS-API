@@ -32,7 +32,7 @@ public class Role {
 	 */
 	public static final String MEMBER = "member";
 	public static final String STAFF = "staff";
-	public static final String MANAGER = "member";
+	public static final String MANAGER = "manager";
 	public static final String OWNER = "owner";
 
 	/**
