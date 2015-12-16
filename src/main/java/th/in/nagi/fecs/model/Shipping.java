@@ -59,7 +59,7 @@ public class Shipping {
 	@OneToOne(mappedBy = "shipping")
 	private Order order;
 
-	@JsonView(ShippingView.View.class)
+	@JsonView(ShippingView.All.class)
 	public User getUser() {
 		if (order == null) {
 			return null;
@@ -68,7 +68,7 @@ public class Shipping {
 		return user;
 	}
 
-	@JsonView(ShippingView.View.class)
+	@JsonView(ShippingView.All.class)
 	public Integer getOrderNumber() {
 		if (order == null) {
 			return null;

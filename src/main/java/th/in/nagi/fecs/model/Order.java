@@ -41,7 +41,7 @@ public class Order {
 	/**
 	 * Order's number
 	 */
-	@JsonView(OrderView.Personal.class)
+	@JsonView(OrderView.Summary.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "serial_number", unique = true)
@@ -50,7 +50,7 @@ public class Order {
 	/**
 	 * Order's User
 	 */
-	@JsonView(OrderView.Personal.class)
+	@JsonView(OrderView.Summary.class)
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	@Fetch(FetchMode.SELECT)
@@ -59,7 +59,7 @@ public class Order {
 	/**
 	 * Order's Cart
 	 */
-	@JsonView(OrderView.Personal.class)
+	@JsonView(OrderView.Summary.class)
 	@OneToOne
 	@JoinColumn(name = "cart_id")
 	private Cart cart;
@@ -74,7 +74,7 @@ public class Order {
 	/**
 	 * Order's status
 	 */
-	@JsonView(OrderView.Personal.class)
+	@JsonView(OrderView.Summary.class)
 	private int status;
 
 	/**

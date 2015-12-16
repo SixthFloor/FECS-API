@@ -56,7 +56,7 @@ public class ShippingController extends BaseController {
 			return new ResponseEntity<Message>(new Message("This shipping does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-		List<Shipping> shippings = shippingService.findAllAvailable();
+		List<Shipping> shippings = shippingService.findAllUniqueAvailable();
 
 		if (shippings != null && !shippings.isEmpty()) {
 			return new ResponseEntity<List<Shipping>>(shippings, HttpStatus.OK);
@@ -90,29 +90,5 @@ public class ShippingController extends BaseController {
 		}
 
 		return new ResponseEntity<Message>(new Message("The shipping slot has created"), HttpStatus.CREATED);
-	}
-
-	/**
-	 * Lists all existing shippings which status is inprogress.
-	 * 
-	 * @return list of shippings
-	 */
-	@JsonView(ShippingView.View.class)
-	@RequestMapping(value = "/view", method = RequestMethod.GET)
-	public ResponseEntity<?> getAllShippingsByDateMonthYear(@RequestHeader(value = "Authorization") String token,
-			@RequestParam(required = false, value = "year") Integer year,
-			@RequestParam(required = false, value = "month") Integer month,
-			@RequestParam(required = false, value = "date") Integer day) {
-		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
-				authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
-		}
-
-		List<Shipping> shippings = shippingService.findByStatusByDate(Shipping.INPROGRESS, year, month, day);
-		if (shippings != null && !shippings.isEmpty()) {
-			return new ResponseEntity<List<Shipping>>(shippings, HttpStatus.OK);
-		}
-
-		return new ResponseEntity<Message>(new Message("None of shipping slots is inprogress"), HttpStatus.OK);
 	}
 }
