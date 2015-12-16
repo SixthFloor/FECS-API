@@ -47,12 +47,12 @@ public class ShippingService {
 	}
 
 	/**
-	 * Get list of Shippings that they are available.
+	 * Get list of Shippings that they are available and unique.
 	 * 
 	 * @return List<Shipping>
 	 */
-	public List<Shipping> findAllAvailable() {
-		return shippingRepository.findAllAvailable();
+	public List<Shipping> findAllUniqueAvailable() {
+		return shippingRepository.findAllUniqueAvailable();
 	}
 
 	/**
@@ -67,17 +67,28 @@ public class ShippingService {
 			s.setStatus(shipping.getStatus());
 		}
 	}
+
+	public List<Shipping> findByDate(Integer year, Integer month) {
+		return shippingRepository.findByDate(year, month);
+	}
+
+	public boolean updateToProgress(Integer id) {
+		Shipping s = shippingRepository.findByKey(id);
+		if (s != null) {
+			s.setStatus(Shipping.INPROGRESS);
+			return true;
+		}
+		
+		return false;
+	}
 	
-	public List<Shipping> findByStatusByDate(Integer status, Integer year, Integer month, Integer day) {
-		if(day != null & month != null & year != null & status != null){
-			return shippingRepository.findByStatusByDate(status, year, month, day);
+	public boolean updateToDone(Integer id) {
+		Shipping s = shippingRepository.findByKey(id);
+		if (s != null) {
+			s.setStatus(Shipping.DONE);
+			return true;
 		}
-		if(month != null & year != null & status != null){
-			return shippingRepository.findByStatusByDate(status, year, month);
-		}
-		if(year != null & status != null){
-			return shippingRepository.findByStatusByDate(status, year);
-		}
-		return null;
+		
+		return false;
 	}
 }

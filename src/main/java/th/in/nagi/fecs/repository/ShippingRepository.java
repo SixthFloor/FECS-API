@@ -1,10 +1,8 @@
 package th.in.nagi.fecs.repository;
 
-import java.util.Date;
 import java.util.List;
 
 import org.hibernate.Criteria;
-import org.hibernate.Hibernate;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Repository;
@@ -23,16 +21,6 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
-	public List<Shipping> findAllAvailable() {
-		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("status", 0));
-		return criteria.list();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
 	public Shipping findByKey(Integer key) {
 		return getByKey(key);
@@ -46,30 +34,24 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 		persist(shipping);
 	}
 	
-	public List<Shipping> findByStatusByDate(int status, int year, int month, int day) {
+	/**
+	 * Get list of Shippings that they are available and unique.
+	 * 
+	 * @return List<Shipping>
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Shipping> findAllUniqueAvailable() {
 		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("status", status));
-		criteria.add(Restrictions.sqlRestriction("DAY(date) = ?", day, StandardBasicTypes.INTEGER));
-		criteria.add(Restrictions.sqlRestriction("MONTH(date) = ?", month, StandardBasicTypes.INTEGER));
-		criteria.add(Restrictions.sqlRestriction("YEAR(date) = ?", year, StandardBasicTypes.INTEGER));
-		criteria.addOrder(org.hibernate.criterion.Order.desc("date"));
+		criteria.add(Restrictions.eq("status", Shipping.AVAILABLE));
 		return criteria.list();
 	}
 	
-	public List<Shipping> findByStatusByDate(int status, int year, int month) {
+	@SuppressWarnings("unchecked")
+	public List<Shipping> findByDate(int year, int month) {
 		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("status", status));
+		criteria.add(Restrictions.gt("status", Shipping.AVAILABLE));
 		criteria.add(Restrictions.sqlRestriction("MONTH(date) = ?", month, StandardBasicTypes.INTEGER));
 		criteria.add(Restrictions.sqlRestriction("YEAR(date) = ?", year, StandardBasicTypes.INTEGER));
-		criteria.addOrder(org.hibernate.criterion.Order.desc("date"));
-		return criteria.list();
-	}
-	
-	public List<Shipping> findByStatusByDate(int status, int year) {
-		Criteria criteria = createEntityCriteria();
-		criteria.add(Restrictions.eq("status", status));
-		criteria.add(Restrictions.sqlRestriction("YEAR(date) = ?", year, StandardBasicTypes.INTEGER));
-		criteria.addOrder(org.hibernate.criterion.Order.desc("date"));
 		return criteria.list();
 	}
 }

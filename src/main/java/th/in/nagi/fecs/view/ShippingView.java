@@ -8,7 +8,7 @@ public class ShippingView {
 	
 	}
 	
-	public interface View extends Standardized, Personal, UserView.All {
+	public interface All extends Personal, UserView.Summary, OrderView.Summary {
 		
 	}
 

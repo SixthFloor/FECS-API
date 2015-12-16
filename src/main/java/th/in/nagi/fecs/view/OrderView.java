@@ -4,7 +4,11 @@ import th.in.nagi.fecs.view.BaseView.Standardized;
 
 public class OrderView {
 	
-	public interface Personal extends Standardized, UserView.Personal, CartView.Personal, ShippingView.Personal {
+	public interface Personal extends Summary, ShippingView.Personal {
+		
+	}
+	
+	public interface Summary extends Standardized, UserView.Personal, CartView.Personal {
 		
 	}
 }
