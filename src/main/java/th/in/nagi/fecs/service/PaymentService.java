@@ -14,14 +14,20 @@ import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import th.in.nagi.fecs.message.Message;
+import th.in.nagi.fecs.model.Address;
 import th.in.nagi.fecs.model.Order;
+import th.in.nagi.fecs.model.Shipping;
 import th.in.nagi.fecs.model.WebPayment;
+import th.in.nagi.fecs.repository.AddressRepository;
+import th.in.nagi.fecs.repository.OrderRepository;
+import th.in.nagi.fecs.repository.ShippingRepository;
 
 /**
  * 
@@ -38,6 +44,15 @@ public class PaymentService {
 	private static final String OWNER_ACCOUNT_BANK = "bank1";
 	private static final String OWNER_ACCOUNT = "54260012";
 	
+	@Autowired
+	private OrderRepository orderRepository;
+	
+	@Autowired
+	ShippingRepository shippingRepository;
+	
+	@Autowired
+	AddressRepository addressRepository;
+
 	private String connect(String method, String param) {
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
 		String result = "";
@@ -75,11 +90,38 @@ public class PaymentService {
 		return "error";
 	}
 	
-	public String validate(Order order, WebPayment webPayment) {	
-		return connect("validate", webPayment.getJSONObject(order.getTotal(), OWNER_ACCOUNT).toString());
+	public String validate(Order o, WebPayment webPayment) {	
+		return connect("validate", webPayment.getJSONObject(o.getTotal(), OWNER_ACCOUNT).toString());
 	}
 	
-	public String pay(Order order, WebPayment webPayment) {
-		return connect("pay", webPayment.getJSONObject(order.getTotal(), OWNER_ACCOUNT).toString());
+	public String pay(Order o, WebPayment webPayment) {
+		
+		String result = connect("pay", webPayment.getJSONObject(o.getTotal(), OWNER_ACCOUNT).toString());
+		
+		if (!result.equals("success")) {
+			return result;
+		}
+		
+		try {
+			Order order = orderRepository.getByKey(o.getOrderNumber());
+			Shipping slot = shippingRepository.findByKey(webPayment.getShipping().getId());
+
+			if (slot.getStatus() != Shipping.AVAILABLE) {
+				return "Shipping slot is not available";
+			} else if (order.getStatus() != Order.NOTPAY) {
+				return "Order is already paid";
+			}
+
+			Address address = webPayment.getShipping().getAddress();
+			address.setUser(order.getUser());
+			address = addressRepository.findByKey(addressRepository.save(address));
+			
+			slot.reserved(address);
+			order.paid(slot);
+		} catch (Exception e) {
+			return "Invalid shipping information";
+		}
+		
+		return "success";
 	}
 }

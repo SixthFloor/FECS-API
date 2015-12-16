@@ -6,8 +6,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -48,13 +55,15 @@ public class Shipping {
 	/**
 	 * Shipping's status.
 	 */
-	@JsonView(ShippingView.Personal.class)
+	@JsonView(ShippingView.All.class)
 	private int status;
-	
-//	@ManyToOne
-//	@JoinColumn(name = "address_id")
-//	@Fetch(FetchMode.SELECT)
-//	private Address address;
+
+	@JsonView(ShippingView.All.class)
+	@ManyToOne
+	@JoinColumn(name = "address_id")
+	@Fetch(FetchMode.SELECT)
+	@NotFound(action = NotFoundAction.IGNORE)
+	private Address address;
 
 	@OneToOne(mappedBy = "shipping")
 	private Order order;
@@ -89,6 +98,10 @@ public class Shipping {
 		return status;
 	}
 
+	public Address getAddress() {
+		return address;
+	}
+
 	public void resetId() {
 		id = null;
 	}
@@ -99,5 +112,14 @@ public class Shipping {
 
 	public void setStatus(int status) {
 		this.status = status;
+	}
+
+	public void setAddress(Address address) {
+		this.address = address;
+	}
+
+	public void reserved(Address address) {
+		this.address = address;
+		this.status = RESERVED;
 	}
 }

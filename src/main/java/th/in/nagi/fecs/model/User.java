@@ -15,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Fetch;
@@ -159,6 +160,14 @@ public class User {
 	@OneToMany(mappedBy = "user")
 	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Order> orders;
+	
+	/**
+	 * Address list of this User
+	 */
+	@Transient
+	@OneToMany(mappedBy = "user")
+	@LazyCollection(LazyCollectionOption.FALSE)
+	private List<Address> addresses;
 
 	public String getEmail() {
 		return email;

@@ -126,7 +126,7 @@ public class AdminShippingController extends BaseController {
 			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 		
-		boolean result = shippingService.updateToProgress(id);
+		boolean result = shippingService.updateToDone(id);
 		
 		if (result) {
 			return new ResponseEntity<Boolean>(true, HttpStatus.OK);

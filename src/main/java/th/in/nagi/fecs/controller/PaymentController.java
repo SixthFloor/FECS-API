@@ -100,27 +100,6 @@ public class PaymentController extends BaseController {
 		String result = paymentService.pay(order, webPayment);
 
 		if (result.equals("success")) {
-			Shipping slot;
-
-			try {
-				slot = shippingService.findByKey(webPayment.getShipping().getId());
-
-				if (slot.getStatus() != Shipping.AVAILABLE) {
-					return new ResponseEntity<Message>(new Message("Shipping slot is not available"),
-							HttpStatus.BAD_REQUEST);
-				} else if (order.getStatus() != Order.NOTPAY) {
-					return new ResponseEntity<Message>(new Message("Order is already paid"), HttpStatus.BAD_REQUEST);
-				}
-
-				slot.setStatus(Shipping.RESERVED);
-				shippingService.update(slot);
-
-				order.setStatus(Order.PAID);
-				order.setShipping(slot);
-				orderService.update(order);
-			} catch (Exception e) {
-				return new ResponseEntity<Message>(new Message("Invalid shipping information"), HttpStatus.BAD_REQUEST);
-			}
 
 			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 		}

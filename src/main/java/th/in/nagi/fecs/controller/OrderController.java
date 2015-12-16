@@ -195,10 +195,10 @@ public class OrderController extends BaseController {
 	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
 	public ResponseEntity<?> createOrder(@RequestHeader(value = "Authorization") String token,
 			@RequestBody WebOrder webOrder) {
-		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
-		}
+//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+//				authenticationService.MANAGER, authenticationService.OWNER)) {
+//			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+//		}
 
 		User user = userService.findByKey(webOrder.getUser().getId());
 

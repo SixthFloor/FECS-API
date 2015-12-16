@@ -153,4 +153,9 @@ public class Order {
 
 		return order;
 	}
+
+	public void paid(Shipping slot) {
+		this.shipping = slot;
+		this.status = PAID;
+	}
 }

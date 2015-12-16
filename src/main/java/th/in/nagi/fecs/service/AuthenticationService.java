@@ -148,6 +148,7 @@ public class AuthenticationService {
 		for (String role : roles) {
 			list.add(roleRepository.findByName(role));
 		}
+		
 		Role userRole = findByToken(token).getUser().getRole();
 		if (list.contains(userRole) & isExpired(token)) {
 			return true;
