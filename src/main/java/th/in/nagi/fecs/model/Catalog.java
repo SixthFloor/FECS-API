@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.web.servlet.View;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -50,11 +52,13 @@ public class Catalog {
 
 	@JsonView(CatalogView.Type.class)
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name="type_id")
 	private Type type;
 
 	@JsonView(CatalogView.ProductDescription.class)
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name="product_description_id")
 	private ProductDescription productDescription;
 

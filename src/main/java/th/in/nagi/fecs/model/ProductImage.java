@@ -10,6 +10,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.ProductImageView;
@@ -32,6 +35,7 @@ public class ProductImage {
 	
 	@JsonView(ProductImageView.Summary.class)
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name="product_description_id")
 	private ProductDescription productDescription;
 

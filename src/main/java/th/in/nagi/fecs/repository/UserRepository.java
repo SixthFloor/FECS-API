@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.hibernate.Criteria;
 import org.hibernate.FetchMode;
+import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
@@ -73,7 +74,8 @@ public class UserRepository extends AbstractRepository<User, Integer> {
 	 */
 	public List<User> findAndAscByFirstName(int start, int size) {
 		List<User> list = createEntityCriteria().setFetchMode("authenticate", FetchMode.LAZY)
-				.addOrder(org.hibernate.criterion.Order.asc("firstName")).setFirstResult(start).setMaxResults(size).list();
+				.addOrder(org.hibernate.criterion.Order.asc("firstName")).setFirstResult(start).setMaxResults(size)
+				.list();
 		return list;
 	}
 
@@ -82,8 +84,19 @@ public class UserRepository extends AbstractRepository<User, Integer> {
 	 */
 	public List<User> findAndDescByFirstName(int start, int size) {
 		List<User> list = createEntityCriteria().setFetchMode("authenticate", FetchMode.LAZY)
-				.addOrder(org.hibernate.criterion.Order.desc("firstName")).setFirstResult(start).setMaxResults(size).list();
+				.addOrder(org.hibernate.criterion.Order.desc("firstName")).setFirstResult(start).setMaxResults(size)
+				.list();
 		return list;
+	}
+
+	public List<User> findByKeyword(String keyword) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(
+//				Restrictions.or(
+//				Restrictions.or(Restrictions.like("firstName", keyword, MatchMode.ANYWHERE),
+//						Restrictions.like("lastName", keyword, MatchMode.ANYWHERE)),
+				Restrictions.like("email", keyword, MatchMode.ANYWHERE));
+		return criteria.list();
 	}
 
 }

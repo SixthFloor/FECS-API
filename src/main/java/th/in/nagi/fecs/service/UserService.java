@@ -140,4 +140,8 @@ public class UserService {
 		return userRepository.findAndDescByFirstName(start, size);
 	}
 
+	public List<User> findByKeyword(String keyword) {
+		return userRepository.findByKeyword(keyword);
+	}
+
 }

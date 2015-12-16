@@ -18,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -99,10 +101,12 @@ public class User {
 //	@Column(name = "card_cvv", nullable = true)
 //	private String cardCVV;
 
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+	@OneToMany(mappedBy = "user")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Authentication> authentication;
 
-	@ManyToOne(fetch = FetchType.EAGER)
+	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	private Role role;
 	
 	@OneToMany(mappedBy = "user")

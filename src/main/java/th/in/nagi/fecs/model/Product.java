@@ -32,6 +32,7 @@ public class Product {
 	private Integer id;
 
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name = "product_description_id")
 	@JsonView({ProductView.Personal.class, ProductView.ProductDescription.class})
 	private ProductDescription productDescription;

@@ -12,6 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.TypeView;
@@ -27,16 +32,19 @@ public class Type {
 	
 	@JsonView(TypeView.Category.class)
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name="category_id")
 	private Category category;
 
 	@JsonView(TypeView.SubCategory.class)
 	@ManyToOne
+	@Fetch(FetchMode.SELECT)
 	@JoinColumn(name="sub_category_id")
 	private SubCategory subCategory;
 	
 	@JsonView(TypeView.Catalogs.class)
-	@OneToMany(fetch = FetchType.EAGER, mappedBy = "type")
+	@OneToMany(mappedBy = "type")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<Catalog> catalogs;
 
 	public int getId() {
