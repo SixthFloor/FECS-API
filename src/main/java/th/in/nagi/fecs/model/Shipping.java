@@ -6,12 +6,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.Fetch;
-import org.hibernate.annotations.FetchMode;
 
 import com.fasterxml.jackson.annotation.JsonView;
 
@@ -59,6 +55,27 @@ public class Shipping {
 //	@JoinColumn(name = "address_id")
 //	@Fetch(FetchMode.SELECT)
 //	private Address address;
+
+	@OneToOne(mappedBy = "shipping")
+	private Order order;
+
+	@JsonView(ShippingView.View.class)
+	public User getUser() {
+		if (order == null) {
+			return null;
+		}
+		User user = order.getUser();
+		return user;
+	}
+
+	@JsonView(ShippingView.View.class)
+	public Integer getOrderNumber() {
+		if (order == null) {
+			return null;
+		}
+		Integer num = order.getOrderNumber();
+		return num;
+	}
 
 	public int getId() {
 		return id;
