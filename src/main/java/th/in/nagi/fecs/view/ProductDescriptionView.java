@@ -9,6 +9,7 @@ public class ProductDescriptionView {
 	}
 
 	public interface ElementalImage extends ProductImageView.Personal {
+		
 	}
 
 }

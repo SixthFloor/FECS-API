@@ -1,7 +1,6 @@
 package th.in.nagi.fecs.view;
 
 import th.in.nagi.fecs.view.BaseView.Standardized;
-import th.in.nagi.fecs.view.UserView.AllInformation;
 
 public class ShippingView {
 	
@@ -9,7 +8,7 @@ public class ShippingView {
 	
 	}
 	
-	public interface View extends Standardized, Personal, AllInformation{
+	public interface View extends Standardized, Personal, UserView.All {
 		
 	}
 

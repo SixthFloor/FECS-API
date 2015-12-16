@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Order;
 import th.in.nagi.fecs.model.Shipping;
@@ -19,6 +21,8 @@ import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.OrderService;
 import th.in.nagi.fecs.service.PaymentService;
 import th.in.nagi.fecs.service.ShippingService;
+import th.in.nagi.fecs.view.WebOrderView;
+import th.in.nagi.fecs.view.WebPaymentView;
 
 /**
  * Controller for validating credit card and make a payment.
@@ -122,5 +126,16 @@ public class PaymentController extends BaseController {
 		}
 
 		return new ResponseEntity<Message>(new Message(result), HttpStatus.BAD_REQUEST);
+	}
+	
+	@JsonView(WebPaymentView.Personal.class)
+	@ResponseBody
+	@RequestMapping(value = "/test", method = RequestMethod.POST)
+	public ResponseEntity<?> test(
+			@RequestBody WebPayment webPayment) {
+		
+		webPayment.setPrice(8190000.0);
+		
+		return new ResponseEntity<WebPayment>(webPayment, HttpStatus.OK);
 	}
 }
