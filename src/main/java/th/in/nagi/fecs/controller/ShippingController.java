@@ -63,7 +63,7 @@ public class ShippingController extends BaseController {
 			return new ResponseEntity<List<Shipping>>(shippings, HttpStatus.OK);
 		}
 
-		return new ResponseEntity<Message>(new Message("none of shipping slots is available"), HttpStatus.OK);
+		return new ResponseEntity<Message>(new Message("None of shipping slots is available"), HttpStatus.OK);
 	}
 
 	/**
@@ -114,6 +114,6 @@ public class ShippingController extends BaseController {
 			return new ResponseEntity<List<Shipping>>(shippings, HttpStatus.OK);
 		}
 
-		return new ResponseEntity<Message>(new Message("none of shipping slots is inprogress"), HttpStatus.OK);
+		return new ResponseEntity<Message>(new Message("None of shipping slots is inprogress"), HttpStatus.OK);
 	}
 }
