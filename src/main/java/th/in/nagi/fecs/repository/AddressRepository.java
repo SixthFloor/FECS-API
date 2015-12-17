@@ -3,12 +3,13 @@ package th.in.nagi.fecs.repository;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import th.in.nagi.fecs.model.Address;
 
 /**
- * Implemented product repository
+ * Implemented address repository
  * 
  * @author Chonnipa Kittisiriprasert
  *
@@ -48,5 +49,11 @@ public class AddressRepository extends AbstractRepository<Address, Integer> {
 	@Override
 	public void remove(Integer key) {
 		remove(key);
+	}
+	
+	public Address findByAddressId(Integer id) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("addressId", id));
+		return (Address) criteria.uniqueResult();
 	}
 }

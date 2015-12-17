@@ -43,11 +43,9 @@ public class Shipping {
 	/**
 	 * Shipping's id.
 	 */
-	@JsonProperty("id")
 	@JsonView(ShippingView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "shipping_id")
 	private int id;
 
 	/**

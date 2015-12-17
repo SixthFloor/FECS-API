@@ -9,6 +9,7 @@ import org.hibernate.sql.JoinType;
 import org.springframework.stereotype.Repository;
 
 import th.in.nagi.fecs.model.Order;
+import th.in.nagi.fecs.model.Shipping;
 import th.in.nagi.fecs.model.User;
 
 /**
@@ -95,5 +96,11 @@ public class OrderRepository extends AbstractRepository<Order, Integer> {
 				.setProjection(Projections.sum("product_description.price"));
 
 		return ((Number) criteria.uniqueResult()).doubleValue();
+	}
+
+	public Order findByShipping(Shipping shipping) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("shipping", shipping));
+		return (Order) criteria.uniqueResult();
 	}
 }

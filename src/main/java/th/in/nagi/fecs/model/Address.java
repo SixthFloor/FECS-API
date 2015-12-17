@@ -24,13 +24,13 @@ import th.in.nagi.fecs.view.AddressView;
  *
  */
 @Entity
-@Table(name = "address")
+@Table(name = "[addr]")
 public class Address {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "address_id", nullable = false)
-	private int id;
+	@Column(name = "id")
+	private int addressId;
 
 	@ManyToOne
 	@JoinColumn(name = "user_id")
@@ -41,21 +41,21 @@ public class Address {
 	 * Address's address(line 1)
 	 */
 	@JsonView(AddressView.Personal.class)
-	@Column(name = "address_1", nullable = false)
+	@Column(name = "address_1")
 	private String address1;
 
 	/**
 	 * Address's address(line 2)
 	 */
 	@JsonView(AddressView.Personal.class)
-	@Column(name = "address_2", nullable = true)
+	@Column(name = "address_2")
 	private String address2;
 
 	/**
 	 * Address's province
 	 */
 	@JsonView(AddressView.Personal.class)
-	@Column(name = "province", nullable = false)
+	@Column(name = "province")
 	private String province;
 
 	/**
@@ -63,16 +63,16 @@ public class Address {
 	 */
 	@JsonView(AddressView.Personal.class)
 	@Size(min = 5, max = 5)
-	@Column(name = "zipcode", nullable = false)
+	@Column(name = "zipcode")
 	private String zipcode;
 
 	@JsonView(AddressView.Personal.class)
 	@Size(min = 9, max = 10)
-	@Column(name = "phone_number", nullable = false)
+	@Column(name = "phone_number")
 	private String phoneNumber;
 
-	public Integer getId() {
-		return id;
+	public int getId() {
+		return addressId;
 	}
 
 	public User getUser() {
@@ -121,5 +121,9 @@ public class Address {
 
 	public void setPhoneNumber(String phoneNumber) {
 		this.phoneNumber = phoneNumber;
+	}
+
+	public void setId(Integer addressId) {
+		this.addressId = addressId;
 	}
 }

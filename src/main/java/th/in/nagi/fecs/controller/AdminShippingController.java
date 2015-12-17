@@ -18,6 +18,7 @@ import com.fasterxml.jackson.annotation.JsonView;
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Shipping;
 import th.in.nagi.fecs.service.AuthenticationService;
+import th.in.nagi.fecs.service.OrderService;
 import th.in.nagi.fecs.service.ShippingService;
 import th.in.nagi.fecs.view.ShippingView;
 
@@ -36,7 +37,7 @@ public class AdminShippingController extends BaseController {
 	 */
 	@Autowired
 	private AuthenticationService authenticationService;
-
+	
 	/**
 	 * Shipping service.
 	 */

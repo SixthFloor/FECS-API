@@ -116,12 +116,7 @@ public class PaymentService {
 			address.setUser(order.getUser());
 			
 			Integer addressId = addressRepository.save(address);
-			
-			address = addressRepository.findByKey(addressId);
-			
-			if (address == null) {
-				return "null address [" + addressId + "]";
-			}
+			address.setId(addressId);
 			
 			slot.reserved(address);
 			order.paid(slot);

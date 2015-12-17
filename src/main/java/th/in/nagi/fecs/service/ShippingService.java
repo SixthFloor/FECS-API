@@ -6,7 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import th.in.nagi.fecs.model.Order;
 import th.in.nagi.fecs.model.Shipping;
+import th.in.nagi.fecs.repository.OrderRepository;
 import th.in.nagi.fecs.repository.ShippingRepository;
 
 /**
@@ -26,6 +28,9 @@ public class ShippingService {
 	@Autowired
 	private ShippingRepository shippingRepository;
 
+	@Autowired
+	private OrderRepository orderRepository;
+	
 	/**
 	 * Find Shipping by using id.
 	 * 
@@ -82,8 +87,11 @@ public class ShippingService {
 
 	public boolean updateToProgress(Integer id) {
 		Shipping s = shippingRepository.findByKey(id);
-		if (s != null) {
+		Order o = orderRepository.findByShipping(s);
+		
+		if (s != null && o != null) {
 			s.setStatus(Shipping.INPROGRESS);
+			o.setStatus(Order.SHIPPING);
 			return true;
 		}
 
@@ -92,8 +100,11 @@ public class ShippingService {
 
 	public boolean updateToDone(Integer id) {
 		Shipping s = shippingRepository.findByKey(id);
-		if (s != null) {
+		Order o = orderRepository.findByShipping(s);
+
+		if (s != null && o != null) {
 			s.setStatus(Shipping.DONE);
+			o.setStatus(Order.COMPLETED);
 			return true;
 		}
 

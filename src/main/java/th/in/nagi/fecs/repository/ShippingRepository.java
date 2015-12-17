@@ -56,7 +56,6 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<Shipping> findByDate(int year, int month) {
-
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.gt("status", Shipping.AVAILABLE));
 		criteria.add(Restrictions.sqlRestriction("MONTH(date) = ?", month, StandardBasicTypes.INTEGER));
