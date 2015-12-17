@@ -184,7 +184,7 @@ public class UsersController extends BaseController {
 					HttpStatus.BAD_REQUEST);
 		}
 
-		if (user.getPassword().length() < 8 && user.getPassword().length() > 20) {
+		if (user.getPassword().length() < 8 || user.getPassword().length() > 20) {
 			return new ResponseEntity<Message>(new Message("Password lenght should be between 8 -20"),
 					HttpStatus.BAD_REQUEST);
 		}
@@ -236,7 +236,7 @@ public class UsersController extends BaseController {
 					HttpStatus.BAD_REQUEST);
 		}
 
-		if (user.getPassword().length() < 8 && user.getPassword().length() > 20) {
+		if (user.getPassword().length() < 8 || user.getPassword().length() > 20) {
 			return new ResponseEntity<Message>(new Message("Password lenght should be between 8 -20"),
 					HttpStatus.BAD_REQUEST);
 		}
@@ -277,17 +277,25 @@ public class UsersController extends BaseController {
 				authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
+
 		if (!authenticationService.findByToken(token).getUser().getId().equals(newUser.getId())) {
 			return new ResponseEntity<Message>(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
-		//        User user = getUserService().findByUsername(newUser.getUsername());
-		newUser.setRole(roleService.findByName(roleService.MEMBER));
+		
+		if (newUser.getPassword().length() < 8 || newUser.getPassword().length() > 20) {
+			return new ResponseEntity<Message>(new Message("Password lenght should be between 8 -20"),
+					HttpStatus.BAD_REQUEST);
+		}
+		
+		newUser.setPassword(newUser.changeToHash(newUser.getPassword()));
+		newUser.setRole(authenticationService.getRole(token));
 		try {
 			getUserService().update(newUser);
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<Message>(new Message("This user has edited"), HttpStatus.OK);
+
+		return new ResponseEntity<User>(userService.findByKey(newUser.getId()), HttpStatus.OK);
 	}
 
 	/**
@@ -317,8 +325,13 @@ public class UsersController extends BaseController {
 			return new ResponseEntity<Message>(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
 		
+		if (newUser.getPassword().length() < 8 || newUser.getPassword().length() > 20) {
+			return new ResponseEntity<Message>(new Message("Password lenght should be between 8 -20"),
+					HttpStatus.BAD_REQUEST);
+		}
+		
 		newUser.setPassword(newUser.changeToHash(newUser.getPassword()));
-		newUser.setRole(roleService.findByName(roleService.MEMBER));
+		newUser.setRole(authenticationService.getRole(token));
 		try {
 			getUserService().update(newUser);
 		} catch (Exception e) {

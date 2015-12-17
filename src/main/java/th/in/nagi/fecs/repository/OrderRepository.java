@@ -27,7 +27,7 @@ public class OrderRepository extends AbstractRepository<Order, Integer> {
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<Order> findAll() {
-		Criteria criteria = createEntityCriteria();
+		Criteria criteria = createEntityCriteria().addOrder(org.hibernate.criterion.Order.asc("status"));
 		return criteria.list();
 	}
 
