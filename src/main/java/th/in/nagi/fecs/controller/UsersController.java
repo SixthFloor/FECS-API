@@ -299,6 +299,7 @@ public class UsersController extends BaseController {
 		try {
 			getUserService().update(newUser);
 			getUserService().updateRole(newUser);
+			getUserService().updatePayment(newUser);
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
