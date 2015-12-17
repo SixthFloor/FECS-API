@@ -117,7 +117,7 @@ public class ProductDescription {
 	 * status of ProductDescription
 	 */
 	@JsonView(ProductDescriptionView.Personal.class)
-	private int status;
+	private Integer status;
 	
 	public String getDimensionDescription() {
 		return dimensionDescription;

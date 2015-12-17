@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import com.fasterxml.jackson.annotation.JsonView;
@@ -47,14 +49,14 @@ public class Role {
 	 * Role's name
 	 */
 	@JsonView(RoleView.Personal.class)
-	@NotEmpty
 	@Column(name = "name", nullable = false)
 	private String name;
 
 	/**
 	 * Users who have this role.
 	 */
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "role")
+	@OneToMany(mappedBy = "role")
+	@LazyCollection(LazyCollectionOption.FALSE)
 	private List<User> users;
 
 	public int getId() {
