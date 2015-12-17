@@ -78,7 +78,7 @@ public class UserService {
 				entity.setEmail(user.getEmail());
 			}
 			if (user.getPassword() != null) {
-				entity.setPassword(user.getPassword());
+				entity.setPassword(user.changeToHash(user.getPassword()));
 			}
 			if (user.getProvince() != null) {
 				entity.setProvince(user.getProvince());

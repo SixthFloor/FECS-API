@@ -269,9 +269,11 @@ public class UsersController extends BaseController {
 	 * @return message message and email of user or not return message fail and
 	 *         string "not found"
 	 */
-	@ResponseBody
+	@JsonView(UserView.All.class)
 	@RequestMapping(value = {"/edit"}, method = RequestMethod.PUT)
 	public ResponseEntity<?> editUserByMember(@RequestBody User newUser,
+			@RequestHeader(value = "email") String email,
+			@RequestHeader(value = "password") String password,
 			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
@@ -282,19 +284,25 @@ public class UsersController extends BaseController {
 			return new ResponseEntity<Message>(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
 		
-		if (newUser.getPassword().length() < 8 || newUser.getPassword().length() > 20) {
-			return new ResponseEntity<Message>(new Message("Password lenght should be between 8 -20"),
-					HttpStatus.BAD_REQUEST);
+		User user = userService.findByEmail(email);
+		String passwordHash = user.changeToHash(password);
+		if (!passwordHash.equals(user.getPassword())) {
+			return new ResponseEntity<Message>(new Message("Password incorrect"), HttpStatus.FORBIDDEN);
 		}
-		
-		newUser.setPassword(newUser.changeToHash(newUser.getPassword()));
+		if(newUser.getPassword() != null){
+			if (newUser.getPassword().length() < 8 || newUser.getPassword().length() > 20) {
+				return new ResponseEntity<Message>(new Message("Password lenght should be between 8 -20"),
+						HttpStatus.BAD_REQUEST);
+			}
+		}
 		newUser.setRole(authenticationService.getRole(token));
 		try {
 			getUserService().update(newUser);
+			getUserService().updateRole(newUser);
+			getUserService().updatePayment(newUser);
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
 		}
-
 		return new ResponseEntity<User>(userService.findByKey(newUser.getId()), HttpStatus.OK);
 	}
 
@@ -311,6 +319,8 @@ public class UsersController extends BaseController {
 	@ResponseBody
 	@RequestMapping(value = {"/{email:.+}"}, method = RequestMethod.PUT)
 	public ResponseEntity<?> editUser(@PathVariable String email, @RequestBody User newUser,
+			@RequestHeader(value = "email") String emailHead,
+			@RequestHeader(value = "password") String password,
 			@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
@@ -325,7 +335,14 @@ public class UsersController extends BaseController {
 			return new ResponseEntity<Message>(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
 		
-		if (newUser.getPassword().length() < 8 || newUser.getPassword().length() > 20) {
+		User user = userService.findByEmail(emailHead);
+		String passwordHash = user.changeToHash(password);
+
+		if (!passwordHash.equals(user.getPassword())) {
+			return new ResponseEntity<Message>(new Message("Password incorrect"), HttpStatus.FORBIDDEN);
+		}
+		
+		if ((newUser.getPassword().length() < 8 || newUser.getPassword().length() > 20) && newUser.getPassword() != null) {
 			return new ResponseEntity<Message>(new Message("Password lenght should be between 8 -20"),
 					HttpStatus.BAD_REQUEST);
 		}
