@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Fetch;
@@ -32,6 +33,7 @@ public class Address {
 	@Column(name = "id")
 	private int addressId;
 
+	@Transient
 	@ManyToOne
 	@JoinColumn(name = "user_id")
 	@Fetch(FetchMode.SELECT)

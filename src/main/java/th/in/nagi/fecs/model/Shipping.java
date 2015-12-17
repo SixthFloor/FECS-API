@@ -57,10 +57,10 @@ public class Shipping {
 	/**
 	 * Shipping's status.
 	 */
-	@JsonView(ShippingView.All.class)
+	@JsonView(ShippingView.Summary.class)
 	private int status;
 
-	@JsonView(ShippingView.All.class)
+	@JsonView(ShippingView.Summary.class)
 	@ManyToOne
 	@JoinColumn(name = "address_id")
 	@Fetch(FetchMode.SELECT)

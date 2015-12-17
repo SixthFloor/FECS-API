@@ -8,8 +8,11 @@ public class ShippingView {
 	
 	}
 	
-	public interface All extends Personal, UserView.Summary, OrderView.Summary, AddressView.Personal {
+	public interface Summary extends Personal, AddressView.Personal {
 		
 	}
-
+	
+	public interface All extends Summary, UserView.Summary {
+		
+	}
 }

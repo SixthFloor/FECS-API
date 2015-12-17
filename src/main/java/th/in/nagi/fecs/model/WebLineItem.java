@@ -77,7 +77,7 @@ public class WebLineItem {
 		for (Product p : products) {
 			ProductDescription pd = p.getProductDescription();
 			if (map.containsKey(pd)) {
-				int count = map.get(pd);
+				int count = map.get(pd).intValue();
 				map.put(pd, count + 1);
 			} else {
 				map.put(pd, 1);
@@ -87,7 +87,7 @@ public class WebLineItem {
 		for (Map.Entry<ProductDescription, Integer> entry : map.entrySet()) {
 			WebLineItem wlp = new WebLineItem();
 			wlp.setProductDescription(entry.getKey());
-			wlp.setQuantity(entry.getValue());
+			wlp.setQuantity(entry.getValue().intValue());
 			webLineProducts.add(wlp);
 		}
 

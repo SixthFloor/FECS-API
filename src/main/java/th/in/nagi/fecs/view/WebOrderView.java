@@ -4,7 +4,7 @@ import th.in.nagi.fecs.view.BaseView.Standardized;
 
 public class WebOrderView {
 
-	public interface Personal extends Standardized, UserView.Personal, WebLineItemView.Personal, ShippingView.Personal {
+	public interface Personal extends Standardized, UserView.Personal, WebLineItemView.Personal, ShippingView.Summary {
 
 	}
 }

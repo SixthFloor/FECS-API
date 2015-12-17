@@ -28,6 +28,7 @@ import th.in.nagi.fecs.service.CartService;
 import th.in.nagi.fecs.service.OrderService;
 import th.in.nagi.fecs.service.ProductService;
 import th.in.nagi.fecs.service.UserService;
+import th.in.nagi.fecs.view.OrderView;
 import th.in.nagi.fecs.view.WebOrderView;
 
 /**
@@ -255,5 +256,19 @@ public class OrderController extends BaseController {
 		}
 
 		return new ResponseEntity<Message>(new Message("Order not found"), HttpStatus.BAD_REQUEST);
+	}
+	
+	@JsonView(OrderView.Summary.class)
+	@RequestMapping(value = "/test/{orderNumber}", method = RequestMethod.GET)
+	public ResponseEntity<?> getOrder(
+			@PathVariable Integer orderNumber) {
+
+		Order order = orderService.findByKey(orderNumber);
+		
+		if (order == null) {
+			return new ResponseEntity<Message>(new Message("Not found order"), HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<Order>(order, HttpStatus.OK);
 	}
 }
