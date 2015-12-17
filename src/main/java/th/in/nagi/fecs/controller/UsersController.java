@@ -286,8 +286,6 @@ public class UsersController extends BaseController {
 		
 		User user = userService.findByEmail(email);
 		String passwordHash = user.changeToHash(password);
-		System.out.println("aaaaaaaaaaaaaaaaa"+passwordHash);
-		System.out.println("bbbbbbbbbbbbbbbbb"+user.getPassword());
 		if (!passwordHash.equals(user.getPassword())) {
 			return new ResponseEntity<Message>(new Message("Password incorrect"), HttpStatus.FORBIDDEN);
 		}
