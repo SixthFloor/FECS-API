@@ -2,6 +2,7 @@ package th.in.nagi.fecs.model;
 
 import java.util.Date;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -16,6 +17,7 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.view.ShippingView;
@@ -41,10 +43,12 @@ public class Shipping {
 	/**
 	 * Shipping's id.
 	 */
+	@JsonProperty("id")
 	@JsonView(ShippingView.Personal.class)
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer id;
+	@Column(name = "shipping_id")
+	private int id;
 
 	/**
 	 * The date that products send to User.
@@ -100,10 +104,6 @@ public class Shipping {
 
 	public Address getAddress() {
 		return address;
-	}
-
-	public void resetId() {
-		id = null;
 	}
 
 	public void setDate(Date date) {

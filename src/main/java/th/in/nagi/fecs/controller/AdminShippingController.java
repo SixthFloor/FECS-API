@@ -59,8 +59,6 @@ public class AdminShippingController extends BaseController {
 			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
-		shipping.resetId();
-
 		try {
 			shippingService.store(shipping);
 		} catch (Exception e) {

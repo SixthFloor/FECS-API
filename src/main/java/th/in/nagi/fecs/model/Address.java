@@ -13,6 +13,10 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
+import th.in.nagi.fecs.view.AddressView;
+
 /**
  * Address model
  * 
@@ -25,7 +29,7 @@ public class Address {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(nullable = false)
+	@Column(name = "address_id", nullable = false)
 	private int id;
 
 	@ManyToOne
@@ -36,28 +40,33 @@ public class Address {
 	/**
 	 * Address's address(line 1)
 	 */
+	@JsonView(AddressView.Personal.class)
 	@Column(name = "address_1", nullable = false)
 	private String address1;
 
 	/**
 	 * Address's address(line 2)
 	 */
+	@JsonView(AddressView.Personal.class)
 	@Column(name = "address_2", nullable = true)
 	private String address2;
 
 	/**
 	 * Address's province
 	 */
+	@JsonView(AddressView.Personal.class)
 	@Column(name = "province", nullable = false)
 	private String province;
 
 	/**
 	 * Address's zipcode
 	 */
+	@JsonView(AddressView.Personal.class)
 	@Size(min = 5, max = 5)
 	@Column(name = "zipcode", nullable = false)
 	private String zipcode;
 
+	@JsonView(AddressView.Personal.class)
 	@Size(min = 9, max = 10)
 	@Column(name = "phone_number", nullable = false)
 	private String phoneNumber;

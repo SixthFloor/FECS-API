@@ -64,31 +64,4 @@ public class ShippingController extends BaseController {
 
 		return new ResponseEntity<Message>(new Message("None of shipping slots is available"), HttpStatus.OK);
 	}
-
-	/**
-	 * Creates new shipping.
-	 * 
-	 * @param web
-	 *            shipping model
-	 * @return shipping number
-	 */
-	@ResponseBody
-	@RequestMapping(value = {"/new"}, method = RequestMethod.POST)
-	public ResponseEntity<?> createShipping(@RequestHeader(value = "Authorization") String token,
-			@RequestBody Shipping shipping) {
-		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
-				authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
-		}
-
-		shipping.resetId();
-
-		try {
-			shippingService.store(shipping);
-		} catch (Exception e) {
-			return new ResponseEntity<Message>(new Message("Create shipping slot failed"), HttpStatus.BAD_REQUEST);
-		}
-
-		return new ResponseEntity<Message>(new Message("The shipping slot has created"), HttpStatus.CREATED);
-	}
 }

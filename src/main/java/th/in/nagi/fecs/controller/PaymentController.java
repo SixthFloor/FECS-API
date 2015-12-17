@@ -100,7 +100,6 @@ public class PaymentController extends BaseController {
 		String result = paymentService.pay(order, webPayment);
 
 		if (result.equals("success")) {
-
 			return new ResponseEntity<Boolean>(true, HttpStatus.OK);
 		}
 

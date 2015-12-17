@@ -114,7 +114,14 @@ public class PaymentService {
 
 			Address address = webPayment.getShipping().getAddress();
 			address.setUser(order.getUser());
-			address = addressRepository.findByKey(addressRepository.save(address));
+			
+			Integer addressId = addressRepository.save(address);
+			
+			address = addressRepository.findByKey(addressId);
+			
+			if (address == null) {
+				return "null address [" + addressId + "]";
+			}
 			
 			slot.reserved(address);
 			order.paid(slot);
