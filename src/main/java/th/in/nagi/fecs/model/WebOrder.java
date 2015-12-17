@@ -128,7 +128,7 @@ public class WebOrder {
 		webOrder.setUser(order.getUser());
 		webOrder.setOrderDate(order.getOrderDate());
 		webOrder.setStatus(order.getStatus());
-		webOrder.setShipping(null);
+		webOrder.setShipping(order.getShipping());
 
 		webOrder.setWebProductList(WebLineItem.create(order.getCart()));
 
