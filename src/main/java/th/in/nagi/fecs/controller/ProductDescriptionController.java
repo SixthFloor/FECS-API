@@ -18,9 +18,12 @@ import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.ProductDescription;
+import th.in.nagi.fecs.model.ProductImage;
 import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.ProductDescriptionService;
+import th.in.nagi.fecs.service.ProductImageService;
 import th.in.nagi.fecs.view.ProductDescriptionView;
+import th.in.nagi.fecs.view.ProductImageView;
 
 /**
  * Controller for product
@@ -44,6 +47,9 @@ public class ProductDescriptionController extends BaseController {
 	@Autowired
 	private AuthenticationService authenticationService;
 
+	@Autowired
+	private ProductImageService productImageService;
+	
 	/**
 	 * Return a product that have the serialNumber
 	 * 
@@ -173,6 +179,17 @@ public class ProductDescriptionController extends BaseController {
 		}
 
 		try {
+			ProductDescription oldProductDescription = productDescriptionService.findByKey(productDescription.getId());
+			for(ProductImage image: productDescription.getImages()){
+			System.out.println(image.getLink());
+			System.out.println(image.getId());
+			if (image.getId() != null) {
+				System.out.println("-------------");
+				image.setProductDescription(oldProductDescription);
+				productImageService.store(image);	
+			}
+			System.out.println(image.getId());
+			}
 			productDescriptionService.update(productDescription);
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Edit product failed"), HttpStatus.BAD_REQUEST);
@@ -231,4 +248,38 @@ public class ProductDescriptionController extends BaseController {
 
 		return serial;
 	}
+	
+	/**
+	 * Add a image to ProductDescription
+	 * 
+	 * @param productImage
+	 *            put id of product that want to add image
+	 * @param productId
+	 * @param Authorization
+	 * 
+	 * @return message success if not return message fail
+	 */
+	@JsonView(ProductImageView.Personal.class)
+	@RequestMapping(value = "/newImage", method = RequestMethod.POST)
+	public ResponseEntity<?> createNewImage(@RequestBody ProductImage productImage,
+			@RequestParam(value = "productId") Integer id,
+			@RequestHeader(value = "Authorization") String token) {
+
+		if (!authenticationService.checkPermission(token, authenticationService.STAFF, authenticationService.MANAGER,
+				authenticationService.OWNER)) {
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+		}
+		
+		productImage.setProductDescription(productDescriptionService.findByKey(id));
+		
+		try {
+			productImageService.store(productImage);
+		} catch (Exception e) {
+			return new ResponseEntity<Message>(new Message("Edit fail"), HttpStatus.BAD_REQUEST);
+		}
+		
+		return new ResponseEntity<ProductImage>(productImage, HttpStatus.OK);
+	}
+	
+	
 }

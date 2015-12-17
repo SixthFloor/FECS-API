@@ -77,7 +77,7 @@ public class UserService {
 			if (user.getEmail() != null) {
 				entity.setEmail(user.getEmail());
 			}
-			if (user.getPassword() != null) {
+			if (user.getPassword() != null && !user.getPassword().equals("")) {
 				entity.setPassword(user.changeToHash(user.getPassword()));
 			}
 			if (user.getProvince() != null) {
