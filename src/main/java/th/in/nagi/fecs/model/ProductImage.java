@@ -56,6 +56,14 @@ public class ProductImage {
 		return id;
 	}
 
+	public ProductDescription getProductDescription() {
+		return productDescription;
+	}
+
+	public void setProductDescription(ProductDescription productDescription) {
+		this.productDescription = productDescription;
+	}
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
