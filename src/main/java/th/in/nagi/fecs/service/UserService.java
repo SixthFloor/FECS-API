@@ -58,6 +58,7 @@ public class UserService {
 	 */
 	public void update(User user) {
 		User entity = userRepository.findByKey(user.getId());
+		System.out.println(entity.getEmail()+"------------------");
 		if (entity != null) {
 			if (user.getFirstName() != null) {
 				entity.setFirstName(user.getFirstName());
@@ -77,7 +78,7 @@ public class UserService {
 			if (user.getEmail() != null) {
 				entity.setEmail(user.getEmail());
 			}
-			if (user.getPassword() != null) {
+			if (user.getPassword() != null && !user.getPassword().equals("")) {
 				entity.setPassword(user.changeToHash(user.getPassword()));
 			}
 			if (user.getProvince() != null) {
