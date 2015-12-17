@@ -26,5 +26,4 @@ public class HTTPErrorHandler {
 	public Message error500() {
 		return new Message("Internal Server Error");
 	}
-
 }

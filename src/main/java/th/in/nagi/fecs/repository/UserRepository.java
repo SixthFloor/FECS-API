@@ -101,13 +101,19 @@ public class UserRepository extends AbstractRepository<User, Integer> {
 		return list;
 	}
 
+	/**
+	 * Search user from keyword that may be first name, last name or email.
+	 * 
+	 * @param keyword
+	 * @return List of users
+	 */
+	@SuppressWarnings("unchecked")
 	public List<User> findByKeyword(String keyword) {
 		Criteria criteria = createEntityCriteria();
-		criteria.add(
-//				Restrictions.or(
-//				Restrictions.or(Restrictions.like("firstName", keyword, MatchMode.ANYWHERE),
-//						Restrictions.like("lastName", keyword, MatchMode.ANYWHERE)),
-				Restrictions.like("email", keyword, MatchMode.ANYWHERE));
+		criteria.add(Restrictions.or(
+				Restrictions.or(Restrictions.like("firstName", keyword, MatchMode.ANYWHERE),
+						Restrictions.like("lastName", keyword, MatchMode.ANYWHERE)),
+				Restrictions.like("email", keyword, MatchMode.ANYWHERE)));
 		return criteria.list();
 	}
 
