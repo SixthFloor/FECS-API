@@ -275,7 +275,6 @@ public class UsersController extends BaseController {
 			@RequestHeader(value = "email") String email,
 			@RequestHeader(value = "password") String password,
 			@RequestHeader(value = "Authorization") String token) {
-		System.out.println("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
 			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
@@ -284,12 +283,10 @@ public class UsersController extends BaseController {
 		if (!authenticationService.findByToken(token).getUser().getId().equals(newUser.getId())) {
 			return new ResponseEntity<Message>(new Message("This user cannot edit other person"), HttpStatus.FORBIDDEN);
 		}
-		System.out.println("a"+newUser.getEmail());
+
 		User user = userService.findByEmail(email);
 		String passwordHash = user.changeToHash(password);
 		if (!passwordHash.equals(user.getPassword())) {
-			System.out.println("aaaaaaaaaaaaaaa"+passwordHash);
-			System.out.println("bbbbbbbbbbbbbbb"+user.getPassword());
 			return new ResponseEntity<Message>(new Message("Password incorrect"), HttpStatus.FORBIDDEN);
 		}
 		if(newUser.getPassword() != null){
@@ -298,17 +295,12 @@ public class UsersController extends BaseController {
 						HttpStatus.BAD_REQUEST);
 			}
 		}
-		System.out.println("b"+newUser.getEmail());
+
 		newUser.setRole(authenticationService.getRole(token));
-		System.out.println("c"+newUser.getEmail());
 		try {
-			System.out.println(newUser.getEmail());
 			getUserService().update(newUser);
-			System.out.println(newUser.getEmail());
 			getUserService().updateRole(newUser);
-			System.out.println(newUser.getEmail());
 			getUserService().updatePayment(newUser);
-			System.out.println(newUser.getEmail());
 		} catch (Exception e) {
 			System.out.println(e);
 			return new ResponseEntity<Message>(new Message("Edit fail"), HttpStatus.BAD_REQUEST);

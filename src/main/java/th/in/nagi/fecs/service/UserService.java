@@ -58,7 +58,6 @@ public class UserService {
 	 */
 	public void update(User user) {
 		User entity = userRepository.findByKey(user.getId());
-		System.out.println(entity.getEmail()+"------------------");
 		if (entity != null) {
 			if (user.getFirstName() != null) {
 				entity.setFirstName(user.getFirstName());
