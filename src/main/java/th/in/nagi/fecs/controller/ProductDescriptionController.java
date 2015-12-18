@@ -179,14 +179,12 @@ public class ProductDescriptionController extends BaseController {
 				authenticationService.OWNER)) {
 			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
-
+		
+		productDescription.setStatus(ProductDescription.SELL);
 		try {
 			ProductDescription oldProductDescription = productDescriptionService.findByKey(productDescription.getId());
 			for(ProductImage image: productDescription.getImages()){
-			System.out.println(image.getLink());
-			System.out.println(image.getId());
 			if (image.getId() != null) {
-				System.out.println("-------------");
 				image.setProductDescription(oldProductDescription);
 				productImageService.store(image);	
 			}
