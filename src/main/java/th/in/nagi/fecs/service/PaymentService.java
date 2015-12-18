@@ -110,7 +110,6 @@ public class PaymentService {
 		try {
 			Order order = orderRepository.getByKey(o.getOrderNumber());
 			Shipping slot = shippingRepository.findByKey(webPayment.getShipping().getId());
-			User user = userRepository.findByKey(order.getUser().getId());
 
 			if (slot.getStatus() != Shipping.AVAILABLE) {
 				return "Shipping slot is not available";
@@ -119,7 +118,7 @@ public class PaymentService {
 			}
 
 			Address address = webPayment.getShipping().getAddress();
-			address.setUser(user);
+			address.setUser(order.getUser());
 			
 			Integer addressId = addressRepository.save(address);
 			address.setId(addressId);

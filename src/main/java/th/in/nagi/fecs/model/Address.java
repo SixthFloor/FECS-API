@@ -33,9 +33,8 @@ public class Address {
 	@Column(name = "id")
 	private int addressId;
 
-	@Transient
 	@ManyToOne
-	@JoinColumn(name = "user_id")
+	@JoinColumn(name = "user_id", nullable = false)
 	@Fetch(FetchMode.SELECT)
 	private User user;
 

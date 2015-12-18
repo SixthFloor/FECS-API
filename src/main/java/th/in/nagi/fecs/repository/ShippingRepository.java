@@ -7,6 +7,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Repository;
 
@@ -50,8 +51,9 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 		Calendar today = Calendar.getInstance();
 		
 		criteria.add(Restrictions.ge("date", today.getTime()));
-//		criteria.setProjection(Projections.distinct(Projections.property("date")));
+		criteria.setProjection(Projections.distinct(Projections.property("date")));
 		criteria.addOrder(Order.asc("date"));
+		criteria.setResultTransformer(Transformers.aliasToBean(Shipping.class));
 //		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
