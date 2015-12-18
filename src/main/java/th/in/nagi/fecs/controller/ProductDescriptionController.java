@@ -139,10 +139,12 @@ public class ProductDescriptionController extends BaseController {
 		}
 		
 		productDescription.setSerialNumber("");
+		productDescription.setStatus(ProductDescription.SELL);
 
 		try {
 			productDescriptionService.store(productDescription);
 		} catch (Exception e) {
+			System.out.println(e);
 			return new ResponseEntity<Message>(new Message("Create FurnitureDescription failed"),
 					HttpStatus.BAD_REQUEST);
 		}
