@@ -14,13 +14,19 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.annotation.JsonView;
 
 import th.in.nagi.fecs.message.Message;
+import th.in.nagi.fecs.model.Address;
 import th.in.nagi.fecs.model.Order;
 import th.in.nagi.fecs.model.Shipping;
+import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.WebPayment;
+import th.in.nagi.fecs.repository.AddressRepository;
 import th.in.nagi.fecs.service.AuthenticationService;
 import th.in.nagi.fecs.service.OrderService;
 import th.in.nagi.fecs.service.PaymentService;
 import th.in.nagi.fecs.service.ShippingService;
+import th.in.nagi.fecs.service.UserService;
+import th.in.nagi.fecs.view.AddressView;
+import th.in.nagi.fecs.view.ShippingView;
 import th.in.nagi.fecs.view.WebOrderView;
 import th.in.nagi.fecs.view.WebPaymentView;
 
@@ -44,9 +50,6 @@ public class PaymentController extends BaseController {
 	private OrderService orderService;
 
 	@Autowired
-	private ShippingService shippingService;
-
-	@Autowired
 	private PaymentService paymentService;
 
 	/**
@@ -61,7 +64,7 @@ public class PaymentController extends BaseController {
 			@RequestBody WebPayment webPayment) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
 				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This payment does not allow"), HttpStatus.FORBIDDEN);
+			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
 		}
 
 		Order order = orderService.findByKey(orderNumber);
@@ -83,13 +86,14 @@ public class PaymentController extends BaseController {
 	 */
 	@ResponseBody
 	@RequestMapping(value = "/pay", method = RequestMethod.POST)
-	public ResponseEntity<?> pay(@RequestHeader(value = "Authorization") String token,
+	public ResponseEntity<?> pay(
+//			@RequestHeader(value = "Authorization") String token,
 			@RequestParam(value = "orderNumber", required = true) Integer orderNumber,
 			@RequestBody WebPayment webPayment) {
-		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
-				authenticationService.MANAGER, authenticationService.OWNER)) {
-			return new ResponseEntity<Message>(new Message("This payment does not allow"), HttpStatus.FORBIDDEN);
-		}
+//		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,
+//				authenticationService.MANAGER, authenticationService.OWNER)) {
+//			return new ResponseEntity<Message>(new Message("This user does not allow"), HttpStatus.FORBIDDEN);
+//		}
 
 		Order order = orderService.findByKey(orderNumber);
 		if (order == null) {
@@ -115,5 +119,26 @@ public class PaymentController extends BaseController {
 		webPayment.setPrice(8190000.0);
 		
 		return new ResponseEntity<WebPayment>(webPayment, HttpStatus.OK);
+	}
+	
+	@Autowired
+	private AddressRepository addressService;
+	
+	@Autowired
+	private UserService userService;
+	
+	@JsonView(ShippingView.Summary.class)
+	@ResponseBody
+	@RequestMapping(value = "/address", method = RequestMethod.POST)
+	public ResponseEntity<?> testAddress(
+			@RequestBody Shipping shipping) {
+		
+//		User user = userService.findByKey(21);
+//		shipping.getAddress().setUser(user);
+		
+//		Integer id = addressService.save(address);
+//		address.setId(id);
+		
+		return new ResponseEntity<Shipping>(shipping, HttpStatus.OK);
 	}
 }

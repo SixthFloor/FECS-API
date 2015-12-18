@@ -24,10 +24,12 @@ import th.in.nagi.fecs.message.Message;
 import th.in.nagi.fecs.model.Address;
 import th.in.nagi.fecs.model.Order;
 import th.in.nagi.fecs.model.Shipping;
+import th.in.nagi.fecs.model.User;
 import th.in.nagi.fecs.model.WebPayment;
 import th.in.nagi.fecs.repository.AddressRepository;
 import th.in.nagi.fecs.repository.OrderRepository;
 import th.in.nagi.fecs.repository.ShippingRepository;
+import th.in.nagi.fecs.repository.UserRepository;
 
 /**
  * 
@@ -52,6 +54,9 @@ public class PaymentService {
 	
 	@Autowired
 	AddressRepository addressRepository;
+	
+	@Autowired
+	UserRepository userRepository;
 
 	private String connect(String method, String param) {
 		CloseableHttpClient httpClient = HttpClientBuilder.create().build();
@@ -105,6 +110,7 @@ public class PaymentService {
 		try {
 			Order order = orderRepository.getByKey(o.getOrderNumber());
 			Shipping slot = shippingRepository.findByKey(webPayment.getShipping().getId());
+			User user = userRepository.findByKey(order.getUser().getId());
 
 			if (slot.getStatus() != Shipping.AVAILABLE) {
 				return "Shipping slot is not available";
@@ -113,7 +119,7 @@ public class PaymentService {
 			}
 
 			Address address = webPayment.getShipping().getAddress();
-			address.setUser(order.getUser());
+			address.setUser(user);
 			
 			Integer addressId = addressRepository.save(address);
 			address.setId(addressId);

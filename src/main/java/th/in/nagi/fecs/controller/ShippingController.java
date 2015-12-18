@@ -45,7 +45,7 @@ public class ShippingController extends BaseController {
 	 * 
 	 * @return list of shippings
 	 */
-	@JsonView(ShippingView.Personal.class)
+	@JsonView(ShippingView.Summary.class)
 	@RequestMapping(value = "/all", method = RequestMethod.GET)
 	public ResponseEntity<?> getAllShippings(@RequestHeader(value = "Authorization") String token) {
 		if (!authenticationService.checkPermission(token, authenticationService.MEMBER, authenticationService.STAFF,

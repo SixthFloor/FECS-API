@@ -3,6 +3,8 @@ package th.in.nagi.fecs.repository;
 import java.util.List;
 
 import org.hibernate.Criteria;
+import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.type.StandardBasicTypes;
 import org.springframework.stereotype.Repository;
@@ -43,6 +45,8 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 	public List<Shipping> findAllUniqueAvailable() {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("status", Shipping.AVAILABLE));
+		criteria.setProjection(Projections.distinct(Projections.property("date")));
+		criteria.addOrder(Order.asc("date"));
 		return criteria.list();
 	}
 

@@ -143,9 +143,9 @@ public class User {
 	/**
 	 * Authentications list of this User
 	 */
-	@OneToMany(mappedBy = "user")
-	@LazyCollection(LazyCollectionOption.FALSE)
-	private List<Authentication> authentication;
+//	@OneToMany(mappedBy = "user")
+//	@LazyCollection(LazyCollectionOption.FALSE)
+//	private List<Authentication> authentication;
 
 	/**
 	 * Role of this User
@@ -154,20 +154,20 @@ public class User {
 	@Fetch(FetchMode.SELECT)
 	private Role role;
 
-	/**
-	 * Orders list of this User
-	 */
-	@OneToMany(mappedBy = "user")
-	@LazyCollection(LazyCollectionOption.FALSE)
-	private List<Order> orders;
+//	/**
+//	 * Orders list of this User
+//	 */
+//	@OneToMany(mappedBy = "user")
+//	@LazyCollection(LazyCollectionOption.FALSE)
+//	private List<Order> orders;
 	
-	/**
-	 * Address list of this User
-	 */
-	@Transient
-	@OneToMany(mappedBy = "user")
-	@LazyCollection(LazyCollectionOption.FALSE)
-	private List<Address> addresses;
+//	/**
+//	 * Address list of this User
+//	 */
+//	@Transient
+//	@OneToMany(mappedBy = "user")
+//	@LazyCollection(LazyCollectionOption.FALSE)
+//	private List<Address> addresses;
 
 	public String getEmail() {
 		return email;
@@ -241,13 +241,9 @@ public class User {
 		this.role = role;
 	}
 
-	public List<Authentication> getAuthenticate() {
-		return authentication;
-	}
-
-	public void setAuthenticate(List<Authentication> authentication) {
-		this.authentication = authentication;
-	}
+//	public List<Authentication> getAuthenticate() {
+//		return authentication;
+//	}
 
 	public Integer getId() {
 		return id;

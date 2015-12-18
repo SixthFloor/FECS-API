@@ -111,9 +111,10 @@ public class AuthenticationService {
 	 * @return List<Authentication>
 	 */
 	public List<Authentication> findByEmail(String email) {
+		
 		User user = userService.findByEmail(email);
-		return user.getAuthenticate();
-
+		return authenticationRepository.findByUser(user);
+//		return user.getAuthenticate();
 	}
 
 	/**

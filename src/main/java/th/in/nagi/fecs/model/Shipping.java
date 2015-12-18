@@ -20,6 +20,7 @@ import org.hibernate.annotations.NotFoundAction;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
 
+import th.in.nagi.fecs.view.AddressView;
 import th.in.nagi.fecs.view.ShippingView;
 
 /**
@@ -60,9 +61,10 @@ public class Shipping {
 	@JsonView(ShippingView.Summary.class)
 	private int status;
 
-	@JsonView(ShippingView.Summary.class)
+	@JsonProperty("address")
+	@JsonView(ShippingView.Personal.class)
 	@ManyToOne
-	@JoinColumn(name = "address_id")
+	@JoinColumn(name = "address_id", referencedColumnName="id", nullable = true)
 	@Fetch(FetchMode.SELECT)
 	@NotFound(action = NotFoundAction.IGNORE)
 	private Address address;

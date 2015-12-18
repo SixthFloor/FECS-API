@@ -50,7 +50,7 @@ public class Address {
 	 * Address's address(line 2)
 	 */
 	@JsonView(AddressView.Personal.class)
-	@Column(name = "address_2")
+	@Column(name = "address_2", nullable = true)
 	private String address2;
 
 	/**

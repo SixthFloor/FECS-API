@@ -8,6 +8,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import th.in.nagi.fecs.model.Authentication;
+import th.in.nagi.fecs.model.User;
 
 /**
  * Tool for managing authentication in database.
@@ -81,5 +82,11 @@ public class AuthenticationRepository extends AbstractRepository<Authentication,
 	public void removeByToken(String token) {
 		remove(findByToken(token));
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public List<Authentication> findByUser(User user) {
+		Criteria criteria = createEntityCriteria();
+		criteria.add(Restrictions.eq("user", user));
+		return criteria.list();
+	}
 }
