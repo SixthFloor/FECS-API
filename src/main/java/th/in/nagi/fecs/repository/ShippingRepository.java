@@ -51,9 +51,8 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 		Calendar today = Calendar.getInstance();
 		
 		criteria.add(Restrictions.ge("date", today.getTime()));
-		criteria.setProjection(Projections.distinct(Projections.property("date")));
+//		criteria.setProjection(Projections.distinct(Projections.property("date")));
 		criteria.addOrder(Order.asc("date"));
-		criteria.setResultTransformer(Transformers.aliasToBean(Shipping.class));
 //		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
