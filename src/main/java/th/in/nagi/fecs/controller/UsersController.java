@@ -289,8 +289,8 @@ public class UsersController extends BaseController {
 		if (!passwordHash.equals(user.getPassword())) {
 			return new ResponseEntity<Message>(new Message("Password incorrect"), HttpStatus.FORBIDDEN);
 		}
-		if(newUser.getPassword() != null){
-			if (newUser.getPassword().length() < 8 || newUser.getPassword().length() > 20 || !newUser.getPassword().equals("")) {
+		if(newUser.getPassword() != null && !newUser.getPassword().equals("")){
+			if (newUser.getPassword().length() < 8 || newUser.getPassword().length() > 20 ) {
 				return new ResponseEntity<Message>(new Message("Password lenght should be between 8 -20"),
 						HttpStatus.BAD_REQUEST);
 			}
