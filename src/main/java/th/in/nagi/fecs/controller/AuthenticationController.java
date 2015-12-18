@@ -104,6 +104,10 @@ public class AuthenticationController extends BaseController {
 		}
 
 		User user = getUserService().findByEmail(tempUser.getEmail().toLowerCase());
+		
+		if(user == null){
+			return new ResponseEntity<Message>(new Message("This account doesn't exist"), HttpStatus.BAD_REQUEST);
+		}
 
 		if (tempUser.getPassword() == null) {
 			return new ResponseEntity<Message>(new Message("Password is empty"), HttpStatus.BAD_REQUEST);
