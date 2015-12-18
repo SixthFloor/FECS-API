@@ -55,9 +55,9 @@ public class Role {
 	/**
 	 * Users who have this role.
 	 */
-	@OneToMany(mappedBy = "role")
-	@LazyCollection(LazyCollectionOption.FALSE)
-	private List<User> users;
+//	@OneToMany(mappedBy = "role")
+//	@LazyCollection(LazyCollectionOption.FALSE)
+//	private List<User> users;
 
 	public int getId() {
 		return id;
@@ -75,13 +75,13 @@ public class Role {
 		this.name = name;
 	}
 
-	public List<User> getUsers() {
-		return users;
-	}
+//	public List<User> getUsers() {
+//		return users;
+//	}
 
-	public void setUsers(List<User> users) {
-		this.users = users;
-	}
+//	public void setUsers(List<User> users) {
+//		this.users = users;
+//	}
 
 	@Override
 	public boolean equals(Object obj) {

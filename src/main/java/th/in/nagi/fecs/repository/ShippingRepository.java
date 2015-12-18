@@ -1,5 +1,6 @@
 package th.in.nagi.fecs.repository;
 
+import java.util.Calendar;
 import java.util.List;
 
 import org.hibernate.Criteria;
@@ -45,8 +46,13 @@ public class ShippingRepository extends AbstractRepository<Shipping, Integer> {
 	public List<Shipping> findAllUniqueAvailable() {
 		Criteria criteria = createEntityCriteria();
 		criteria.add(Restrictions.eq("status", Shipping.AVAILABLE));
-		criteria.setProjection(Projections.distinct(Projections.property("date")));
+		
+		Calendar today = Calendar.getInstance();
+		
+		criteria.add(Restrictions.ge("date", today.getTime()));
+//		criteria.setProjection(Projections.distinct(Projections.property("date")));
 		criteria.addOrder(Order.asc("date"));
+//		criteria.setResultTransformer(Criteria.DISTINCT_ROOT_ENTITY);
 		return criteria.list();
 	}
 
