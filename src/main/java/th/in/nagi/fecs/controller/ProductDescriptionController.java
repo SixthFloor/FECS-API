@@ -182,14 +182,6 @@ public class ProductDescriptionController extends BaseController {
 		
 		productDescription.setStatus(ProductDescription.SELL);
 		try {
-			ProductDescription oldProductDescription = productDescriptionService.findByKey(productDescription.getId());
-			for(ProductImage image: productDescription.getImages()){
-			if (image.getId() != null) {
-				image.setProductDescription(oldProductDescription);
-				productImageService.store(image);	
-			}
-			System.out.println(image.getId());
-			}
 			productDescriptionService.update(productDescription);
 		} catch (Exception e) {
 			return new ResponseEntity<Message>(new Message("Edit product failed"), HttpStatus.BAD_REQUEST);
